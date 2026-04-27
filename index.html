@@ -373,7 +373,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 const LS_KEY     = 'pex_corretivas_v1';
 const LS_URL_KEY = 'zamp_script_url';
 const LS_META    = 'pex_meta_v1';
-let SCRIPT_URL   = localStorage.getItem('zamp_script_url') || 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
+let SCRIPT_URL = localStorage.getItem('zamp_script_url') || DEFAULT_SCRIPT_URL;
+// Garantir que o localStorage sempre tenha a URL correta
+if (!localStorage.getItem('zamp_script_url')) {
+  localStorage.setItem('zamp_script_url', DEFAULT_SCRIPT_URL);
+}
 let _syncTimer   = null;
 
 function setSyncStatus(state, msg) {
