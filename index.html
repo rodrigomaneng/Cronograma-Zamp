@@ -264,7 +264,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
   <div class="sync-cfg" id="sync-cfg">
     <h4>🔗 Conectar ao Google Sheets para salvar em tempo real</h4>
     <p>Cole a URL do Web App (Apps Script) da sua planilha. Programações, técnicos, datas e checkboxes ficam salvos na nuvem — toda a equipe usa o mesmo arquivo HTML do GitHub.</p>
-    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/XXXXXXX/exec">
+    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec">
     <div class="cfg-row">
       <button class="cfg-btn" onclick="salvarConfig()">Conectar</button>
       <button class="cfg-btn sec" onclick="document.getElementById('sync-cfg').style.display='none'">Agora não</button>
@@ -373,7 +373,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 const LS_KEY     = 'pex_corretivas_v1';
 const LS_URL_KEY = 'zamp_script_url';
 const LS_META    = 'pex_meta_v1';
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKeE-R1FEANk3i66VDHIDt7c7NZ5Dzfoj5Lik5q23K9-nhIxigyISqdkAiCHhSrRSRKw/exec';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
 let SCRIPT_URL = localStorage.getItem('zamp_script_url') || DEFAULT_SCRIPT_URL;
 // Garantir que o localStorage sempre tenha a URL correta
 if (!localStorage.getItem('zamp_script_url')) {
@@ -425,19 +425,14 @@ function agendarSync() {
 
 async function salvarNoSheets() {
   if (!SCRIPT_URL) return;
+  setSyncStatus('loading', 'Salvando...');
   try {
-    // no-cors: envia os dados mas não lê resposta (resolve CORS do GitHub Pages)
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({ action:'setStatus', prog:progState, exec:execState, fat:fatState, extra:cardExtra })
-    });
-    // Com no-cors, a resposta é opaca — considerar sucesso se não deu exceção
+    const payload = { action:'setStatus', prog:progState, exec:execState, fat:fatState, extra:cardExtra };
+    await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(payload) });
     const hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    setSyncStatus('ok', 'Salvo · ' + hora);
+    setSyncStatus('ok', 'Salvo no Google Sheets · ' + hora);
   } catch(e) {
-    // Só marca erro se realmente falhou (sem internet, etc)
-    setSyncStatus('err', 'Erro ao salvar: ' + e.message);
+    setSyncStatus('err', 'Erro ao salvar. Verifique a conexão.');
   }
 }
 
@@ -657,9 +652,9 @@ function updateCardState(id){
   if(fl)fl.textContent=isFat?'Faturada ✓':'Faturada';
 }
 function updateBtns(){
-  document.getElementById('btn-clear-fat').style.display=Object.values(fatState).some(Boolean)?'':'none';
-  document.getElementById('btn-clear-prog').style.display=Object.values(progState).some(Boolean)?'':'none';
-  document.getElementById('btn-clear-exec').style.display=Object.values(execState).some(Boolean)?'':'none';
+  
+  
+  
 }
 function updateKPIs(){
   const nProg=Object.values(progState).filter(Boolean).length;
