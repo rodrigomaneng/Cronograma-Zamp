@@ -250,15 +250,7 @@ function setSyncStatus(state, msg) {
   const cfgBtn = document.getElementById('sync-cfg-btn');
   if (cfgBtn) cfgBtn.style.display = SCRIPT_URL ? 'none' : '';
   if (state === 'ok') {
-    clearInterval(window._countdownTimer);
-    let s = 300;
-    window._countdownTimer = setInterval(() => {
-      s--;
-      if (s <= 0) { clearInterval(window._countdownTimer); return; }
-      const m = Math.floor(s/60), ss = s%60;
-      const el = document.getElementById('sync-msg');
-      if (el) el.textContent = msg + ' · refresh em ' + m + ':' + (ss<10?'0':'') + ss;
-    }, 1000);
+    // countdown removido
   }
 }
 function salvarConfig() {
