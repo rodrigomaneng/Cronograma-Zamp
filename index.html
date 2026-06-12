@@ -225,10 +225,65 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 #cfg-msg{font-size:11px;color:var(--text3)}
 @media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.dstats{display:none}.cgrid{grid-template-columns:1fr}.card-edit{grid-template-columns:1fr 1fr}}
 @media print{.toolbar,.top-meta,.legend,.update-banner{display:none!important}.day-body{display:block!important}body{background:#fff}}
+
+/* ── ABAS ────────────────────────────────────────────────────────── */
+.tab-nav{display:flex;gap:4px;padding:0 0 0 0;margin-bottom:1rem;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.tab-btn{padding:8px 20px;border:none;background:transparent;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text2);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;border-radius:6px 6px 0 0}
+.tab-btn:hover{background:var(--surface2);color:var(--text)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--surface2);font-weight:700}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── ABA PREVENTIVAS ─────────────────────────────────────────────── */
+.prev-upload{background:var(--surface);border:2px dashed var(--border);border-radius:10px;padding:2rem;text-align:center;margin-bottom:1.5rem;cursor:pointer;transition:border-color .2s}
+.prev-upload:hover{border-color:var(--blue)}
+.prev-upload h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:.4rem}
+.prev-upload p{font-size:12px;color:var(--text2)}
+.prev-upload input{display:none}
+.prev-kpis{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1.5rem}
+.prev-kpi{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;text-align:center}
+.prev-kpi-l{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:.3rem}
+.prev-kpi-v{font-size:26px;font-weight:700;color:var(--text);line-height:1}
+.prev-kpi-s{font-size:11px;color:var(--text2);margin-top:.2rem}
+.prev-kpi.c-ok .prev-kpi-v{color:#22C55E}
+.prev-kpi.c-pend .prev-kpi-v{color:#F59E0B}
+.prev-kpi.c-neg .prev-kpi-v{color:#EF4444}
+.prev-table{width:100%;border-collapse:collapse;font-size:12px}
+.prev-table th{background:var(--surface2);padding:8px 10px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border-bottom:2px solid var(--border);white-space:nowrap}
+.prev-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.prev-table tr:hover td{background:var(--surface2)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.badge.ok{background:#D1FAE5;color:#065F46}
+.badge.exec{background:#DBEAFE;color:#1D4ED8}
+.badge.pend{background:#FEF3C7;color:#92400E}
+.badge.neg{background:#FEE2E2;color:#B91C1C}
+.section-title{font-size:13px;font-weight:700;color:var(--text);margin:1.5rem 0 .75rem;padding-bottom:.4rem;border-bottom:2px solid var(--border)}
+
+/* ── ABA EMERGENCIAIS ────────────────────────────────────────────── */
+.emerg-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
+@media(max-width:700px){.emerg-grid{grid-template-columns:1fr}}
+.emerg-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.emerg-card-hdr{padding:.65rem 1rem;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:var(--surface2);color:var(--text2)}
+.rank-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid var(--border);font-size:12px}
+.rank-row:last-child{border-bottom:none}
+.rank-num{font-size:18px;font-weight:800;color:var(--blue);min-width:32px}
+.rank-name{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-badge{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1px 8px;font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap}
+.emerg-empty{padding:1.5rem;text-align:center;color:var(--text3);font-size:12px}
+
 </style></head><body><div class="top"><div class="top-inner"><div style="display:flex;align-items:center;gap:14px"><img src="https://www.zamp.com.br/assets/images/logo-zamp.svg"
 alt="ZAMP" height="28"
 style="filter:brightness(0) invert(1);height:28px;width:auto"
-           onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block'"><span id="logo-fallback" style="display:none;font-size:20px;font-weight:800;letter-spacing:.04em;color:#fff">ZAMP</span><div style="width:1px;height:28px;background:rgba(255,255,255,.2)"></div><div><h1>Cronograma de Corretivas</h1><div class="top-sub">Maneng Refrigeração · <span id="top-total">497</span> chamados · <span id="top-date">Abr 2026</span></div></div></div><div class="top-meta"><button class="top-btn highlight" onclick="openModal('modal-update')">⟳ Atualizar CSV</button><button class="top-btn" onclick="toggleAll(true)">▼ Expandir tudo</button><button class="top-btn" onclick="toggleAll(false)">▲ Recolher tudo</button><button class="top-btn" onclick="exportCSV()">⬇ Exportar CSV</button></div></div></div><div class="main"><div class="sync-cfg" id="sync-cfg"><h4>🔗 Conectar ao Google Sheets para salvar em tempo real</h4><p>Cole a URL do Web App (Apps Script) da sua planilha. Programações, técnicos, datas e checkboxes ficam salvos na nuvem — toda a equipe usa o mesmo arquivo HTML do GitHub.</p><input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec"><div class="cfg-row"><button class="cfg-btn" onclick="salvarConfig()">Conectar</button><button class="cfg-btn sec" onclick="document.getElementById('sync-cfg').style.display='none'">Agora não</button><span id="cfg-msg"></span></div></div><div class="sync-bar" id="sync-bar"><div class="sync-dot off" id="sync-dot"></div><span id="sync-msg">Não conectado ao Google Sheets — clique em ⚙ Configurar para salvar na nuvem</span><button class="sync-btn-inline" onclick="document.getElementById('sync-cfg').style.display='block'" id="sync-cfg-btn">⚙ Configurar</button><button class="sync-btn-inline" onclick="forcarSync()" id="sync-btn" disabled>↻ Sincronizar</button>
+           onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block'"><span id="logo-fallback" style="display:none;font-size:20px;font-weight:800;letter-spacing:.04em;color:#fff">ZAMP</span><div style="width:1px;height:28px;background:rgba(255,255,255,.2)"></div><div><h1>Cronograma de Corretivas</h1><div class="top-sub">Maneng Refrigeração · <span id="top-total">497</span> chamados · <span id="top-date">Abr 2026</span></div></div></div><div class="top-meta"><button class="top-btn highlight" onclick="openModal('modal-update')">⟳ Atualizar CSV</button><button class="top-btn" onclick="toggleAll(true)">▼ Expandir tudo</button><button class="top-btn" onclick="toggleAll(false)">▲ Recolher tudo</button><button class="top-btn" onclick="exportCSV()">⬇ Exportar CSV</button></div></div></div><div class="main"><div class="sync-cfg" id="sync-cfg"><h4>🔗 Conectar ao Google Sheets para salvar em tempo real</h4><p>Cole a URL do Web App (Apps Script) da sua planilha. Programações, técnicos, datas e checkboxes ficam salvos na nuvem — toda a equipe usa o mesmo arquivo HTML do GitHub.</p><input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec"><div class="cfg-row"><button class="cfg-btn" onclick="salvarConfig()">Conectar</button><button class="cfg-btn sec" onclick="document.getElementById('sync-cfg').style.display='none'">Agora não</button><span id="cfg-msg"></span></div></div><div class="sync-bar" id="sync-bar"><div class="sync-dot off" id="sync-dot"></div>
+  <!-- NAVEGAÇÃO DE ABAS -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="trocarAba('corretivas')">📋 Corretivas</button>
+    <button class="tab-btn" onclick="trocarAba('preventivas')">🔧 Preventivas</button>
+    <button class="tab-btn" onclick="trocarAba('emergenciais')">🚨 Chamados</button>
+  </div>
+
+  <!-- ABA 1: CORRETIVAS -->
+  <div class="tab-pane active" id="tab-corretivas">
+<span id="sync-msg">Não conectado ao Google Sheets — clique em ⚙ Configurar para salvar na nuvem</span><button class="sync-btn-inline" onclick="document.getElementById('sync-cfg').style.display='block'" id="sync-cfg-btn">⚙ Configurar</button><button class="sync-btn-inline" onclick="forcarSync()" id="sync-btn" disabled>↻ Sincronizar</button>
     <button class="sync-btn-inline" onclick="salvarNoSheets()" id="save-btn" disabled>💾 Salvar agora</button></div><div class="kpis"><div class="kpi"><div class="kpi-l">Total</div><div class="kpi-v" id="kT">668</div><div class="kpi-s">corretivas</div><div class="kpi-r" id="kTVal">—</div></div><div class="kpi c-prog"><div class="kpi-l">Programadas</div><div class="kpi-v" id="kProg">0</div><div class="kpi-s" id="kProg-s">0% do total</div><div class="kpi-r" id="kProgVal">—</div></div><div class="kpi c-exec"><div class="kpi-l">Executadas</div><div class="kpi-v" id="kExec">0</div><div class="kpi-s" id="kExec-s">0% do total</div><div class="kpi-r" id="kExecVal">—</div></div><div class="kpi c-fat"><div class="kpi-l">Faturadas</div><div class="kpi-v" id="kFat">0</div><div class="kpi-s">marcadas</div><div class="kpi-r" id="kFatVal">—</div></div>
 <div class="kpi c-fat"><div class="kpi-l">Valor Faturado</div><div class="kpi-v" id="kValFat">—</div><div class="kpi-s" id="kValFat-s">aguardando</div></div><div class="kpi c-pend"><div class="kpi-l">Sem ação</div><div class="kpi-v" id="kPend">668</div><div class="kpi-s">aguardando</div><div class="kpi-r" id="kPendVal">—</div></div><div class="kpi"><div class="kpi-l">Valor Total</div><div class="kpi-v" id="kVal">R$ 2.15M</div><div class="kpi-s">carteira</div></div><div class="kpi"><div class="kpi-l">Última atualização</div><div class="kpi-v" style="font-size:13px;padding-top:4px" id="kDate">—</div><div class="kpi-s">do CSV</div></div></div><div class="prog-wrap"><div class="prog-hdr"><span class="prog-title">Progresso geral</span><span class="prog-count" id="prog-count">0 fat. · 0 exec. · 0 prog. / 668</span></div><div class="prog-bar"><div class="prog-fill" id="pf-prog" style="width:0%;background:#BFDBFE"></div><div class="prog-fill" id="pf-exec" style="width:0%;background:#FDE68A"></div><div class="prog-fill" id="pf-fat"  style="width:0%;background:var(--green)"></div></div><div class="prog-legend"><span><i style="background:#BFDBFE"></i>Programada</span><span><i style="background:#FDE68A"></i>Executada</span><span><i style="background:var(--green)"></i>Faturada</span></div></div><div class="fluxo-wrap"><div class="fluxo-title">Fluxo de status · clique para filtrar</div><div class="fluxo-row" id="fluxo-row"></div></div><div class="legend" id="legend"></div><div class="toolbar"><input class="srch" id="srch" placeholder="Buscar loja, chamado, BKN, descrição…" oninput="render()"><select class="sel" id="fCli" onchange="render()"><option value="">Cliente</option></select><select class="sel" id="fReg" onchange="render()"><option value="">Regional</option></select><select class="sel" id="fMes" onchange="render()"><option value="">Mês</option></select><select class="sel" id="fSup" onchange="render()"><option value="">Supervisor</option></select><select class="sel" id="fTec" onchange="render()"><option value="">Técnico</option></select><select class="sel" id="fStatus" onchange="render()"><option value="">Status base</option><option>Aguardando Aprovação</option><option>Aprovado</option><option>Validado</option><option>Negado</option></select><select class="sel" id="fAcao" onchange="render()"><option value="">Ação</option><option value="pend">Sem ação</option><option value="prog">Programadas</option><option value="exec">Executadas</option><option value="fat">Faturadas</option></select><span class="filter-info" id="filter-info"></span></div><div id="sched"></div></div><div class="modal-bg" id="modal-update"><div class="modal"><h3>⟳ Atualizar dados do CSV</h3><p>O CSV serve para <strong>gerar um novo index.html</strong> com os dados atualizados. Suas programações (técnicos, datas, checkboxes) ficam salvas no Sheets e <strong>nunca se perdem</strong>.</p><ol class="modal-steps"><li data-n="1">Exporte o CSV da plataforma Zamp</li><li data-n="2">Arraste ou selecione o arquivo abaixo</li><li data-n="3">Clique em <strong>⬇ Baixar novo index.html</strong> e suba no GitHub</li></ol><div id="drop-zone" onclick="document.getElementById('csv-file-input').click()"><p>📂 Arraste o CSV aqui ou <strong>clique para selecionar</strong></p><p style="font-size:10px;margin-top:4px;opacity:.6">Formato: data_export_*.csv da plataforma Zamp</p></div><input type="file" id="csv-file-input" accept=".csv" style="display:none"><div id="update-status"></div><div id="download-wrap" style="display:none;margin-top:.75rem;padding:.85rem 1rem;background:var(--green-lt);border:1px solid #A7F3D0;border-radius:8px;"><div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:.5rem">✓ CSV carregado com sucesso!</div><div style="font-size:11px;color:var(--text2);margin-bottom:.75rem">Baixe o novo <strong>index.html</strong> e substitua o arquivo no GitHub para atualizar o link da equipe.</div><button class="modal-btn primary" onclick="baixarNovoHTML()" style="background:var(--green);border-color:var(--green)">⬇ Baixar novo index.html</button></div><div class="modal-btns"><button class="modal-btn sec" onclick="closeModal('modal-update')">Fechar</button></div></div></div><div class="viewer-bg" id="viewer-bg" onclick="fecharViewer(event)"><div class="viewer-toolbar"><span class="viewer-name" id="viewer-nome"></span><button class="viewer-btn" onclick="baixarAnexo()">⬇ Baixar</button><button class="viewer-btn danger" onclick="fecharViewer()">✕ Fechar</button></div><div class="viewer-frame" id="viewer-frame"></div></div><script>
 // ─── GOOGLE SHEETS SYNC ──────────────────────────────────────────────────────
@@ -858,4 +913,294 @@ abrirDB().then(()=>{
     setSyncStatus('off', 'Não conectado ao Google Sheets — clique em ⚙ Configurar para salvar na nuvem');
   }
 });
+
+// ── ABAS ─────────────────────────────────────────────────────────────────────
+function trocarAba(nome) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + nome).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if(b.getAttribute('onclick').includes(nome)) b.classList.add('active');
+  });
+  if(nome === 'preventivas' && window._prevData) renderPreventivas(window._prevData);
+  if(nome === 'emergenciais' && window._emergData) renderEmergenciais(window._emergData);
+}
+
+// ── PREVENTIVAS ───────────────────────────────────────────────────────────────
+function loadPrevCSV(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const rows = parseCSV(e.target.result);
+    const prev = rows.filter(r => (r['Modalidades']||'').toUpperCase().includes('PREVENTIVA'));
+    window._prevData = rows;
+    window._prevDataAll = rows;
+    renderPreventivas(rows);
+    document.getElementById('prev-upload-box').style.display = 'none';
+    document.getElementById('prev-content').style.display = 'block';
+    document.getElementById('prev-filename').textContent = file.name + ' · ' + rows.length + ' registros';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function loadEmergCSV(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    window._emergData = parseCSV(e.target.result);
+    renderEmergenciais(window._emergData);
+    document.getElementById('emerg-upload-box').style.display = 'none';
+    document.getElementById('emerg-content').style.display = 'block';
+    document.getElementById('emerg-filename').textContent = file.name + ' · ' + window._emergData.length + ' registros';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(';').map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const vals = line.split(';');
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = (vals[i]||'').trim());
+    return obj;
+  }).filter(r => r['ID']);
+}
+
+function fmtDate(s) {
+  if(!s) return '—';
+  const d = s.split(' ')[0];
+  const parts = d.split('/');
+  if(parts.length === 3) return parts[0]+'/'+parts[1]+'/'+parts[2];
+  return s;
+}
+
+function getMes(s) {
+  if(!s) return '—';
+  const parts = s.split('/');
+  if(parts.length >= 3) {
+    const meses = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    return meses[parseInt(parts[1])] + '/' + parts[2].split(' ')[0];
+  }
+  return s;
+}
+
+function getStatusBadge(st) {
+  const s = (st||'').toLowerCase();
+  if(s === 'concluído' || s === 'finalizado') return '<span class="badge ok">'+st+'</span>';
+  if(s === 'executando') return '<span class="badge exec">'+st+'</span>';
+  if(s === 'pendente') return '<span class="badge pend">'+st+'</span>';
+  if(s === 'rejeitado' || s === 'cancelado') return '<span class="badge neg">'+st+'</span>';
+  return '<span class="badge pend">'+st+'</span>';
+}
+
+function renderPreventivas(rows) {
+  const prev = rows.filter(r => (r['Modalidades']||'').toUpperCase().includes('PREVENTIVA'));
+  const total = prev.length;
+  const concluido = prev.filter(r => ['concluído','finalizado'].includes((r['Status']||'').toLowerCase())).length;
+  const exec = prev.filter(r => (r['Status']||'').toLowerCase() === 'executando').length;
+  const pend = prev.filter(r => (r['Status']||'').toLowerCase() === 'pendente').length;
+  const naoReal = exec + pend;
+
+  document.getElementById('prev-total').textContent = total;
+  document.getElementById('prev-concluido').textContent = concluido;
+  document.getElementById('prev-exec').textContent = exec;
+  document.getElementById('prev-pend').textContent = pend;
+  document.getElementById('prev-pct').textContent = total > 0 ? Math.round(concluido/total*100)+'%' : '—';
+
+  // Agrupar por mês
+  const porMes = {};
+  prev.forEach(r => {
+    const mes = getMes(r['Data Inicial']);
+    if(!porMes[mes]) porMes[mes] = [];
+    porMes[mes].push(r);
+  });
+
+  let html = '';
+  Object.keys(porMes).sort().forEach(mes => {
+    const items = porMes[mes];
+    const c = items.filter(r => ['concluído','finalizado'].includes((r['Status']||'').toLowerCase())).length;
+    const e = items.filter(r => (r['Status']||'').toLowerCase() === 'executando').length;
+    const p = items.filter(r => (r['Status']||'').toLowerCase() === 'pendente').length;
+    html += '<div class="section-title">📅 ' + mes + ' · ' + items.length + ' preventivas</div>';
+    html += '<div style="margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap">';
+    html += '<span class="badge ok">✓ Concluídas: '+c+'</span>';
+    html += '<span class="badge exec">⟳ Executando: '+e+'</span>';
+    html += '<span class="badge pend">⏳ Pendentes: '+p+'</span>';
+    html += '</div>';
+    html += '<div style="overflow-x:auto;margin-bottom:1rem"><table class="prev-table"><thead><tr><th>ID</th><th>Loja</th><th>Técnico</th><th>Data</th><th>Checklist</th><th>Status</th></tr></thead><tbody>';
+    items.forEach(r => {
+      html += '<tr><td><b>#'+r['ID']+'</b></td>';
+      html += '<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r['Nome Fantasia']+'">'+r['Nome Fantasia']+'</td>';
+      html += '<td>'+r['Nome do Usuário']+'</td>';
+      html += '<td style="white-space:nowrap">'+fmtDate(r['Data Inicial'])+'</td>';
+      html += '<td>'+r['Checklists']+'</td>';
+      html += '<td>'+getStatusBadge(r['Status'])+'</td></tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  document.getElementById('prev-list').innerHTML = html || '<p style="color:var(--text3);text-align:center;padding:2rem">Nenhuma preventiva encontrada</p>';
+}
+
+function renderEmergenciais(rows) {
+  const emerg = rows.filter(r => (r['Modalidades']||'').toUpperCase().includes('CHAMADO EMERGENCIAL'));
+  const total = rows.length;
+  const nEmerg = emerg.length;
+  const nPrev = rows.filter(r => (r['Modalidades']||'').toUpperCase().includes('PREVENTIVA')).length;
+  const nCorr = rows.filter(r => (r['Modalidades']||'').toUpperCase().includes('CORRETIVA')).length;
+  const nPecas = rows.filter(r => (r['Modalidades']||'').toUpperCase().includes('PEÇA')||((r['Modalidades']||'').toUpperCase().includes('MATERIAL'))).length;
+
+  document.getElementById('emerg-total').textContent = total;
+  document.getElementById('emerg-nemerg').textContent = nEmerg;
+  document.getElementById('emerg-nprev').textContent = nPrev;
+  document.getElementById('emerg-ncorr').textContent = nCorr;
+  document.getElementById('emerg-npecas').textContent = nPecas;
+
+  // Ranking por loja
+  const porLoja = {};
+  emerg.forEach(r => {
+    const loja = r['Nome Fantasia'] || 'Sem loja';
+    porLoja[loja] = (porLoja[loja]||0)+1;
+  });
+  const lojasSorted = Object.entries(porLoja).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  // Ranking por equipamento
+  const porEquip = {};
+  emerg.forEach(r => {
+    const eq = r['Descrição'] || r['info'] || 'Não identificado';
+    const eqClean = eq.split('\n')[0].trim().toUpperCase();
+    if(eqClean && eqClean !== 'CHAMADO EMERGENCIAL') porEquip[eqClean] = (porEquip[eqClean]||0)+1;
+  });
+  const equipSorted = Object.entries(porEquip).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  // Ranking por técnico
+  const porTec = {};
+  emerg.forEach(r => {
+    const tec = r['Nome do Usuário'] || '—';
+    porTec[tec] = (porTec[tec]||0)+1;
+  });
+  const tecSorted = Object.entries(porTec).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+  // Ranking por mês
+  const porMes = {};
+  rows.forEach(r => {
+    const mes = getMes(r['Data Inicial']);
+    porMes[mes] = (porMes[mes]||0)+1;
+  });
+  const mesSorted = Object.entries(porMes).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  const rankHtml = (items, icon) => items.length === 0
+    ? '<div class="emerg-empty">Sem dados</div>'
+    : items.map(([name, cnt], i) =>
+        '<div class="rank-row"><div class="rank-num">'+(i+1)+'</div><div class="rank-name" title="'+name+'">'+icon+' '+name+'</div><div class="rank-badge">'+cnt+'</div></div>'
+      ).join('');
+
+  document.getElementById('rank-loja').innerHTML = rankHtml(lojasSorted, '🏪');
+  document.getElementById('rank-equip').innerHTML = rankHtml(equipSorted, '🔧');
+  document.getElementById('rank-tec').innerHTML = rankHtml(tecSorted, '👤');
+
+  // Tabela completa de emergenciais
+  let tableHtml = '<div style="overflow-x:auto"><table class="prev-table"><thead><tr><th>ID</th><th>Loja</th><th>Equipamento</th><th>Técnico</th><th>Data</th><th>Detalhe</th><th>Status</th></tr></thead><tbody>';
+  emerg.sort((a,b) => (b['Data Inicial']||'').localeCompare(a['Data Inicial']||'')).forEach(r => {
+    tableHtml += '<tr>';
+    tableHtml += '<td><b>#'+r['ID']+'</b></td>';
+    tableHtml += '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r['Nome Fantasia']+'">'+r['Nome Fantasia']+'</td>';
+    tableHtml += '<td>'+(r['Descrição']||'—')+'</td>';
+    tableHtml += '<td style="white-space:nowrap">'+r['Nome do Usuário']+'</td>';
+    tableHtml += '<td style="white-space:nowrap">'+fmtDate(r['Data Inicial'])+'</td>';
+    tableHtml += '<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+(r['info']||'')+'">'+((r['info']||'—').split('\n')[0])+'</td>';
+    tableHtml += '<td>'+getStatusBadge(r['Status'])+'</td>';
+    tableHtml += '</tr>';
+  });
+  tableHtml += '</tbody></table></div>';
+  document.getElementById('emerg-table').innerHTML = tableHtml;
+
+  // Todos os chamados por mês
+  let mesHtml = '';
+  mesSorted.forEach(([mes, cnt]) => {
+    const mRows = rows.filter(r => getMes(r['Data Inicial']) === mes);
+    const mEmerg = mRows.filter(r => (r['Modalidades']||'').toUpperCase().includes('CHAMADO EMERGENCIAL')).length;
+    const mPrev = mRows.filter(r => (r['Modalidades']||'').toUpperCase().includes('PREVENTIVA')).length;
+    const mCorr = mRows.filter(r => (r['Modalidades']||'').toUpperCase().includes('CORRETIVA')).length;
+    mesHtml += '<div class="rank-row"><div class="rank-name"><b>'+mes+'</b></div>';
+    mesHtml += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+    if(mEmerg) mesHtml += '<span class="badge neg">🚨 '+mEmerg+' emerg.</span>';
+    if(mPrev)  mesHtml += '<span class="badge ok">🔧 '+mPrev+' prev.</span>';
+    if(mCorr)  mesHtml += '<span class="badge exec">⚙ '+mCorr+' corr.</span>';
+    mesHtml += '<span class="badge pend">Total: '+cnt+'</span>';
+    mesHtml += '</div></div>';
+  });
+  document.getElementById('rank-mes').innerHTML = mesHtml || '<div class="emerg-empty">Sem dados</div>';
+}
+
+
+  </div><!-- /tab-corretivas -->
+
+  <!-- ABA 2: PREVENTIVAS -->
+  <div class="tab-pane" id="tab-preventivas">
+    <div class="prev-upload" id="prev-upload-box" onclick="document.getElementById('prev-file').click()">
+      <h3>📂 Carregar CSV de Preventivas</h3>
+      <p>Exporte o CSV do sistema com todas as modalidades — o sistema filtra automaticamente as preventivas</p>
+      <input type="file" id="prev-file" accept=".csv" onchange="loadPrevCSV(this)">
+    </div>
+    <div id="prev-content" style="display:none">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:1rem">
+        📄 <span id="prev-filename"></span>
+        <button onclick="document.getElementById('prev-upload-box').style.display='block'" style="margin-left:8px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px">↺ Trocar arquivo</button>
+      </div>
+      <div class="prev-kpis">
+        <div class="prev-kpi"><div class="prev-kpi-l">Total</div><div class="prev-kpi-v" id="prev-total">0</div><div class="prev-kpi-s">preventivas</div></div>
+        <div class="prev-kpi c-ok"><div class="prev-kpi-l">Concluídas</div><div class="prev-kpi-v" id="prev-concluido">0</div><div class="prev-kpi-s" id="prev-pct">—</div></div>
+        <div class="prev-kpi c-pend"><div class="prev-kpi-l">Executando</div><div class="prev-kpi-v" id="prev-exec">0</div><div class="prev-kpi-s">em andamento</div></div>
+        <div class="prev-kpi c-neg"><div class="prev-kpi-l">Pendentes</div><div class="prev-kpi-v" id="prev-pend">0</div><div class="prev-kpi-s">não iniciadas</div></div>
+      </div>
+      <div id="prev-list"></div>
+    </div>
+  </div>
+
+  <!-- ABA 3: CHAMADOS EMERGENCIAIS -->
+  <div class="tab-pane" id="tab-emergenciais">
+    <div class="prev-upload" id="emerg-upload-box" onclick="document.getElementById('emerg-file').click()">
+      <h3>📂 Carregar CSV de Chamados</h3>
+      <p>Exporte o CSV completo do sistema — o dashboard separa emergenciais, preventivas, corretivas e solicitações automaticamente</p>
+      <input type="file" id="emerg-file" accept=".csv" onchange="loadEmergCSV(this)">
+    </div>
+    <div id="emerg-content" style="display:none">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:1rem">
+        📄 <span id="emerg-filename"></span>
+        <button onclick="document.getElementById('emerg-upload-box').style.display='block'" style="margin-left:8px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px">↺ Trocar arquivo</button>
+      </div>
+      <!-- KPIs por modalidade -->
+      <div class="prev-kpis">
+        <div class="prev-kpi"><div class="prev-kpi-l">Total Chamados</div><div class="prev-kpi-v" id="emerg-total">0</div></div>
+        <div class="prev-kpi c-neg"><div class="prev-kpi-l">🚨 Emergenciais</div><div class="prev-kpi-v" id="emerg-nemerg">0</div></div>
+        <div class="prev-kpi c-ok"><div class="prev-kpi-l">🔧 Preventivas</div><div class="prev-kpi-v" id="emerg-nprev">0</div></div>
+        <div class="prev-kpi c-pend"><div class="prev-kpi-l">⚙ Corretivas</div><div class="prev-kpi-v" id="emerg-ncorr">0</div></div>
+        <div class="prev-kpi"><div class="prev-kpi-l">📦 Sol. Peças</div><div class="prev-kpi-v" id="emerg-npecas">0</div></div>
+      </div>
+      <!-- Rankings -->
+      <div class="emerg-grid">
+        <div class="emerg-card">
+          <div class="emerg-card-hdr">🏪 Top Lojas com mais Emergenciais</div>
+          <div id="rank-loja"><div class="emerg-empty">Carregando...</div></div>
+        </div>
+        <div class="emerg-card">
+          <div class="emerg-card-hdr">🔧 Equipamentos mais acionados</div>
+          <div id="rank-equip"><div class="emerg-empty">Carregando...</div></div>
+        </div>
+        <div class="emerg-card">
+          <div class="emerg-card-hdr">👤 Chamados por Técnico</div>
+          <div id="rank-tec"><div class="emerg-empty">Carregando...</div></div>
+        </div>
+        <div class="emerg-card">
+          <div class="emerg-card-hdr">📅 Volume por Mês</div>
+          <div id="rank-mes"><div class="emerg-empty">Carregando...</div></div>
+        </div>
+      </div>
+      <!-- Tabela completa de emergenciais -->
+      <div class="section-title">🚨 Todos os Chamados Emergenciais</div>
+      <div id="emerg-table"></div>
+    </div>
+  </div>
+
 </script></body></html>
