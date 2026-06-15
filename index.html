@@ -268,7 +268,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
   <div class="sync-cfg" id="sync-cfg">
     <h4>🔗 Conectar ao Google Sheets para salvar em tempo real</h4>
     <p>Cole a URL do Web App (Apps Script) da sua planilha. Programações, técnicos, datas e checkboxes ficam salvos na nuvem — toda a equipe usa o mesmo arquivo HTML do GitHub.</p>
-    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec">
+    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycbziHsXkBNftr8Jr88Q3ukfJiGVaX6Fck8f3RQ-NB9eT66mlzMtrSk3oqTJrgiEfvMcQ/exec">
     <div class="cfg-row">
       <button class="cfg-btn" onclick="salvarConfig()">Conectar</button>
       <button class="cfg-btn sec" onclick="document.getElementById('sync-cfg').style.display='none'">Agora não</button>
@@ -375,19 +375,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 
 <script>
 
-// Corrigir URL /dev para /exec no localStorage
 (function(){
   const k='zamp_script_url';
-  const u=localStorage.getItem(k)||'';
-  if(u.endsWith('/dev')){
-    localStorage.setItem(k, u.replace('/dev','/exec'));
-  }
+  const correct='https://script.google.com/macros/s/AKfycbziHsXkBNftr8Jr88Q3ukfJiGVaX6Fck8f3RQ-NB9eT66mlzMtrSk3oqTJrgiEfvMcQ/exec';
+  const cur=localStorage.getItem(k)||'';
+  if(cur !== correct){ localStorage.setItem(k, correct); }
+})();
+
+// Forçar URL correta no localStorage
+(function(){
+  const FORCE_URL = 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
+  localStorage.setItem('zamp_script_url', FORCE_URL);
 })();
 // ─── GOOGLE SHEETS SYNC ──────────────────────────────────────────────────────
 const LS_KEY     = 'pex_corretivas_v1';
 const LS_URL_KEY = 'zamp_script_url';
 const LS_META    = 'pex_meta_v1';
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziHsXkBNftr8Jr88Q3ukfJiGVaX6Fck8f3RQ-NB9eT66mlzMtrSk3oqTJrgiEfvMcQ/exec';
 let SCRIPT_URL = localStorage.getItem('zamp_script_url') || DEFAULT_SCRIPT_URL;
 // Garantir que o localStorage sempre tenha a URL correta
 if (!localStorage.getItem('zamp_script_url')) {
@@ -404,16 +408,7 @@ function setSyncStatus(state, msg) {
   const cfgBtn = document.getElementById('sync-cfg-btn');
   if (cfgBtn) cfgBtn.style.display = SCRIPT_URL ? 'none' : '';
   if (state === 'ok') {
-    clearInterval(window._countdownTimer);
-    let s = 300;
-    window._countdownTimer = setInterval(() => {
-      s--;
-      if (s <= 0) { clearInterval(window._countdownTimer); return; }
-      const m = Math.floor(s/60), ss = s%60;
-      const el = document.getElementById('sync-msg');
-      if (el) el.textContent = msg + ' · refresh em ' + m + ':' + (ss<10?'0':'') + ss;
-    }, 1000);
-  }
+      }
 }
 
 function salvarConfig() {
@@ -442,11 +437,17 @@ async function salvarNoSheets() {
   setSyncStatus('loading', 'Salvando...');
   try {
     const payload = { action:'setStatus', prog:progState, exec:execState, fat:fatState, extra:cardExtra };
-    await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(payload) });
+    // no-cors: bypass CORS preflight — dados chegam ao Sheets mesmo sem ler resposta
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
     const hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     setSyncStatus('ok', 'Salvo no Google Sheets · ' + hora);
   } catch(e) {
-    setSyncStatus('err', 'Erro ao salvar. Verifique a conexão.');
+    setSyncStatus('err', 'Erro ao salvar: ' + e.message);
   }
 }
 
