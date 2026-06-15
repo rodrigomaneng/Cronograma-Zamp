@@ -1380,6 +1380,16 @@ function parseCsvGen(txt){
     return o;
   });
 }
+function mesParaNum(m){
+  // Converte "Jan/2026" → 202601 para ordenar cronologicamente
+  const M={'Jan':1,'Fev':2,'Mar':3,'Abr':4,'Mai':5,'Jun':6,'Jul':7,'Ago':8,'Set':9,'Out':10,'Nov':11,'Dez':12};
+  const p=m.match(/^([A-Za-z]{3})\/(\d{4})$/);
+  if(p)return +p[2]*100+(M[p[1]]||0);
+  // fallback: tentar "MM-YYYY" ou "YYYY-MM"
+  const p2=m.match(/^(\d{4})-(\d{2})$/);
+  if(p2)return +p2[1]*100+ +p2[2];
+  return 0;
+}
 function getMesCh(d){
   if(!d)return'—';
   const p1=d.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
@@ -1411,7 +1421,7 @@ function renderPrev(rows){
   ['pv-total','pv-ok','pv-exec','pv-pend'].forEach((id,i)=>document.getElementById(id).textContent=[total,ok,exec,pend][i]);
   document.getElementById('pv-pct').textContent=total?Math.round(ok/total*100)+'% do total':'—';
   const pm={};rows.forEach(r=>{const m=getMesCh(r['Data Inicial']||r['Data']); if(!pm[m])pm[m]={ok:0,exec:0,pend:0,total:0};pm[m].total++;const s=(r['Status']||'').toLowerCase();if(['concluído','finalizado'].includes(s))pm[m].ok++;else if(s==='executando')pm[m].exec++;else pm[m].pend++;});
-  document.getElementById('pv-por-mes').innerHTML=Object.keys(pm).sort().map(mes=>{const d=pm[mes];return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem"><b>📅 ${mes}</b><span style="font-size:11px;color:var(--text2)">${d.total} preventivas</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.4rem"><span class="ch-badge ok">✓ ${d.ok}</span><span class="ch-badge exec">⟳ ${d.exec}</span><span class="ch-badge pend">⏳ ${d.pend}</span></div><div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:${d.total?Math.round(d.ok/d.total*100):0}%;height:100%;background:#10B981;border-radius:3px"></div></div><div style="font-size:10px;color:var(--text2);margin-top:2px">${d.total?Math.round(d.ok/d.total*100):0}% realizado</div></div>`;}).join('')||'<div class="ch-empty">Sem dados</div>';
+  document.getElementById('pv-por-mes').innerHTML=Object.keys(pm).sort((a,b)=>mesParaNum(a)-mesParaNum(b)).map(mes=>{const d=pm[mes];return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem"><b>📅 ${mes}</b><span style="font-size:11px;color:var(--text2)">${d.total} preventivas</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.4rem"><span class="ch-badge ok">✓ ${d.ok}</span><span class="ch-badge exec">⟳ ${d.exec}</span><span class="ch-badge pend">⏳ ${d.pend}</span></div><div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:${d.total?Math.round(d.ok/d.total*100):0}%;height:100%;background:#10B981;border-radius:3px"></div></div><div style="font-size:10px;color:var(--text2);margin-top:2px">${d.total?Math.round(d.ok/d.total*100):0}% realizado</div></div>`;}).join('')||'<div class="ch-empty">Sem dados</div>';
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -1475,7 +1485,7 @@ function chPopular(){
   opts('ch-fs',_chAll.map(r=>chSt(r)),'Todos status');
   opts('ch-ft',_chAll.map(r=>chTipo(r)),'Todos tipos');
   opts('ch-fl',_chAll.map(r=>chLoja(r)).filter(v=>v!=='—'),'Todas as lojas');
-  opts('ch-fm',_chAll.map(r=>getMesCh(chDi(r))).filter(v=>v!=='—'),'Todos os meses');
+  opts('ch-fm',[...new Set(_chAll.map(r=>getMesCh(chDi(r))).filter(v=>v!=='—'))].sort((a,b)=>mesParaNum(a)-mesParaNum(b)).reduce((a,v)=>(a.includes(v)?a:[...a,v]),[]),'Todos os meses');
 }
 
 function chFiltrar(){
@@ -1559,7 +1569,7 @@ function chRender(){
 
   // Tendência (linha SVG)
   const mesData={};R.forEach(r=>{const m=getMesCh(chDi(r));if(m!=='—'){if(!mesData[m])mesData[m]={total:0,emerg:0,ok:0};mesData[m].total++;if(isEmerg(r))mesData[m].emerg++;if(isOk(r))mesData[m].ok++;}});
-  const meses=Object.keys(mesData).sort();
+  const meses=Object.keys(mesData).sort((a,b)=>mesParaNum(a)-mesParaNum(b));
   if(meses.length>=2){
     const W=400,H=100,pad=30;
     const vals=meses.map(m=>mesData[m].total);
