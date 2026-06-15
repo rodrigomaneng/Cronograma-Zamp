@@ -267,6 +267,57 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 
 @media(max-width:580px){}
 
+
+/* ── LAYOUT MELHORADO ───────────────────────────────────────────── */
+.kpis{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.9rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;min-width:120px;flex:1}
+.kpi-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:2px}
+.kpi-v{font-size:22px;font-weight:800;color:var(--text);line-height:1.1}
+.kpi-s{font-size:10px;color:var(--text2);margin-top:1px}
+.kpi-r{font-size:10px;color:var(--blue);font-weight:600;margin-top:3px;border-top:1px solid var(--border);padding-top:3px}
+.kpi.c-prog .kpi-v{color:#3B82F6}
+.kpi.c-exec .kpi-v{color:#F59E0B}
+.kpi.c-fat  .kpi-v{color:#10B981}
+.kpi.c-pend .kpi-v{color:#EF4444}
+.prog-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.85rem}
+.prog-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;flex-wrap:wrap;gap:4px}
+.prog-title{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.05em}
+.prog-count{font-size:11px;color:var(--text2);font-weight:500}
+.prog-bar{height:8px;border-radius:6px;background:var(--border);overflow:hidden;position:relative;margin-bottom:6px}
+.prog-fill{position:absolute;top:0;left:0;height:100%;border-radius:6px;transition:width .4s ease}
+.prog-legend{display:flex;gap:12px;flex-wrap:wrap}
+.prog-legend span{font-size:10px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.prog-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
+.fluxo-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.85rem;overflow-x:auto}
+.fluxo-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:.6rem}
+.fluxo-row{display:flex;align-items:stretch;gap:0;min-width:560px}
+.fluxo-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.fluxo-box{width:calc(100% - 10px);border-radius:8px;padding:10px 6px;text-align:center;border:1px solid;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.fluxo-box:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.fluxo-name{font-size:10px;font-weight:700;opacity:.9}
+.fluxo-num{font-size:26px;font-weight:800;line-height:1.15;margin:2px 0}
+.fluxo-pct{font-size:11px;opacity:.75}
+.fluxo-val{font-size:10px;font-weight:700;margin-top:3px;border-top:1px solid rgba(255,255,255,.25);padding-top:3px;opacity:.9}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.7rem;min-height:0}
+.legend:empty{display:none}
+.toolbar{display:flex;gap:6px;margin-bottom:.75rem;flex-wrap:wrap;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem .9rem}
+.srch{flex:2;min-width:180px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;outline:none}
+.srch:focus{border-color:var(--blue)}
+.sel{flex:1;min-width:90px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer;outline:none}
+.sel:focus{border-color:var(--blue)}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:.7rem}
+.card{border-radius:8px;border:1px solid var(--border);padding:.6rem .75rem;background:var(--surface);transition:border-color .15s,box-shadow .15s;cursor:default}
+.card:hover{border-color:#C0BEB6;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.day-block{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.day-block:hover{box-shadow:0 2px 10px rgba(0,0,0,.08)}
+@media(max-width:900px){.cgrid{grid-template-columns:repeat(2,1fr)}.kpi{min-width:100px}}
+@media(max-width:580px){.cgrid{grid-template-columns:1fr}.kpi{min-width:80px}}
+@media(min-width:1400px){.cgrid{grid-template-columns:repeat(5,1fr)}}
+
+</style>
+</head>
+<body>
+<script>
 let _syncTimer   = null;
 function setSyncStatus(state, msg) {
   const dot = document.getElementById('sync-dot');
@@ -1108,7 +1159,103 @@ function renderEmergenciais(rows) {
 
 </script>
 
+<div class="main">
+
+  <!-- CONFIG GOOGLE SHEETS -->
+  <div class="sync-cfg" id="sync-cfg">
+    <h4>🔗 Conectar ao Google Sheets para salvar em tempo real</h4>
+    <p>Cole a URL do Web App (Apps Script) da sua planilha.</p>
+    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/XXXXXXX/exec">
+    <div class="cfg-row">
+      <button class="cfg-btn" onclick="salvarConfig()">Conectar</button>
+      <button class="cfg-btn sec" onclick="document.getElementById('sync-cfg').style.display='none'">Agora não</button>
+      <span id="cfg-msg"></span>
+    </div>
+  </div>
+
+  <!-- BARRA DE SYNC -->
+  <div class="sync-bar" id="sync-bar">
+    <div class="sync-dot off" id="sync-dot"></div>
+    <span id="sync-msg">Não conectado ao Google Sheets</span>
+    <button class="sync-btn-inline" onclick="document.getElementById('sync-cfg').style.display='block'" id="sync-cfg-btn">⚙ Configurar</button>
+    <button class="sync-btn-inline" onclick="forcarSync()" id="sync-btn" disabled>↻ Sincronizar</button>
+    <button class="sync-btn-inline" onclick="salvarNoSheets()" id="save-btn" disabled>💾 Salvar agora</button>
+  </div>
+
+  <!-- NAVEGAÇÃO DE ABAS -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="trocarAba('corretivas')">📋 Corretivas</button>
+    <button class="tab-btn" onclick="trocarAba('preventivas')">🔧 Preventivas</button>
+    <button class="tab-btn" onclick="trocarAba('emergenciais')">🚨 Chamados</button>
+  </div>
+
+  <!-- ABA 1: CORRETIVAS -->
+  <div class="tab-pane active" id="tab-corretivas">
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-l">Total</div><div class="kpi-v" id="kT">671</div><div class="kpi-s">corretivas</div><div class="kpi-r" id="kTVal">—</div></div>
+      <div class="kpi c-prog"><div class="kpi-l">Programadas</div><div class="kpi-v" id="kProg">0</div><div class="kpi-s" id="kProg-s">0% do total</div><div class="kpi-r" id="kProgVal">—</div></div>
+      <div class="kpi c-exec"><div class="kpi-l">Executadas</div><div class="kpi-v" id="kExec">0</div><div class="kpi-s" id="kExec-s">0% do total</div><div class="kpi-r" id="kExecVal">—</div></div>
+      <div class="kpi c-fat"><div class="kpi-l">Faturadas</div><div class="kpi-v" id="kFat">0</div><div class="kpi-s">marcadas</div><div class="kpi-r" id="kFatVal">—</div></div>
+      <div class="kpi c-fat"><div class="kpi-l">Valor Faturado</div><div class="kpi-v" id="kValFat">—</div><div class="kpi-s" id="kValFat-s">aguardando</div></div>
+      <div class="kpi c-pend"><div class="kpi-l">Sem ação</div><div class="kpi-v" id="kPend">671</div><div class="kpi-s">aguardando</div><div class="kpi-r" id="kPendVal">—</div></div>
+      <div class="kpi"><div class="kpi-l">Valor Total</div><div class="kpi-v" id="kVal">R$ 2.14M</div><div class="kpi-s">carteira</div></div>
+      <div class="kpi"><div class="kpi-l">Última atualização</div><div class="kpi-v" style="font-size:13px;padding-top:4px" id="kDate">—</div><div class="kpi-s">do CSV</div></div>
+    </div>
+
+    <!-- PROGRESSO GERAL -->
+    <div class="prog-wrap">
+      <div class="prog-hdr">
+        <span class="prog-title">Progresso geral</span>
+        <span class="prog-count" id="prog-count">0 fat. · 0 exec. · 0 prog. / 671</span>
+      </div>
+      <div class="prog-bar">
+        <div class="prog-fill" id="pf-prog" style="width:0%;background:#BFDBFE"></div>
+        <div class="prog-fill" id="pf-exec" style="width:0%;background:#FDE68A"></div>
+        <div class="prog-fill" id="pf-fat"  style="width:0%;background:var(--green)"></div>
+      </div>
+      <div class="prog-legend">
+        <span><i style="background:#BFDBFE"></i>Programada</span>
+        <span><i style="background:#FDE68A"></i>Executada</span>
+        <span><i style="background:var(--green)"></i>Faturada</span>
+      </div>
+    </div>
+
+    <!-- FLUXO DE STATUS -->
+    <div class="fluxo-wrap">
+      <div class="fluxo-title">Fluxo de status · clique para filtrar</div>
+      <div class="fluxo-row" id="fluxo-row"></div>
+    </div>
+
+    <!-- LEGENDA / FILTROS DE CLIENTE -->
+    <div class="legend" id="legend"></div>
+
+    <!-- TOOLBAR: BUSCA + FILTROS -->
+    <div class="toolbar">
+      <input class="srch" id="srch" placeholder="Buscar loja, chamado, BKN, descrição…" oninput="render()">
+      <select class="sel" id="fCli" onchange="render()"><option value="">Cliente</option></select>
+      <select class="sel" id="fReg" onchange="render()"><option value="">Regional</option></select>
+      <select class="sel" id="fMes" onchange="render()"><option value="">Mês</option></select>
+      <select class="sel" id="fSup" onchange="render()"><option value="">Supervisor</option></select>
+      <select class="sel" id="fTec" onchange="render()"><option value="">Técnico</option></select>
+      <select class="sel" id="fStatus" onchange="render()"><option value="">Status base</option></select>
+      <select class="sel" id="fAcao" onchange="render()"><option value="">Ação</option></select>
+    </div>
+
+    <!-- BOTÕES DE ATUALIZAÇÃO CSV -->
+    <div class="top-bar" style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;flex-wrap:wrap">
+      <button class="top-btn highlight" onclick="openModal('modal-update')">⟳ Atualizar CSV</button>
+      <button class="top-btn" onclick="toggleAll(true)">▼ Expandir tudo</button>
+      <button class="top-btn" onclick="toggleAll(false)">▲ Recolher tudo</button>
+      <button class="top-btn" onclick="exportCSV()">⬇ Exportar CSV</button>
+    </div>
+
+    <!-- LISTA DE CARDS -->
+    <div id="root"></div>
+
   </div><!-- /tab-corretivas -->
+
 
   <!-- ABA 2: PREVENTIVAS -->
   <div class="tab-pane" id="tab-preventivas">
