@@ -235,6 +235,51 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .equip-pill{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;
   text-transform:uppercase;letter-spacing:.04em;color:#0369A1;background:#E0F2FE;
   border:1px solid #BAE6FD;border-radius:4px;padding:1px 6px;white-space:nowrap}
+
+/* ═══ SISTEMA DE ABAS ═══════════════════════════════════════════════ */
+.tab-nav{display:flex;gap:4px;padding:0;margin:0 0 .85rem 0;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.tab-btn{padding:7px 18px;border:none;background:transparent;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text2);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;border-radius:6px 6px 0 0;white-space:nowrap}
+.tab-btn:hover{background:var(--surface2);color:var(--text)}
+.tab-btn.ativo{color:var(--blue);border-bottom-color:var(--blue);background:var(--surface2);font-weight:700}
+.tab-secao{display:none}.tab-secao.ativo{display:block}
+
+/* ═══ DASHBOARD CHAMADOS ════════════════════════════════════════════ */
+.ch-upload{background:var(--surface);border:2px dashed var(--border);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:1rem}
+.ch-upload:hover{border-color:var(--blue)}
+.ch-upload h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:.4rem}
+.ch-upload p{font-size:12px;color:var(--text2)}
+.ch-kpis{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1rem}
+.ch-kpi{flex:1;min-width:130px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;text-align:center}
+.ch-kpi-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:4px}
+.ch-kpi-v{font-size:26px;font-weight:800;color:var(--text);line-height:1}
+.ch-kpi-s{font-size:10px;color:var(--text2);margin-top:3px}
+.ch-kpi.ok .ch-kpi-v{color:#10B981}
+.ch-kpi.pend .ch-kpi-v{color:#F59E0B}
+.ch-kpi.urg .ch-kpi-v{color:#EF4444}
+.ch-kpi.blue .ch-kpi-v{color:#3B82F6}
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1rem}
+@media(max-width:700px){.ch-grid{grid-template-columns:1fr}}
+.ch-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ch-card-hdr{padding:.6rem 1rem;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--surface2);color:var(--text2);border-bottom:1px solid var(--border)}
+.ch-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px}
+.ch-row:last-child{border-bottom:none}
+.ch-rank{font-size:16px;font-weight:800;color:var(--blue);min-width:26px;text-align:center}
+.ch-name{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.ch-cnt{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap}
+.ch-empty{padding:1.5rem;text-align:center;color:var(--text3);font-size:12px}
+.ch-sla-bar{background:var(--border);border-radius:4px;height:8px;margin-top:4px;overflow:hidden}
+.ch-sla-fill{height:100%;border-radius:4px;background:#10B981;transition:width .4s}
+.ch-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.ch-tbl th{background:var(--surface2);padding:7px 8px;text-align:left;font-weight:600;font-size:10px;color:var(--text2);border-bottom:2px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.ch-tbl td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.ch-tbl tr:hover td{background:var(--surface2)}
+.ch-badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.ch-badge.ok{background:#D1FAE5;color:#065F46}
+.ch-badge.exec{background:#DBEAFE;color:#1D4ED8}
+.ch-badge.pend{background:#FEF3C7;color:#92400E}
+.ch-badge.urg{background:#FEE2E2;color:#B91C1C}
+.ch-info{font-size:11px;color:var(--text2);margin-bottom:.8rem;padding:.5rem .75rem;background:var(--surface2);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
 </style>
 </head>
 <body>
@@ -283,6 +328,16 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     <button class="sync-btn-inline" onclick="document.getElementById('sync-cfg').style.display='block'" id="sync-cfg-btn">⚙ Configurar</button>
     <button class="sync-btn-inline" onclick="forcarSync()" id="sync-btn" disabled>↻ Sincronizar</button>
   </div>
+
+  <!-- ═══ NAVEGAÇÃO DE ABAS ══════════════════════════════════════════ -->
+  <div class="tab-nav">
+    <button class="tab-btn ativo" onclick="mudarAba('corretivas',this)">📋 Corretivas</button>
+    <button class="tab-btn" onclick="mudarAba('preventivas',this)">🔧 Preventivas</button>
+    <button class="tab-btn" onclick="mudarAba('chamados',this)">🚨 Chamados</button>
+  </div>
+
+  <!-- ═══ ABA 1: CORRETIVAS ═══════════════════════════════════════════ -->
+  <div class="tab-secao ativo" id="secao-corretivas">
   <div class="kpis">
     <div class="kpi"><div class="kpi-l">Total</div><div class="kpi-v" id="kT">674</div><div class="kpi-s">corretivas</div></div>
     <div class="kpi c-prog"><div class="kpi-l">Programadas</div><div class="kpi-v" id="kProg">0</div><div class="kpi-s" id="kProg-s">0% do total</div></div>
@@ -1107,5 +1162,331 @@ abrirDB().then(()=>{
   }
 });
 </script>
+
+  </div><!-- /secao-corretivas -->
+
+  <!-- ═══ ABA 2: PREVENTIVAS ═════════════════════════════════════════ -->
+  <div class="tab-secao" id="secao-preventivas">
+    <div class="ch-upload" id="prev-upload" onclick="document.getElementById('prev-file-inp').click()">
+      <h3>🔧 Carregar CSV de Preventivas</h3>
+      <p>Exporte o CSV do sistema — filtramos automaticamente as preventivas mensais</p>
+      <input type="file" id="prev-file-inp" accept=".csv" style="display:none" onchange="carregarPrev(this)">
+    </div>
+    <div id="prev-dash" style="display:none">
+      <div class="ch-info">
+        📄 <span id="prev-file-nome"></span>
+        <button onclick="document.getElementById('prev-upload').style.display='block';document.getElementById('prev-dash').style.display='none'" style="margin-left:auto;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px">↺ Trocar arquivo</button>
+      </div>
+      <div class="ch-kpis">
+        <div class="ch-kpi blue"><div class="ch-kpi-l">Total</div><div class="ch-kpi-v" id="pv-total">0</div><div class="ch-kpi-s">preventivas</div></div>
+        <div class="ch-kpi ok"><div class="ch-kpi-l">Concluídas</div><div class="ch-kpi-v" id="pv-ok">0</div><div class="ch-kpi-s" id="pv-pct">—</div></div>
+        <div class="ch-kpi pend"><div class="ch-kpi-l">Em Andamento</div><div class="ch-kpi-v" id="pv-exec">0</div><div class="ch-kpi-s">executando</div></div>
+        <div class="ch-kpi urg"><div class="ch-kpi-l">Pendentes</div><div class="ch-kpi-v" id="pv-pend">0</div><div class="ch-kpi-s">não iniciadas</div></div>
+      </div>
+      <div id="pv-por-mes"></div>
+    </div>
+  </div>
+
+  <!-- ═══ ABA 3: CHAMADOS ═════════════════════════════════════════════ -->
+  <div class="tab-secao" id="secao-chamados">
+    <div class="ch-upload" id="ch-upload" onclick="document.getElementById('ch-file-inp').click()">
+      <h3>🚨 Carregar CSV de Chamados</h3>
+      <p>Exporte o CSV do sistema de chamados — veja emergenciais, SLA, top lojas e equipamentos</p>
+      <input type="file" id="ch-file-inp" accept=".csv" style="display:none" onchange="carregarChamados(this)">
+    </div>
+    <div id="ch-dash" style="display:none">
+      <div class="ch-info">
+        📄 <span id="ch-file-nome"></span>
+        <button onclick="document.getElementById('ch-upload').style.display='block';document.getElementById('ch-dash').style.display='none'" style="margin-left:auto;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px">↺ Trocar arquivo</button>
+      </div>
+      <!-- KPIs -->
+      <div class="ch-kpis">
+        <div class="ch-kpi blue"><div class="ch-kpi-l">Total Chamados</div><div class="ch-kpi-v" id="ch-total">0</div><div class="ch-kpi-s">registros</div></div>
+        <div class="ch-kpi urg"><div class="ch-kpi-l">Emergenciais</div><div class="ch-kpi-v" id="ch-emerg">0</div><div class="ch-kpi-s">chamados</div></div>
+        <div class="ch-kpi ok"><div class="ch-kpi-l">Atendidos</div><div class="ch-kpi-v" id="ch-ok">0</div><div class="ch-kpi-s" id="ch-ok-pct">—</div></div>
+        <div class="ch-kpi pend"><div class="ch-kpi-l">Pendentes</div><div class="ch-kpi-v" id="ch-pend">0</div><div class="ch-kpi-s">em aberto</div></div>
+        <div class="ch-kpi blue"><div class="ch-kpi-l">SLA Médio</div><div class="ch-kpi-v" id="ch-sla">—</div><div class="ch-kpi-s">horas atend.</div></div>
+      </div>
+      <!-- Rankings -->
+      <div class="ch-grid">
+        <div class="ch-card">
+          <div class="ch-card-hdr">🏪 Top 10 Lojas · mais chamados</div>
+          <div id="ch-top-loja"><div class="ch-empty">Carregando...</div></div>
+        </div>
+        <div class="ch-card">
+          <div class="ch-card-hdr">🔧 Top 10 Equipamentos · mais acionados</div>
+          <div id="ch-top-equip"><div class="ch-empty">Carregando...</div></div>
+        </div>
+        <div class="ch-card">
+          <div class="ch-card-hdr">📅 Volume por Mês</div>
+          <div id="ch-por-mes"><div class="ch-empty">Carregando...</div></div>
+        </div>
+        <div class="ch-card">
+          <div class="ch-card-hdr">⏱ SLA por Tipo de Chamado</div>
+          <div id="ch-sla-tipo"><div class="ch-empty">Carregando...</div></div>
+        </div>
+      </div>
+      <!-- Tabela completa emergenciais -->
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:2px solid var(--border)">🚨 Todos os Chamados Emergenciais</div>
+      <div style="overflow-x:auto"><div id="ch-tabela"></div></div>
+    </div>
+  </div>
+
+
+<script>
+// ═══ SISTEMA DE ABAS (isolado das corretivas) ════════════════════════
+function mudarAba(nome, btn) {
+  document.querySelectorAll('.tab-secao').forEach(s => s.classList.remove('ativo'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
+  document.getElementById('secao-' + nome).classList.add('ativo');
+  if(btn) btn.classList.add('ativo');
+}
+
+// ═══ PARSER CSV GENÉRICO ════════════════════════════════════════════
+function parseCsvTab(txt) {
+  const linhas = txt.trim().split('\n');
+  // Detectar separador
+  const sep = linhas[0].includes(';') ? ';' : ',';
+  const hdrs = linhas[0].split(sep).map(h => h.trim().replace(/^"|"$/g,''));
+  return linhas.slice(1).filter(l => l.trim()).map(l => {
+    const vs = l.split(sep);
+    const obj = {};
+    hdrs.forEach((h,i) => obj[h] = (vs[i]||'').trim().replace(/^"|"$/g,''));
+    return obj;
+  });
+}
+
+function getMesCh(ds) {
+  if(!ds) return '—';
+  // Tentar dd/mm/yyyy ou yyyy-mm-dd
+  const p1 = ds.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  const p2 = ds.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const meses = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  if(p1) return meses[parseInt(p1[2])] + '/' + p1[3];
+  if(p2) return meses[parseInt(p2[2])] + '/' + p2[1];
+  return ds.slice(0,7);
+}
+
+function diffHoras(d1, d2) {
+  try {
+    // Converter dd/mm/yyyy hh:mm para Date
+    const conv = s => {
+      if(!s) return null;
+      const m = s.match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+      if(m) return new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0));
+      return new Date(s);
+    };
+    const dt1 = conv(d1), dt2 = conv(d2);
+    if(!dt1||!dt2||isNaN(dt1)||isNaN(dt2)) return null;
+    return Math.max(0, (dt2-dt1) / 3600000);
+  } catch(e) { return null; }
+}
+
+function badgeCh(st) {
+  const s = (st||'').toLowerCase();
+  if(s.includes('conclu') || s.includes('finaliz')) return `<span class="ch-badge ok">${st}</span>`;
+  if(s.includes('execut')) return `<span class="ch-badge exec">${st}</span>`;
+  if(s.includes('pend')) return `<span class="ch-badge pend">${st}</span>`;
+  return `<span class="ch-badge urg">${st}</span>`;
+}
+
+function rankList(items, labelFn) {
+  if(!items.length) return '<div class="ch-empty">Sem dados</div>';
+  return items.map(([nome,cnt],i) =>
+    `<div class="ch-row">
+      <div class="ch-rank">${i+1}</div>
+      <div class="ch-name" title="${nome}">${labelFn?labelFn(nome):nome}</div>
+      <div class="ch-cnt">${cnt}</div>
+    </div>`
+  ).join('');
+}
+
+// ═══ ABA PREVENTIVAS ════════════════════════════════════════════════
+function carregarPrev(inp) {
+  const f = inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const rows = parseCsvTab(e.target.result);
+    const prev = rows.filter(r => (r['Modalidades']||r['modalidade']||r['tipo']||'').toUpperCase().includes('PREVENTIVA'));
+    document.getElementById('prev-upload').style.display = 'none';
+    document.getElementById('prev-dash').style.display = 'block';
+    document.getElementById('prev-file-nome').textContent = f.name + ' · ' + rows.length + ' registros · ' + prev.length + ' preventivas';
+    renderPrev(prev.length ? prev : rows);
+  };
+  r.readAsText(f, 'UTF-8');
+}
+
+function renderPrev(rows) {
+  const total = rows.length;
+  const ok   = rows.filter(r => ['concluído','finalizado'].includes((r['Status']||'').toLowerCase())).length;
+  const exec = rows.filter(r => (r['Status']||'').toLowerCase() === 'executando').length;
+  const pend = rows.filter(r => (r['Status']||'').toLowerCase() === 'pendente').length;
+  document.getElementById('pv-total').textContent = total;
+  document.getElementById('pv-ok').textContent = ok;
+  document.getElementById('pv-pct').textContent = total ? Math.round(ok/total*100)+'% do total' : '—';
+  document.getElementById('pv-exec').textContent = exec;
+  document.getElementById('pv-pend').textContent = pend;
+
+  // Por mês
+  const porMes = {};
+  rows.forEach(r => {
+    const m = getMesCh(r['Data Inicial']||r['data_inicial']||r['Data']);
+    if(!porMes[m]) porMes[m] = {ok:0,exec:0,pend:0,total:0};
+    porMes[m].total++;
+    const st = (r['Status']||'').toLowerCase();
+    if(['concluído','finalizado'].includes(st)) porMes[m].ok++;
+    else if(st==='executando') porMes[m].exec++;
+    else porMes[m].pend++;
+  });
+
+  let html = '';
+  Object.keys(porMes).sort().forEach(mes => {
+    const d = porMes[mes];
+    html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:4px">
+        <b style="font-size:13px">📅 ${mes}</b>
+        <span style="font-size:11px;color:var(--text2)">${d.total} preventivas</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
+        <span class="ch-badge ok">✓ Concluídas: ${d.ok}</span>
+        <span class="ch-badge exec">⟳ Executando: ${d.exec}</span>
+        <span class="ch-badge pend">⏳ Pendentes: ${d.pend}</span>
+      </div>
+      <div class="ch-sla-bar"><div class="ch-sla-fill" style="width:${d.total?Math.round(d.ok/d.total*100):0}%;background:#10B981"></div></div>
+      <div style="font-size:10px;color:var(--text2);margin-top:3px">${d.total?Math.round(d.ok/d.total*100):0}% realizado</div>
+    </div>`;
+  });
+  document.getElementById('pv-por-mes').innerHTML = html || '<div class="ch-empty">Nenhum dado encontrado</div>';
+}
+
+// ═══ ABA CHAMADOS ════════════════════════════════════════════════════
+function carregarChamados(inp) {
+  const f = inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const rows = parseCsvTab(e.target.result);
+    document.getElementById('ch-upload').style.display = 'none';
+    document.getElementById('ch-dash').style.display = 'block';
+    document.getElementById('ch-file-nome').textContent = f.name + ' · ' + rows.length + ' registros';
+    renderChamados(rows);
+  };
+  r.readAsText(f, 'UTF-8');
+}
+
+function renderChamados(rows) {
+  const emerg = rows.filter(r => (r['Modalidades']||r['modalidade']||r['tipo']||'').toUpperCase().includes('EMERGENCIAL'));
+  const total = rows.length;
+  const nEmerg = emerg.length;
+  const atend = rows.filter(r => {
+    const s = (r['Status']||'').toLowerCase();
+    return s.includes('conclu') || s.includes('finaliz');
+  }).length;
+  const pend = rows.filter(r => {
+    const s = (r['Status']||'').toLowerCase();
+    return s.includes('pend');
+  }).length;
+
+  // SLA médio (horas entre Data Inicial e Data Final)
+  let slaTotal = 0, slaCnt = 0;
+  rows.forEach(r => {
+    const h = diffHoras(r['Data Inicial']||r['data_inicial'], r['Data Final']||r['data_final']||r['Data Conclusão']);
+    if(h !== null && h > 0 && h < 720) { slaTotal += h; slaCnt++; }
+  });
+  const slaMedio = slaCnt > 0 ? (slaTotal/slaCnt).toFixed(1) : '—';
+
+  document.getElementById('ch-total').textContent = total;
+  document.getElementById('ch-emerg').textContent = nEmerg;
+  document.getElementById('ch-ok').textContent = atend;
+  document.getElementById('ch-ok-pct').textContent = total ? Math.round(atend/total*100)+'% do total' : '—';
+  document.getElementById('ch-pend').textContent = pend;
+  document.getElementById('ch-sla').textContent = slaMedio !== '—' ? slaMedio+'h' : '—';
+
+  // Top 10 lojas (emergenciais)
+  const lojaMap = {};
+  emerg.forEach(r => {
+    const loja = r['Nome Fantasia']||r['Razão Social']||r['loja']||r['Unidade']||'—';
+    lojaMap[loja] = (lojaMap[loja]||0)+1;
+  });
+  const top10Loja = Object.entries(lojaMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  // Top 10 equipamentos
+  const equipMap = {};
+  rows.forEach(r => {
+    const eq = (r['Descrição']||r['descricao']||r['Equipamento']||r['info']||'Não identificado').split('\n')[0].trim();
+    if(eq && eq !== 'CHAMADO EMERGENCIAL' && eq.length > 2) equipMap[eq] = (equipMap[eq]||0)+1;
+  });
+  const top10Equip = Object.entries(equipMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  // Por mês
+  const mesMap = {};
+  rows.forEach(r => {
+    const m = getMesCh(r['Data Inicial']||r['data_inicial']||r['Data']);
+    mesMap[m] = (mesMap[m]||0)+1;
+  });
+  const mesSorted = Object.entries(mesMap).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  // SLA por modalidade
+  const slaModMap = {};
+  rows.forEach(r => {
+    const mod = r['Modalidades']||r['modalidade']||r['tipo']||'Outros';
+    const h = diffHoras(r['Data Inicial']||r['data_inicial'], r['Data Final']||r['data_final']||r['Data Conclusão']);
+    if(!slaModMap[mod]) slaModMap[mod] = {total:0,cnt:0};
+    slaModMap[mod].cnt++;
+    if(h !== null && h > 0 && h < 720) { slaModMap[mod].total += h; }
+  });
+
+  document.getElementById('ch-top-loja').innerHTML = rankList(top10Loja);
+  document.getElementById('ch-top-equip').innerHTML = rankList(top10Equip);
+
+  // Por mês
+  const maxMes = Math.max(...mesSorted.map(([,v])=>v));
+  document.getElementById('ch-por-mes').innerHTML = mesSorted.length ?
+    mesSorted.map(([mes,cnt]) =>
+      `<div class="ch-row">
+        <div class="ch-name"><b>${mes}</b>
+          <div class="ch-sla-bar" style="margin-top:4px"><div class="ch-sla-fill" style="width:${Math.round(cnt/maxMes*100)}%;background:var(--blue)"></div></div>
+        </div>
+        <div class="ch-cnt">${cnt}</div>
+      </div>`
+    ).join('') : '<div class="ch-empty">Sem dados</div>';
+
+  // SLA por tipo
+  document.getElementById('ch-sla-tipo').innerHTML = Object.entries(slaModMap)
+    .sort((a,b)=>b[1].cnt-a[1].cnt)
+    .map(([mod,d]) => {
+      const sla = d.cnt > 0 && d.total > 0 ? (d.total/d.cnt).toFixed(1)+'h' : '—';
+      return `<div class="ch-row">
+        <div class="ch-name" title="${mod}">${mod}</div>
+        <div style="text-align:right;font-size:11px">
+          <div style="font-weight:700;color:var(--blue)">${sla} SLA</div>
+          <div style="color:var(--text2)">${d.cnt} chamados</div>
+        </div>
+      </div>`;
+    }).join('') || '<div class="ch-empty">Sem dados</div>';
+
+  // Tabela emergenciais
+  document.getElementById('ch-tabela').innerHTML = emerg.length ?
+    `<table class="ch-tbl">
+      <thead><tr><th>ID</th><th>Loja</th><th>Equipamento/Desc.</th><th>Técnico</th><th>Data Início</th><th>SLA</th><th>Status</th></tr></thead>
+      <tbody>` +
+    emerg.sort((a,b)=>(b['Data Inicial']||'').localeCompare(a['Data Inicial']||'')).map(r => {
+      const h = diffHoras(r['Data Inicial']||r['data_inicial'], r['Data Final']||r['data_final']);
+      const sla = h !== null ? h.toFixed(1)+'h' : '—';
+      const equip = (r['Descrição']||r['descricao']||r['info']||'—').split('\n')[0];
+      return `<tr>
+        <td><b>#${r['ID']||'—'}</b></td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r['Nome Fantasia']||''}">${r['Nome Fantasia']||r['Razão Social']||'—'}</td>
+        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${equip}</td>
+        <td style="white-space:nowrap">${r['Nome do Usuário']||r['tecnico']||'—'}</td>
+        <td style="white-space:nowrap">${r['Data Inicial']||'—'}</td>
+        <td style="white-space:nowrap;font-weight:600;color:var(--blue)">${sla}</td>
+        <td>${badgeCh(r['Status'])}</td>
+      </tr>`;
+    }).join('') +
+    '</tbody></table>'
+    : '<div class="ch-empty">Nenhum chamado emergencial encontrado</div>';
+}
+</script>
+
 </body>
 </html>
