@@ -318,6 +318,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 </head>
 <body>
 <script>
+const LS_URL_KEY = 'zamp_script_url';
+let SCRIPT_URL = localStorage.getItem('zamp_script_url') || 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
 let _syncTimer   = null;
 function setSyncStatus(state, msg) {
   const dot = document.getElementById('sync-dot');
@@ -922,6 +924,8 @@ document.getElementById('modal-update').addEventListener('click',function(e){if(
 abrirDB().then(()=>{
   // Se tem URL salva, carregar do Sheets; senão, carregar local
   if (SCRIPT_URL) {
+    // Salvar URL no localStorage para persistir
+    localStorage.setItem('zamp_script_url', SCRIPT_URL);
     document.getElementById('sync-cfg').style.display = 'none';
     document.getElementById('sync-btn').disabled=false;
     const sbtn=document.getElementById('save-btn');if(sbtn)sbtn.disabled=false;
@@ -1162,10 +1166,10 @@ function renderEmergenciais(rows) {
 <div class="main">
 
   <!-- CONFIG GOOGLE SHEETS -->
-  <div class="sync-cfg" id="sync-cfg">
+  <div class="sync-cfg" id="sync-cfg" style="display:none">
     <h4>🔗 Conectar ao Google Sheets para salvar em tempo real</h4>
     <p>Cole a URL do Web App (Apps Script) da sua planilha.</p>
-    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/XXXXXXX/exec">
+    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec" value="https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec">
     <div class="cfg-row">
       <button class="cfg-btn" onclick="salvarConfig()">Conectar</button>
       <button class="cfg-btn sec" onclick="document.getElementById('sync-cfg').style.display='none'">Agora não</button>
