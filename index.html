@@ -316,6 +316,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     <select class="sel" id="fMes" onchange="render()"><option value="">Mês</option></select>
     <select class="sel" id="fSup" onchange="render()"><option value="">Supervisor</option></select>
     <select class="sel" id="fTec" onchange="render()"><option value="">Técnico</option></select>
+    <select class="sel" id="fEquip" onchange="render()"><option value="">Equipamento</option></select>
     <select class="sel" id="fStatus" onchange="render()">
       <option value="">Status base</option>
       <option>Aguardando Aprovação</option><option>Aprovado</option>
@@ -440,7 +441,7 @@ async function salvarRegistrosNoSheets() { /* reservado para uso futuro */ }
 
 async function carregarDoSheets() {
   if (!SCRIPT_URL) {
-    load(); gerarData(); repovoarSelects(); repovoarSupTec(); buildLegend(); buildFluxo();
+    load(); gerarData(); repovoarSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
     render(); updateKPIs(); updateProgress(); updateBtns();
     setSyncStatus('off', 'Não conectado — clique em ⚙ Configurar para sincronizar com a equipe');
     return;
@@ -457,13 +458,13 @@ async function carregarDoSheets() {
     salvarLocal();
     const hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     setSyncStatus('ok', 'Sincronizado · ' + hora + ' · ' + T + ' corretivas');
-    gerarData(); repovoarSelects(); repovoarSupTec(); buildLegend(); buildFluxo();
+    gerarData(); repovoarSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
     render(); updateKPIs(); updateProgress(); updateBtns();
     // clearInterval removido
     // auto-refresh desabilitado
   } catch(e) {
     setSyncStatus('err', 'Erro: ' + e.message + ' · usando dados locais');
-    load(); gerarData(); repovoarSelects(); repovoarSupTec(); buildLegend(); buildFluxo();
+    load(); gerarData(); repovoarSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
     render(); updateKPIs(); updateProgress(); updateBtns();
   }
 }
@@ -633,8 +634,8 @@ function gerarData(){
 
 // ─── AÇÕES ────────────────────────────────────────────────────────────────────
 function setData(id,val){getExtra(id).data=val;save();gerarData();render();updateKPIs();updateProgress();}
-function setSup(id,val){getExtra(id).sup=val;save();repovoarSupTec();}
-function setTec(id,val){getExtra(id).tec=val;save();repovoarSupTec();}
+function setSup(id,val){getExtra(id).sup=val;save();repovoarSupTec();repovoarEquip();}
+function setTec(id,val){getExtra(id).tec=val;save();repovoarSupTec();repovoarEquip();}
 function setObs(id,val){getExtra(id).obs=val;save();}
 function toggleProg(id){progState[id]=!progState[id];if(!progState[id])delete progState[id];save();updateCardState(id);updateKPIs();updateProgress();updateBtns();}
 function toggleExec(id){execState[id]=!execState[id];if(!execState[id])delete execState[id];save();updateCardState(id);updateKPIs();updateProgress();updateBtns();}
@@ -733,6 +734,14 @@ function repovoarSupTec(){
   sups.forEach(s=>fS.insertAdjacentHTML('beforeend',`<option>${s}</option>`));
   tecs.forEach(t=>fT.insertAdjacentHTML('beforeend',`<option>${t}</option>`));
 }
+function repovoarEquip(){
+  const sel=document.getElementById('fEquip');
+  if(!sel)return;
+  const cur=sel.value;
+  const equips=[...new Set(REGISTROS.map(r=>r.equip).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">Equipamento</option>'+equips.map(e=>`<option value="${e}"${e===cur?' selected':''}>${e}</option>`).join('');
+}
+
 function buildLegend(){
   const clis=[...new Set(REGISTROS.map(r=>r.cliente))].filter(Boolean).sort();
   document.getElementById('legend').innerHTML=clis.map(c=>{
@@ -787,6 +796,9 @@ function render(){
       if(fMes&&r.mes!==fMes)return false;
       if(fSup&&(ex.sup||'')!==fSup)return false;
       if(fTec&&(ex.tec||'')!==fTec)return false;
+      if(fEquip&&(r.equip||''!==fEquip)return false;
+      const fEquip=document.getElementById('fEquip')?.value||'';
+      if(fEquip&&r.equip!==fEquip)return false;
       if(fStatus&&r.status!==fStatus)return false;
       if(_statusFilter&&STATUS_MATCH[_statusFilter]&&!STATUS_MATCH[_statusFilter](r.status))return false;
       if(activeCls.size>0&&!activeCls.has(r.cliente))return false;
@@ -988,7 +1000,7 @@ function processarCSV(text){
 
   // Atualizar dados globais
   REGISTROS=merged; T=merged.length;
-  gerarData(); repovoarSelects(); repovoarSupTec(); buildLegend(); buildFluxo();
+  gerarData(); repovoarSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
   render(); updateKPIs(); updateProgress(); updateBtns();
 
   const today=new Date().toLocaleDateString('pt-BR');
@@ -1071,11 +1083,11 @@ abrirDB().then(()=>{
     document.getElementById('sync-btn').disabled = false;
     document.getElementById('script-url-input').value = SCRIPT_URL;
     // Renderiza com dados locais primeiro (rápido), depois sincroniza
-    load(); gerarData(); repovoarSelects(); repovoarSupTec(); buildLegend(); buildFluxo();
+    load(); gerarData(); repovoarSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
     render(); updateKPIs(); updateProgress(); updateBtns();
     carregarDoSheets();
   } else {
-    load(); gerarData(); repovoarSelects(); repovoarSupTec(); buildLegend(); buildFluxo();
+    load(); gerarData(); repovoarSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
     render(); updateKPIs(); updateProgress(); updateBtns();
     setSyncStatus('off', 'Não conectado ao Google Sheets — clique em ⚙ Configurar para salvar na nuvem');
   }
