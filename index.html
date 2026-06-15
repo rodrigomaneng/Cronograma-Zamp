@@ -1187,162 +1187,170 @@ abrirDB().then(()=>{
     </div>
   </div>
 
-  <!-- ═══ ABA 3: CHAMADOS ═════════════════════════════════════════════ -->
+    <!-- ═══ ABA 3: CHAMADOS ═════════════════════════════════════════════ -->
   <div class="tab-secao" id="secao-chamados">
+
+    <!-- Upload -->
     <div class="ch-upload" id="ch-upload" onclick="document.getElementById('ch-file-inp').click()">
       <h3>🚨 Carregar CSV de Chamados</h3>
-      <p>Exporte o CSV do sistema de chamados — veja emergenciais, SLA, top lojas e equipamentos</p>
+      <p>Colunas esperadas: Status · Data Inicial · Data Final · Nome loja · Descrição do chamado · Tipo de chamado</p>
       <input type="file" id="ch-file-inp" accept=".csv" style="display:none" onchange="carregarChamados(this)">
     </div>
+
+    <!-- Dashboard (oculto até carregar) -->
     <div id="ch-dash" style="display:none">
-      <div class="ch-info">
-        📄 <span id="ch-file-nome"></span>
-        <button onclick="document.getElementById('ch-upload').style.display='block';document.getElementById('ch-dash').style.display='none'" style="margin-left:auto;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px">↺ Trocar arquivo</button>
+
+      <!-- Info arquivo + filtros rápidos -->
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.85rem">
+        <span style="font-size:11px;color:var(--text2)">📄 <span id="ch-file-nome"></span></span>
+        <button onclick="document.getElementById('ch-upload').style.display='block';document.getElementById('ch-dash').style.display='none'" style="font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px;color:var(--text2)">↺ Trocar arquivo</button>
       </div>
+
+      <!-- FILTROS -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.85rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input id="ch-srch" placeholder="🔍 Buscar loja, descrição..." oninput="aplicarFiltrosCh()" style="flex:2;min-width:200px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;outline:none">
+        <select id="ch-f-status" onchange="aplicarFiltrosCh()" style="flex:1;min-width:110px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
+          <option value="">Todos status</option>
+          <option value="Concluído">Concluído</option>
+          <option value="Finalizado">Finalizado</option>
+          <option value="Executando">Executando</option>
+          <option value="Pendente">Pendente</option>
+        </select>
+        <select id="ch-f-tipo" onchange="aplicarFiltrosCh()" style="flex:1;min-width:130px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
+          <option value="">Todos os tipos</option>
+        </select>
+        <select id="ch-f-loja" onchange="aplicarFiltrosCh()" style="flex:1;min-width:140px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
+          <option value="">Todas as lojas</option>
+        </select>
+        <select id="ch-f-mes" onchange="aplicarFiltrosCh()" style="flex:1;min-width:110px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
+          <option value="">Todos os meses</option>
+        </select>
+        <button onclick="limparFiltrosCh()" style="padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer">✕ Limpar</button>
+      </div>
+
       <!-- KPIs -->
-      <div class="ch-kpis">
-        <div class="ch-kpi blue"><div class="ch-kpi-l">Total Chamados</div><div class="ch-kpi-v" id="ch-total">0</div><div class="ch-kpi-s">registros</div></div>
-        <div class="ch-kpi urg"><div class="ch-kpi-l">Emergenciais</div><div class="ch-kpi-v" id="ch-emerg">0</div><div class="ch-kpi-s">chamados</div></div>
-        <div class="ch-kpi ok"><div class="ch-kpi-l">Atendidos</div><div class="ch-kpi-v" id="ch-ok">0</div><div class="ch-kpi-s" id="ch-ok-pct">—</div></div>
-        <div class="ch-kpi pend"><div class="ch-kpi-l">Pendentes</div><div class="ch-kpi-v" id="ch-pend">0</div><div class="ch-kpi-s">em aberto</div></div>
-        <div class="ch-kpi blue"><div class="ch-kpi-l">SLA Médio</div><div class="ch-kpi-v" id="ch-sla">—</div><div class="ch-kpi-s">horas atend.</div></div>
-      </div>
-      <!-- Rankings -->
+      <div class="ch-kpis" id="ch-kpis-box"></div>
+
+      <!-- GRÁFICOS + RANKINGS -->
       <div class="ch-grid">
+
+        <!-- Top 5 Lojas -->
         <div class="ch-card">
-          <div class="ch-card-hdr">🏪 Top 10 Lojas · mais chamados</div>
-          <div id="ch-top-loja"><div class="ch-empty">Carregando...</div></div>
+          <div class="ch-card-hdr">🏪 Top 5 Lojas · mais chamados</div>
+          <div id="ch-top5-loja"></div>
         </div>
+
+        <!-- Top 10 Equipamentos -->
         <div class="ch-card">
-          <div class="ch-card-hdr">🔧 Top 10 Equipamentos · mais acionados</div>
-          <div id="ch-top-equip"><div class="ch-empty">Carregando...</div></div>
+          <div class="ch-card-hdr">🔧 Top 10 Equipamentos · tipo de chamado</div>
+          <div id="ch-top10-equip"></div>
         </div>
+
+        <!-- Top 5 Rechamados -->
         <div class="ch-card">
-          <div class="ch-card-hdr">📅 Volume por Mês</div>
-          <div id="ch-por-mes"><div class="ch-empty">Carregando...</div></div>
+          <div class="ch-card-hdr">🔁 Top 5 · equipamentos com rechamados</div>
+          <div id="ch-top5-rechamado"></div>
         </div>
+
+        <!-- Volume por mês (gráfico) -->
         <div class="ch-card">
-          <div class="ch-card-hdr">⏱ SLA por Tipo de Chamado</div>
-          <div id="ch-sla-tipo"><div class="ch-empty">Carregando...</div></div>
+          <div class="ch-card-hdr">📅 Volume por mês</div>
+          <div id="ch-grafico-mes" style="padding:.5rem"></div>
         </div>
+
       </div>
-      <!-- Tabela completa emergenciais -->
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:2px solid var(--border)">🚨 Todos os Chamados Emergenciais</div>
-      <div style="overflow-x:auto"><div id="ch-tabela"></div></div>
+
+      <!-- GRÁFICO STATUS (pizza visual) -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.85rem">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.75rem">📊 Distribuição por Status</div>
+        <div id="ch-grafico-status" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"></div>
+      </div>
+
+      <!-- LISTA DE CHAMADOS -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <div style="padding:.65rem 1rem;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <span>📋 Lista de Chamados · <span id="ch-lista-count">0</span> registros</span>
+          <button onclick="exportarChamadosCSV()" style="font-size:10px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);padding:3px 10px;border-radius:4px;color:var(--text2)">⬇ Exportar</button>
+        </div>
+        <div style="overflow-x:auto"><table class="ch-tbl" id="ch-tabela-lista"></table></div>
+        <div id="ch-paginacao" style="padding:.5rem 1rem;border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--text2)"></div>
+      </div>
+
     </div>
   </div>
 
 
+</div><!-- /main -->
+</body>
+</html>
+
 <script>
-// ═══ SISTEMA DE ABAS (isolado das corretivas) ════════════════════════
+// ═══ SISTEMA DE ABAS ════════════════════════════════════════════════
 function mudarAba(nome, btn) {
   document.querySelectorAll('.tab-secao').forEach(s => s.classList.remove('ativo'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
-  document.getElementById('secao-' + nome).classList.add('ativo');
+  document.getElementById('secao-' + nome)?.classList.add('ativo');
   if(btn) btn.classList.add('ativo');
 }
 
-// ═══ PARSER CSV GENÉRICO ════════════════════════════════════════════
+// ═══ PREVENTIVAS ════════════════════════════════════════════════════
 function parseCsvTab(txt) {
   const linhas = txt.trim().split('\n');
-  // Detectar separador
   const sep = linhas[0].includes(';') ? ';' : ',';
   const hdrs = linhas[0].split(sep).map(h => h.trim().replace(/^"|"$/g,''));
-  return linhas.slice(1).filter(l => l.trim()).map(l => {
+  return linhas.slice(1).filter(l=>l.trim()).map(l=>{
     const vs = l.split(sep);
     const obj = {};
-    hdrs.forEach((h,i) => obj[h] = (vs[i]||'').trim().replace(/^"|"$/g,''));
+    hdrs.forEach((h,i)=>obj[h]=(vs[i]||'').trim().replace(/^"|"$/g,''));
     return obj;
   });
 }
-
 function getMesCh(ds) {
   if(!ds) return '—';
-  // Tentar dd/mm/yyyy ou yyyy-mm-dd
-  const p1 = ds.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
-  const p2 = ds.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  const meses = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  if(p1) return meses[parseInt(p1[2])] + '/' + p1[3];
-  if(p2) return meses[parseInt(p2[2])] + '/' + p2[1];
+  const p1=ds.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  const p2=ds.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const M=['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  if(p1) return M[+p1[2]]+'/'+p1[3];
+  if(p2) return M[+p2[2]]+'/'+p2[1];
   return ds.slice(0,7);
 }
-
-function diffHoras(d1, d2) {
-  try {
-    // Converter dd/mm/yyyy hh:mm para Date
-    const conv = s => {
-      if(!s) return null;
-      const m = s.match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
-      if(m) return new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0));
-      return new Date(s);
-    };
-    const dt1 = conv(d1), dt2 = conv(d2);
-    if(!dt1||!dt2||isNaN(dt1)||isNaN(dt2)) return null;
-    return Math.max(0, (dt2-dt1) / 3600000);
-  } catch(e) { return null; }
-}
-
-function badgeCh(st) {
-  const s = (st||'').toLowerCase();
-  if(s.includes('conclu') || s.includes('finaliz')) return `<span class="ch-badge ok">${st}</span>`;
-  if(s.includes('execut')) return `<span class="ch-badge exec">${st}</span>`;
-  if(s.includes('pend')) return `<span class="ch-badge pend">${st}</span>`;
-  return `<span class="ch-badge urg">${st}</span>`;
-}
-
-function rankList(items, labelFn) {
-  if(!items.length) return '<div class="ch-empty">Sem dados</div>';
-  return items.map(([nome,cnt],i) =>
-    `<div class="ch-row">
-      <div class="ch-rank">${i+1}</div>
-      <div class="ch-name" title="${nome}">${labelFn?labelFn(nome):nome}</div>
-      <div class="ch-cnt">${cnt}</div>
-    </div>`
-  ).join('');
-}
-
-// ═══ ABA PREVENTIVAS ════════════════════════════════════════════════
 function carregarPrev(inp) {
-  const f = inp.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = e => {
-    const rows = parseCsvTab(e.target.result);
-    const prev = rows.filter(r => (r['Modalidades']||r['modalidade']||r['tipo']||'').toUpperCase().includes('PREVENTIVA'));
-    document.getElementById('prev-upload').style.display = 'none';
-    document.getElementById('prev-dash').style.display = 'block';
-    document.getElementById('prev-file-nome').textContent = f.name + ' · ' + rows.length + ' registros · ' + prev.length + ' preventivas';
-    renderPrev(prev.length ? prev : rows);
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const rows=parseCsvTab(e.target.result);
+    const prev=rows.filter(r=>(r['Modalidades']||r['modalidade']||r['tipo']||'').toUpperCase().includes('PREVENTIVA'));
+    document.getElementById('prev-upload').style.display='none';
+    document.getElementById('prev-dash').style.display='block';
+    document.getElementById('prev-file-nome').textContent=f.name+' · '+rows.length+' registros';
+    renderPrev(prev.length?prev:rows);
   };
-  r.readAsText(f, 'UTF-8');
+  r.readAsText(f,'UTF-8');
 }
-
-function renderPrev(rows) {
-  const total = rows.length;
-  const ok   = rows.filter(r => ['concluído','finalizado'].includes((r['Status']||'').toLowerCase())).length;
-  const exec = rows.filter(r => (r['Status']||'').toLowerCase() === 'executando').length;
-  const pend = rows.filter(r => (r['Status']||'').toLowerCase() === 'pendente').length;
-  document.getElementById('pv-total').textContent = total;
-  document.getElementById('pv-ok').textContent = ok;
-  document.getElementById('pv-pct').textContent = total ? Math.round(ok/total*100)+'% do total' : '—';
-  document.getElementById('pv-exec').textContent = exec;
-  document.getElementById('pv-pend').textContent = pend;
-
-  // Por mês
-  const porMes = {};
-  rows.forEach(r => {
-    const m = getMesCh(r['Data Inicial']||r['data_inicial']||r['Data']);
-    if(!porMes[m]) porMes[m] = {ok:0,exec:0,pend:0,total:0};
+function renderPrev(rows){
+  const total=rows.length;
+  const ok=rows.filter(r=>['concluído','finalizado'].includes((r['Status']||'').toLowerCase())).length;
+  const exec=rows.filter(r=>(r['Status']||'').toLowerCase()==='executando').length;
+  const pend=rows.filter(r=>(r['Status']||'').toLowerCase()==='pendente').length;
+  document.getElementById('pv-total').textContent=total;
+  document.getElementById('pv-ok').textContent=ok;
+  document.getElementById('pv-pct').textContent=total?Math.round(ok/total*100)+'% do total':'—';
+  document.getElementById('pv-exec').textContent=exec;
+  document.getElementById('pv-pend').textContent=pend;
+  const porMes={};
+  rows.forEach(r=>{
+    const m=getMesCh(r['Data Inicial']||r['data_inicial']||r['Data']);
+    if(!porMes[m])porMes[m]={ok:0,exec:0,pend:0,total:0};
     porMes[m].total++;
-    const st = (r['Status']||'').toLowerCase();
-    if(['concluído','finalizado'].includes(st)) porMes[m].ok++;
-    else if(st==='executando') porMes[m].exec++;
+    const st=(r['Status']||'').toLowerCase();
+    if(['concluído','finalizado'].includes(st))porMes[m].ok++;
+    else if(st==='executando')porMes[m].exec++;
     else porMes[m].pend++;
   });
-
-  let html = '';
-  Object.keys(porMes).sort().forEach(mes => {
-    const d = porMes[mes];
-    html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem">
+  let h='';
+  Object.keys(porMes).sort().forEach(mes=>{
+    const d=porMes[mes];
+    h+=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:4px">
         <b style="font-size:13px">📅 ${mes}</b>
         <span style="font-size:11px;color:var(--text2)">${d.total} preventivas</span>
@@ -1356,137 +1364,304 @@ function renderPrev(rows) {
       <div style="font-size:10px;color:var(--text2);margin-top:3px">${d.total?Math.round(d.ok/d.total*100):0}% realizado</div>
     </div>`;
   });
-  document.getElementById('pv-por-mes').innerHTML = html || '<div class="ch-empty">Nenhum dado encontrado</div>';
+  document.getElementById('pv-por-mes').innerHTML=h||'<div class="ch-empty">Nenhum dado</div>';
 }
 
-// ═══ ABA CHAMADOS ════════════════════════════════════════════════════
-function carregarChamados(inp) {
-  const f = inp.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = e => {
-    const rows = parseCsvTab(e.target.result);
-    document.getElementById('ch-upload').style.display = 'none';
-    document.getElementById('ch-dash').style.display = 'block';
-    document.getElementById('ch-file-nome').textContent = f.name + ' · ' + rows.length + ' registros';
-    renderChamados(rows);
+// ═══ CHAMADOS ════════════════════════════════════════════════════════
+let _chTodos=[], _chFiltrados=[], _chPagina=1;
+const _chPorPagina=25;
+
+function campoLoja(r){ return r['Nome loja']||r['Nome Fantasia']||r['nome_loja']||r['Loja']||r['Unidade']||'—'; }
+function campoDesc(r){ return (r['Descrição do chamado']||r['Descrição']||r['descricao']||r['info']||'—').split('\n')[0].trim(); }
+function campoTipo(r){ return r['Tipo de chamado']||r['Modalidades']||r['modalidade']||r['tipo']||'—'; }
+function campoStatus(r){ return r['Status']||'—'; }
+function campoDataIni(r){ return r['Data Inicial']||r['data_inicial']||r['Data']||''; }
+function campoDataFim(r){ return r['Data Final']||r['data_final']||r['Data Conclusão']||''; }
+
+function diffHorasCh(d1,d2){
+  try{
+    const conv=s=>{
+      if(!s)return null;
+      const m=s.match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+      if(m)return new Date(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0));
+      return new Date(s);
+    };
+    const dt1=conv(d1),dt2=conv(d2);
+    if(!dt1||!dt2||isNaN(dt1)||isNaN(dt2))return null;
+    const h=(dt2-dt1)/3600000;
+    return h>0&&h<8760?h:null;
+  }catch(e){return null;}
+}
+
+function badgeCh(st){
+  const s=(st||'').toLowerCase();
+  if(s.includes('conclu')||s.includes('finaliz'))return`<span class="ch-badge ok">${st}</span>`;
+  if(s.includes('execut'))return`<span class="ch-badge exec">${st}</span>`;
+  if(s.includes('pend'))return`<span class="ch-badge pend">${st}</span>`;
+  return`<span class="ch-badge urg">${st}</span>`;
+}
+
+function isAtendido(r){
+  const s=(campoStatus(r)||'').toLowerCase();
+  return s.includes('conclu')||s.includes('finaliz');
+}
+
+function carregarChamados(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    _chTodos=parseCsvTab(e.target.result);
+    _chFiltrados=[..._chTodos];
+    _chPagina=1;
+    document.getElementById('ch-upload').style.display='none';
+    document.getElementById('ch-dash').style.display='block';
+    document.getElementById('ch-file-nome').textContent=f.name+' · '+_chTodos.length+' registros';
+    popularSelectsCh();
+    renderDashCh();
   };
-  r.readAsText(f, 'UTF-8');
+  r.readAsText(f,'UTF-8');
 }
 
-function renderChamados(rows) {
-  const emerg = rows.filter(r => (r['Modalidades']||r['modalidade']||r['tipo']||'').toUpperCase().includes('EMERGENCIAL'));
-  const total = rows.length;
-  const nEmerg = emerg.length;
-  const atend = rows.filter(r => {
-    const s = (r['Status']||'').toLowerCase();
-    return s.includes('conclu') || s.includes('finaliz');
-  }).length;
-  const pend = rows.filter(r => {
-    const s = (r['Status']||'').toLowerCase();
-    return s.includes('pend');
-  }).length;
+function popularSelectsCh(){
+  const tipos=[...new Set(_chTodos.map(r=>campoTipo(r)).filter(Boolean))].sort();
+  const lojas=[...new Set(_chTodos.map(r=>campoLoja(r)).filter(v=>v!=='—'))].sort();
+  const meses=[...new Set(_chTodos.map(r=>getMesCh(campoDataIni(r))).filter(v=>v!=='—'))].sort();
+  const selTipo=document.getElementById('ch-f-tipo');
+  selTipo.innerHTML='<option value="">Todos os tipos</option>'+tipos.map(t=>`<option value="${t}">${t}</option>`).join('');
+  const selLoja=document.getElementById('ch-f-loja');
+  selLoja.innerHTML='<option value="">Todas as lojas</option>'+lojas.map(l=>`<option value="${l}">${l}</option>`).join('');
+  const selMes=document.getElementById('ch-f-mes');
+  selMes.innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>`<option value="${m}">${m}</option>`).join('');
+}
 
-  // SLA médio (horas entre Data Inicial e Data Final)
-  let slaTotal = 0, slaCnt = 0;
-  rows.forEach(r => {
-    const h = diffHoras(r['Data Inicial']||r['data_inicial'], r['Data Final']||r['data_final']||r['Data Conclusão']);
-    if(h !== null && h > 0 && h < 720) { slaTotal += h; slaCnt++; }
+function aplicarFiltrosCh(){
+  const srch=(document.getElementById('ch-srch').value||'').toLowerCase();
+  const fStatus=document.getElementById('ch-f-status').value;
+  const fTipo=document.getElementById('ch-f-tipo').value;
+  const fLoja=document.getElementById('ch-f-loja').value;
+  const fMes=document.getElementById('ch-f-mes').value;
+  _chFiltrados=_chTodos.filter(r=>{
+    if(fStatus&&!campoStatus(r).toLowerCase().includes(fStatus.toLowerCase()))return false;
+    if(fTipo&&campoTipo(r)!==fTipo)return false;
+    if(fLoja&&campoLoja(r)!==fLoja)return false;
+    if(fMes&&getMesCh(campoDataIni(r))!==fMes)return false;
+    if(srch){
+      const txt=(campoLoja(r)+' '+campoDesc(r)+' '+campoTipo(r)).toLowerCase();
+      if(!txt.includes(srch))return false;
+    }
+    return true;
   });
-  const slaMedio = slaCnt > 0 ? (slaTotal/slaCnt).toFixed(1) : '—';
+  _chPagina=1;
+  renderDashCh();
+}
 
-  document.getElementById('ch-total').textContent = total;
-  document.getElementById('ch-emerg').textContent = nEmerg;
-  document.getElementById('ch-ok').textContent = atend;
-  document.getElementById('ch-ok-pct').textContent = total ? Math.round(atend/total*100)+'% do total' : '—';
-  document.getElementById('ch-pend').textContent = pend;
-  document.getElementById('ch-sla').textContent = slaMedio !== '—' ? slaMedio+'h' : '—';
+function limparFiltrosCh(){
+  document.getElementById('ch-srch').value='';
+  document.getElementById('ch-f-status').value='';
+  document.getElementById('ch-f-tipo').value='';
+  document.getElementById('ch-f-loja').value='';
+  document.getElementById('ch-f-mes').value='';
+  _chFiltrados=[..._chTodos];
+  _chPagina=1;
+  renderDashCh();
+}
 
-  // Top 10 lojas (emergenciais)
-  const lojaMap = {};
-  emerg.forEach(r => {
-    const loja = r['Nome Fantasia']||r['Razão Social']||r['loja']||r['Unidade']||'—';
-    lojaMap[loja] = (lojaMap[loja]||0)+1;
+function contarMap(arr,fn){
+  const m={};
+  arr.forEach(r=>{const k=fn(r);if(k&&k!=='—')m[k]=(m[k]||0)+1;});
+  return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+}
+
+function barraH(val,max,cor){
+  const pct=max?Math.round(val/max*100):0;
+  return`<div style="background:var(--border);border-radius:3px;height:6px;margin-top:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${cor};border-radius:3px;transition:width .4s"></div></div>`;
+}
+
+function renderDashCh(){
+  const rows=_chFiltrados;
+  const total=rows.length;
+  const atend=rows.filter(r=>isAtendido(r)).length;
+  const pend=rows.filter(r=>{const s=campoStatus(r).toLowerCase();return s.includes('pend');}).length;
+  const emerg=rows.filter(r=>campoTipo(r).toUpperCase().includes('EMERGENCIAL')).length;
+
+  // SLA
+  let slaTotal=0,slaCnt=0;
+  rows.forEach(r=>{
+    const h=diffHorasCh(campoDataIni(r),campoDataFim(r));
+    if(h!==null){slaTotal+=h;slaCnt++;}
   });
-  const top10Loja = Object.entries(lojaMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const slaMedio=slaCnt?slaTotal/slaCnt:null;
 
-  // Top 10 equipamentos
-  const equipMap = {};
-  rows.forEach(r => {
-    const eq = (r['Descrição']||r['descricao']||r['Equipamento']||r['info']||'Não identificado').split('\n')[0].trim();
-    if(eq && eq !== 'CHAMADO EMERGENCIAL' && eq.length > 2) equipMap[eq] = (equipMap[eq]||0)+1;
-  });
-  const top10Equip = Object.entries(equipMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  // KPIs
+  document.getElementById('ch-kpis-box').innerHTML=`
+    <div class="ch-kpi blue"><div class="ch-kpi-l">Total Chamados</div><div class="ch-kpi-v">${total}</div><div class="ch-kpi-s">registros</div></div>
+    <div class="ch-kpi urg"><div class="ch-kpi-l">Emergenciais</div><div class="ch-kpi-v">${emerg}</div><div class="ch-kpi-s">${total?Math.round(emerg/total*100):0}% do total</div></div>
+    <div class="ch-kpi ok"><div class="ch-kpi-l">Atendidos</div><div class="ch-kpi-v">${atend}</div><div class="ch-kpi-s">${total?Math.round(atend/total*100):0}% do total</div></div>
+    <div class="ch-kpi pend"><div class="ch-kpi-l">Pendentes</div><div class="ch-kpi-v">${pend}</div><div class="ch-kpi-s">em aberto</div></div>
+    <div class="ch-kpi blue"><div class="ch-kpi-l">SLA Médio</div><div class="ch-kpi-v">${slaMedio?slaMedio.toFixed(1)+'h':'—'}</div><div class="ch-kpi-s">horas p/ atend.</div></div>
+  `;
 
-  // Por mês
-  const mesMap = {};
-  rows.forEach(r => {
-    const m = getMesCh(r['Data Inicial']||r['data_inicial']||r['Data']);
-    mesMap[m] = (mesMap[m]||0)+1;
-  });
-  const mesSorted = Object.entries(mesMap).sort((a,b)=>a[0].localeCompare(b[0]));
-
-  // SLA por modalidade
-  const slaModMap = {};
-  rows.forEach(r => {
-    const mod = r['Modalidades']||r['modalidade']||r['tipo']||'Outros';
-    const h = diffHoras(r['Data Inicial']||r['data_inicial'], r['Data Final']||r['data_final']||r['Data Conclusão']);
-    if(!slaModMap[mod]) slaModMap[mod] = {total:0,cnt:0};
-    slaModMap[mod].cnt++;
-    if(h !== null && h > 0 && h < 720) { slaModMap[mod].total += h; }
-  });
-
-  document.getElementById('ch-top-loja').innerHTML = rankList(top10Loja);
-  document.getElementById('ch-top-equip').innerHTML = rankList(top10Equip);
-
-  // Por mês
-  const maxMes = Math.max(...mesSorted.map(([,v])=>v));
-  document.getElementById('ch-por-mes').innerHTML = mesSorted.length ?
-    mesSorted.map(([mes,cnt]) =>
-      `<div class="ch-row">
-        <div class="ch-name"><b>${mes}</b>
-          <div class="ch-sla-bar" style="margin-top:4px"><div class="ch-sla-fill" style="width:${Math.round(cnt/maxMes*100)}%;background:var(--blue)"></div></div>
+  // Top 5 Lojas
+  const top5loja=contarMap(rows,campoLoja).slice(0,5);
+  const maxL=top5loja[0]?.[1]||1;
+  document.getElementById('ch-top5-loja').innerHTML=top5loja.length?
+    top5loja.map(([nome,cnt],i)=>`
+      <div class="ch-row">
+        <div class="ch-rank">${i+1}</div>
+        <div class="ch-name" title="${nome}">
+          ${nome}
+          ${barraH(cnt,maxL,'#3B82F6')}
         </div>
         <div class="ch-cnt">${cnt}</div>
-      </div>`
-    ).join('') : '<div class="ch-empty">Sem dados</div>';
+      </div>`).join('')
+    :'<div class="ch-empty">Sem dados</div>';
 
-  // SLA por tipo
-  document.getElementById('ch-sla-tipo').innerHTML = Object.entries(slaModMap)
-    .sort((a,b)=>b[1].cnt-a[1].cnt)
-    .map(([mod,d]) => {
-      const sla = d.cnt > 0 && d.total > 0 ? (d.total/d.cnt).toFixed(1)+'h' : '—';
-      return `<div class="ch-row">
-        <div class="ch-name" title="${mod}">${mod}</div>
-        <div style="text-align:right;font-size:11px">
-          <div style="font-weight:700;color:var(--blue)">${sla} SLA</div>
-          <div style="color:var(--text2)">${d.cnt} chamados</div>
+  // Top 10 Equipamentos (por descrição)
+  const top10eq=contarMap(rows,r=>{
+    const d=campoDesc(r).toUpperCase();
+    // Extrair tipo de equipamento da descrição
+    const equips=['CAMARA DE CONGELADOS','CAMARA DE RESFRIADOS','AR CONDICIONADO','FREEZER CONGELADOS',
+                  'FREEZER DE MESA','FREEZER RESFRIADOS','DISPENSADOR','BATEDOR DE SHAKE','EXAUSTAO','CADEIRA'];
+    for(const eq of equips){if(d.includes(eq))return eq;}
+    return campoDesc(r).split(' ').slice(0,4).join(' ');
+  }).slice(0,10);
+  const maxE=top10eq[0]?.[1]||1;
+  document.getElementById('ch-top10-equip').innerHTML=top10eq.length?
+    top10eq.map(([nome,cnt],i)=>`
+      <div class="ch-row">
+        <div class="ch-rank">${i+1}</div>
+        <div class="ch-name" title="${nome}">
+          ${nome}
+          ${barraH(cnt,maxE,'#F59E0B')}
+        </div>
+        <div class="ch-cnt">${cnt}</div>
+      </div>`).join('')
+    :'<div class="ch-empty">Sem dados</div>';
+
+  // Top 5 Rechamados (mesma loja com 2+ chamados do mesmo tipo)
+  const recMap={};
+  rows.forEach(r=>{
+    const key=campoLoja(r)+'||'+campoDesc(r).slice(0,30);
+    recMap[key]=(recMap[key]||0)+1;
+  });
+  const rechamados=Object.entries(recMap).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('ch-top5-rechamado').innerHTML=rechamados.length?
+    rechamados.map(([key,cnt],i)=>{
+      const [loja,desc]=key.split('||');
+      return`<div class="ch-row">
+        <div class="ch-rank" style="color:#EF4444">${cnt}x</div>
+        <div class="ch-name">
+          <div style="font-weight:600;font-size:11px">${loja}</div>
+          <div style="font-size:10px;color:var(--text2)">${desc}</div>
         </div>
       </div>`;
-    }).join('') || '<div class="ch-empty">Sem dados</div>';
+    }).join('')
+    :'<div class="ch-empty">Nenhum rechamado identificado</div>';
 
-  // Tabela emergenciais
-  document.getElementById('ch-tabela').innerHTML = emerg.length ?
-    `<table class="ch-tbl">
-      <thead><tr><th>ID</th><th>Loja</th><th>Equipamento/Desc.</th><th>Técnico</th><th>Data Início</th><th>SLA</th><th>Status</th></tr></thead>
-      <tbody>` +
-    emerg.sort((a,b)=>(b['Data Inicial']||'').localeCompare(a['Data Inicial']||'')).map(r => {
-      const h = diffHoras(r['Data Inicial']||r['data_inicial'], r['Data Final']||r['data_final']);
-      const sla = h !== null ? h.toFixed(1)+'h' : '—';
-      const equip = (r['Descrição']||r['descricao']||r['info']||'—').split('\n')[0];
-      return `<tr>
-        <td><b>#${r['ID']||'—'}</b></td>
-        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r['Nome Fantasia']||''}">${r['Nome Fantasia']||r['Razão Social']||'—'}</td>
-        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${equip}</td>
-        <td style="white-space:nowrap">${r['Nome do Usuário']||r['tecnico']||'—'}</td>
-        <td style="white-space:nowrap">${r['Data Inicial']||'—'}</td>
-        <td style="white-space:nowrap;font-weight:600;color:var(--blue)">${sla}</td>
-        <td>${badgeCh(r['Status'])}</td>
+  // Gráfico volume por mês (barras SVG)
+  const mesMap={};
+  rows.forEach(r=>{
+    const m=getMesCh(campoDataIni(r));
+    if(m!=='—')mesMap[m]=(mesMap[m]||0)+1;
+  });
+  const meses=Object.entries(mesMap).sort((a,b)=>a[0].localeCompare(b[0]));
+  const maxM=Math.max(...meses.map(([,v])=>v),1);
+  const barW=meses.length?Math.min(60,Math.floor(280/meses.length)):40;
+  const svgW=Math.max(280,meses.length*(barW+8)+20);
+  const svgH=120;
+  const svgBars=meses.map(([mes,cnt],i)=>{
+    const bh=Math.round((cnt/maxM)*70);
+    const x=i*(barW+8)+10;
+    const y=svgH-bh-25;
+    return`<rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="3" fill="#3B82F6" opacity="0.85"/>
+<text x="${x+barW/2}" y="${y-3}" text-anchor="middle" font-size="9" fill="var(--text)">${cnt}</text>
+<text x="${x+barW/2}" y="${svgH-8}" text-anchor="middle" font-size="8" fill="var(--text2)">${mes}</text>`;
+  }).join('');
+  document.getElementById('ch-grafico-mes').innerHTML=meses.length?
+    `<svg width="100%" viewBox="0 0 ${svgW} ${svgH}" style="overflow:visible">${svgBars}</svg>`
+    :'<div class="ch-empty">Sem dados</div>';
+
+  // Gráfico de status (barras horizontais)
+  const statusMap=contarMap(rows,campoStatus);
+  const statusCores={'Concluído':'#10B981','Finalizado':'#10B981','Executando':'#3B82F6','Pendente':'#F59E0B'};
+  const maxSt=statusMap[0]?.[1]||1;
+  document.getElementById('ch-grafico-status').innerHTML=statusMap.map(([st,cnt])=>{
+    const pct=Math.round(cnt/total*100);
+    const cor=statusCores[st]||'#94A3B8';
+    return`<div style="flex:1;min-width:140px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+        <span>${badgeCh(st)}</span>
+        <span style="font-weight:700;color:var(--text)">${cnt} <span style="color:var(--text2);font-weight:400">(${pct}%)</span></span>
+      </div>
+      <div style="background:var(--border);border-radius:4px;height:8px;overflow:hidden">
+        <div style="width:${Math.round(cnt/maxSt*100)}%;height:100%;background:${cor};border-radius:4px;transition:width .5s"></div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="ch-empty">Sem dados</div>';
+
+  // Tabela paginada
+  renderTabelaCh();
+}
+
+function renderTabelaCh(){
+  const rows=_chFiltrados;
+  const total=rows.length;
+  const start=(_chPagina-1)*_chPorPagina;
+  const end=Math.min(start+_chPorPagina,total);
+  const paginaRows=rows.slice(start,end);
+
+  document.getElementById('ch-lista-count').textContent=total;
+
+  const tbl=`<thead><tr>
+    <th>Loja</th><th>Tipo de Chamado</th><th>Descrição</th>
+    <th>Data Início</th><th>Data Fim</th><th>SLA</th><th>Status</th>
+  </tr></thead><tbody>${
+    paginaRows.map(r=>{
+      const h=diffHorasCh(campoDataIni(r),campoDataFim(r));
+      const sla=h?h.toFixed(1)+'h':'—';
+      const slaColor=h&&h<=8?'#10B981':h&&h<=24?'#F59E0B':'#EF4444';
+      return`<tr>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500" title="${campoLoja(r)}">${campoLoja(r)}</td>
+        <td style="white-space:nowrap"><span class="ch-badge ${campoTipo(r).toUpperCase().includes('EMERGENCIAL')?'urg':'exec'}">${campoTipo(r)}</span></td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--text2)" title="${campoDesc(r)}">${campoDesc(r)}</td>
+        <td style="white-space:nowrap;font-size:11px">${campoDataIni(r)||'—'}</td>
+        <td style="white-space:nowrap;font-size:11px">${campoDataFim(r)||'—'}</td>
+        <td style="white-space:nowrap;font-weight:700;color:${slaColor}">${sla}</td>
+        <td>${badgeCh(campoStatus(r))}</td>
       </tr>`;
-    }).join('') +
-    '</tbody></table>'
-    : '<div class="ch-empty">Nenhum chamado emergencial encontrado</div>';
+    }).join('')
+  }</tbody>`;
+
+  document.getElementById('ch-tabela-lista').innerHTML=tbl;
+
+  // Paginação
+  const totalPags=Math.ceil(total/_chPorPagina);
+  let pags=`<span>${start+1}–${end} de ${total}</span>`;
+  if(totalPags>1){
+    pags+=` <button onclick="_chPagina=Math.max(1,_chPagina-1);renderTabelaCh()" ${_chPagina===1?'disabled':''} style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);border-radius:4px">‹ Ant</button>`;
+    const visP=[1,...Array.from({length:totalPags},((_,i)=>i+1)).filter(p=>Math.abs(p-_chPagina)<=2&&p>1&&p<totalPags),totalPags];
+    const uniq=[...new Set(visP)].sort((a,b)=>a-b);
+    uniq.forEach((p,i)=>{
+      if(i>0&&p-uniq[i-1]>1)pags+=' … ';
+      pags+=`<button onclick="_chPagina=${p};renderTabelaCh()" style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:${p===_chPagina?'var(--blue)':'var(--surface2)'};color:${p===_chPagina?'#fff':'inherit'};border-radius:4px">${p}</button>`;
+    });
+    pags+=` <button onclick="_chPagina=Math.min(${totalPags},_chPagina+1);renderTabelaCh()" ${_chPagina===totalPags?'disabled':''} style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);border-radius:4px">Próx ›</button>`;
+  }
+  document.getElementById('ch-paginacao').innerHTML=pags;
+}
+
+function exportarChamadosCSV(){
+  const rows=_chFiltrados;
+  if(!rows.length)return;
+  const hdrs=['Loja','Tipo','Descrição','Data Início','Data Fim','SLA (h)','Status'];
+  const linhas=rows.map(r=>{
+    const h=diffHorasCh(campoDataIni(r),campoDataFim(r));
+    return[campoLoja(r),campoTipo(r),campoDesc(r),campoDataIni(r),campoDataFim(r),h?h.toFixed(1):'',campoStatus(r)].map(v=>`"${v}"`).join(';');
+  });
+  const csv=hdrs.join(';')+'\n'+linhas.join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='chamados_filtrados.csv';
+  a.click();
 }
 </script>
-
-</body>
-</html>
