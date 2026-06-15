@@ -318,8 +318,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 </head>
 <body>
 <script>
+const LS_KEY     = 'pex_corretivas_v1';
+const LS_META    = 'pex_meta_v1';
 const LS_URL_KEY = 'zamp_script_url';
-let SCRIPT_URL = localStorage.getItem('zamp_script_url') || 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
+let SCRIPT_URL   = localStorage.getItem('zamp_script_url') || 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
 let _syncTimer   = null;
 function setSyncStatus(state, msg) {
   const dot = document.getElementById('sync-dot');
