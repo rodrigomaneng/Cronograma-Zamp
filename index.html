@@ -36,58 +36,52 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 /* MAIN */
 .main{max-width:1400px;margin:0 auto;padding:1.25rem 1rem}
 /* KPIs */
-.kpis{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1.1rem}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;flex:1;min-width:130px}
-.kpi-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px}
-.kpi-v{font-size:28px;font-weight:800;color:var(--text);line-height:1}
-.kpi-s{font-size:10px;color:var(--text3);margin-top:2px}
-.kpi.c-fat .kpi-v{color:var(--green)}
-.kpi.c-pend .kpi-v{color:var(--amber)}
-.kpi.c-prog .kpi-v{color:var(--blue)}
-.kpi.c-exec .kpi-v{color:#D97706}
-/* PROGRESS */
-.prog-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.1rem}
-.prog-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
-.prog-title{font-size:12px;font-weight:500;color:var(--text2)}
-.prog-count{font-size:12px;font-family:var(--mono);color:var(--text2)}
-.prog-bar{height:10px;border-radius:6px;background:var(--border);overflow:hidden;position:relative;margin-bottom:6px}
-.prog-fill{height:100%;border-radius:5px;position:absolute;left:0;top:0;transition:width .4s}
-.prog-legend{display:flex;gap:14px;flex-wrap:wrap}
-.prog-legend span{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px}
-.prog-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* FLUXO */
-.fluxo-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1.1rem;overflow-x:auto}
-.fluxo-title{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:.75rem}
-.fluxo-row{display:flex;align-items:stretch;gap:0;min-width:640px}
-.fluxo-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+
+
+
+
 .fluxo-step:not(:last-child)::after{content:'→';position:absolute;right:-9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text3);z-index:2}
-.fluxo-box{width:calc(100% - 12px);border-radius:10px;padding:12px 8px;text-align:center;border:1px solid;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.fluxo-box:hover{transform:scale(1.04)}
-.fluxo-name{font-size:11px;font-weight:600;opacity:.9;letter-spacing:.02em}
-.fluxo-num{font-size:26px;font-weight:800;line-height:1.1;margin:4px 0}
-.fluxo-pct{font-size:12px;opacity:.75;margin-top:1px}
+
+
+
+
+
 .f-ag{background:#FEF3C7;border-color:#FDE68A;color:#92400E}
 .f-ap{background:#DBEAFE;border-color:#BFDBFE;color:#1D4ED8}
 .f-va{background:var(--green-lt);border-color:#A7F3D0;color:var(--green)}
 .f-ne{background:var(--red-lt);border-color:#FECACA;color:var(--red)}
 .f-ou{background:var(--surface2);border-color:var(--border);color:var(--text2)}
 /* LEGEND */
-.legend{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.85rem}
+
 .li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;transition:all .15s;user-select:none}
 .li:hover{border-color:var(--text3)}
 .li.dim{opacity:.3}
 .ld{width:7px;height:7px;border-radius:2px;flex-shrink:0}
 /* TOOLBAR */
-.toolbar{display:flex;gap:7px;margin-bottom:.65rem;flex-wrap:wrap;align-items:center}
-.srch{padding:7px 11px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:12px;outline:none;min-width:220px;font-family:var(--sans);color:var(--text)}
+
+
 .srch:focus{border-color:var(--blue)}
-.sel{font-size:12px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;outline:none;font-family:var(--sans)}
+
 .sel:focus{border-color:var(--blue)}
 .filter-info{font-size:11px;color:var(--blue);padding:5px 10px;background:var(--blue-lt);border-radius:6px;display:none}
 /* DAY BLOCK */
-.day-block{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;transition:box-shadow .15s}
-.day-block:hover{box-shadow:0 2px 14px rgba(0,0,0,.06)}
-.day-hdr{display:flex;align-items:center;gap:10px;padding:.65rem 1rem;cursor:pointer;user-select:none;background:#FAFAF8;border-bottom:1px solid transparent;transition:background .15s}
+
+
+
 .day-hdr:hover{background:var(--surface2)}
 .day-hdr.open{border-bottom-color:var(--border)}
 .dbadge{font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px;background:var(--blue);color:#fff;min-width:60px;text-align:center;flex-shrink:0;font-family:var(--mono)}
@@ -104,10 +98,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .day-body{display:none}
 .day-body.open{display:block}
 /* CARD GRID */
-.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:.85rem}
+
 /* CARD */
-.card{border-radius:8px;border:1px solid var(--border);padding:.65rem .8rem;background:var(--surface);transition:border-color .15s,box-shadow .15s;cursor:default;display:flex;flex-direction:column;gap:4px}
-.card:hover{border-color:#C0BEB6;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+
+
 .card.programada{border-left:3px solid var(--blue)!important;background:#F5F8FF}
 .card.executada{border-left:3px solid #D97706!important;background:#FFFBEB}
 .card.faturada{opacity:.55;background:var(--surface2)}
@@ -223,7 +217,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .cfg-btn:hover{opacity:.85}
 .cfg-btn.sec{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
 #cfg-msg{font-size:11px;color:var(--text3)}
-@media(max-width:900px){.cgrid{grid-template-columns:repeat(2,1fr)}.dstats{display:none}.cgrid{grid-template-columns:1fr}.card-edit{grid-template-columns:1fr 1fr}}
+.card-edit{grid-template-columns:1fr 1fr}}
 @media print{.toolbar,.top-meta,.legend,.update-banner{display:none!important}.day-body{display:block!important}body{background:#fff}}
 
 /* ── ABAS ────────────────────────────────────────────────────────── */
@@ -271,35 +265,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .emerg-empty{padding:1.5rem;text-align:center;color:var(--text3);font-size:12px}
 
 
-@media(max-width:580px){.cgrid{grid-template-columns:1fr}.kpi{min-width:100px}}
-@media(min-width:1400px){.cgrid{grid-template-columns:repeat(5,1fr)}}
-</style></head><body><div class="top"><div class="top-inner"><div style="display:flex;align-items:center;gap:14px"><img src="https://www.zamp.com.br/assets/images/logo-zamp.svg"
-alt="ZAMP" height="28"
-style="filter:brightness(0) invert(1);height:28px;width:auto"
-           onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block'"><span id="logo-fallback" style="display:none;font-size:20px;font-weight:800;letter-spacing:.04em;color:#fff">ZAMP</span><div style="width:1px;height:28px;background:rgba(255,255,255,.2)"></div><div><h1>Cronograma de Corretivas</h1><div class="top-sub">Maneng Refrigeração · <span id="top-total">497</span> chamados · <span id="top-date">Abr 2026</span></div></div></div><div class="top-meta"><button class="top-btn highlight" onclick="openModal('modal-update')">⟳ Atualizar CSV</button><button class="top-btn" onclick="toggleAll(true)">▼ Expandir tudo</button><button class="top-btn" onclick="toggleAll(false)">▲ Recolher tudo</button><button class="top-btn" onclick="exportCSV()">⬇ Exportar CSV</button></div></div></div><div class="main"><div class="sync-cfg" id="sync-cfg"><h4>🔗 Conectar ao Google Sheets para salvar em tempo real</h4><p>Cole a URL do Web App (Apps Script) da sua planilha. Programações, técnicos, datas e checkboxes ficam salvos na nuvem — toda a equipe usa o mesmo arquivo HTML do GitHub.</p><input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec"><div class="cfg-row"><button class="cfg-btn" onclick="salvarConfig()">Conectar</button><button class="cfg-btn sec" onclick="document.getElementById('sync-cfg').style.display='none'">Agora não</button><span id="cfg-msg"></span></div></div><div class="sync-bar" id="sync-bar"><div class="sync-dot off" id="sync-dot"></div>
-  <!-- NAVEGAÇÃO DE ABAS -->
-  <div class="tab-nav">
-    <button class="tab-btn active" onclick="trocarAba('corretivas')">📋 Corretivas</button>
-    <button class="tab-btn" onclick="trocarAba('preventivas')">🔧 Preventivas</button>
-    <button class="tab-btn" onclick="trocarAba('emergenciais')">🚨 Chamados</button>
-  </div>
+@media(max-width:580px){}
 
-  <!-- ABA 1: CORRETIVAS -->
-  <div class="tab-pane active" id="tab-corretivas">
-<span id="sync-msg">Não conectado ao Google Sheets — clique em ⚙ Configurar para salvar na nuvem</span><button class="sync-btn-inline" onclick="document.getElementById('sync-cfg').style.display='block'" id="sync-cfg-btn">⚙ Configurar</button><button class="sync-btn-inline" onclick="forcarSync()" id="sync-btn" disabled>↻ Sincronizar</button>
-    <button class="sync-btn-inline" onclick="salvarNoSheets()" id="save-btn" disabled>💾 Salvar agora</button></div><div class="kpis"><div class="kpi"><div class="kpi-l">Total</div><div class="kpi-v" id="kT">671</div><div class="kpi-s">corretivas</div><div class="kpi-r" id="kTVal">—</div></div><div class="kpi c-prog"><div class="kpi-l">Programadas</div><div class="kpi-v" id="kProg">0</div><div class="kpi-s" id="kProg-s">0% do total</div><div class="kpi-r" id="kProgVal">—</div></div><div class="kpi c-exec"><div class="kpi-l">Executadas</div><div class="kpi-v" id="kExec">0</div><div class="kpi-s" id="kExec-s">0% do total</div><div class="kpi-r" id="kExecVal">—</div></div><div class="kpi c-fat"><div class="kpi-l">Faturadas</div><div class="kpi-v" id="kFat">0</div><div class="kpi-s">marcadas</div><div class="kpi-r" id="kFatVal">—</div></div>
-<div class="kpi c-fat"><div class="kpi-l">Valor Faturado</div><div class="kpi-v" id="kValFat">—</div><div class="kpi-s" id="kValFat-s">aguardando</div></div><div class="kpi c-pend"><div class="kpi-l">Sem ação</div><div class="kpi-v" id="kPend">671</div><div class="kpi-s">aguardando</div><div class="kpi-r" id="kPendVal">—</div></div><div class="kpi"><div class="kpi-l">Valor Total</div><div class="kpi-v" id="kVal">R$ 2.14M</div><div class="kpi-s">carteira</div></div><div class="kpi"><div class="kpi-l">Última atualização</div><div class="kpi-v" style="font-size:13px;padding-top:4px" id="kDate">—</div><div class="kpi-s">do CSV</div></div></div><div class="prog-wrap"><div class="prog-hdr"><span class="prog-title">Progresso geral</span><span class="prog-count" id="prog-count">0 fat. · 0 exec. · 0 prog. / 671</span></div><div class="prog-bar"><div class="prog-fill" id="pf-prog" style="width:0%;background:#BFDBFE"></div><div class="prog-fill" id="pf-exec" style="width:0%;background:#FDE68A"></div><div class="prog-fill" id="pf-fat"  style="width:0%;background:var(--green)"></div></div><div class="prog-legend"><span><i style="background:#BFDBFE"></i>Programada</span><span><i style="background:#FDE68A"></i>Executada</span><span><i style="background:var(--green)"></i>Faturada</span></div></div><div class="fluxo-wrap"><div class="fluxo-title">Fluxo de status · clique para filtrar</div><div class="fluxo-row" id="fluxo-row"></div></div><div class="legend" id="legend"></div><div class="toolbar"><input class="srch" id="srch" placeholder="Buscar loja, chamado, BKN, descrição…" oninput="render()"><select class="sel" id="fCli" onchange="render()"><option value="">Cliente</option></select><select class="sel" id="fReg" onchange="render()"><option value="">Regional</option></select><select class="sel" id="fMes" onchange="render()"><option value="">Mês</option></select><select class="sel" id="fSup" onchange="render()"><option value="">Supervisor</option></select><select class="sel" id="fTec" onchange="render()"><option value="">Técnico</option></select><select class="sel" id="fStatus" onchange="render()"><option value="">Status base</option><option>Aguardando Aprovação</option><option>Aprovado</option><option>Validado</option><option>Negado</option></select><select class="sel" id="fAcao" onchange="render()"><option value="">Ação</option><option value="pend">Sem ação</option><option value="prog">Programadas</option><option value="exec">Executadas</option><option value="fat">Faturadas</option></select><span class="filter-info" id="filter-info"></span></div><div id="sched"></div></div><div class="modal-bg" id="modal-update"><div class="modal"><h3>⟳ Atualizar dados do CSV</h3><p>O CSV serve para <strong>gerar um novo index.html</strong> com os dados atualizados. Suas programações (técnicos, datas, checkboxes) ficam salvas no Sheets e <strong>nunca se perdem</strong>.</p><ol class="modal-steps"><li data-n="1">Exporte o CSV da plataforma Zamp</li><li data-n="2">Arraste ou selecione o arquivo abaixo</li><li data-n="3">Clique em <strong>⬇ Baixar novo index.html</strong> e suba no GitHub</li></ol><div id="drop-zone" onclick="document.getElementById('csv-file-input').click()"><p>📂 Arraste o CSV aqui ou <strong>clique para selecionar</strong></p><p style="font-size:10px;margin-top:4px;opacity:.6">Formato: data_export_*.csv da plataforma Zamp</p></div><input type="file" id="csv-file-input" accept=".csv" style="display:none"><div id="update-status"></div><div id="download-wrap" style="display:none;margin-top:.75rem;padding:.85rem 1rem;background:var(--green-lt);border:1px solid #A7F3D0;border-radius:8px;"><div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:.5rem">✓ CSV carregado com sucesso!</div><div style="font-size:11px;color:var(--text2);margin-bottom:.75rem">Baixe o novo <strong>index.html</strong> e substitua o arquivo no GitHub para atualizar o link da equipe.</div><button class="modal-btn primary" onclick="baixarNovoHTML()" style="background:var(--green);border-color:var(--green)">⬇ Baixar novo index.html</button></div><div class="modal-btns"><button class="modal-btn sec" onclick="closeModal('modal-update')">Fechar</button></div></div></div><div class="viewer-bg" id="viewer-bg" onclick="fecharViewer(event)"><div class="viewer-toolbar"><span class="viewer-name" id="viewer-nome"></span><button class="viewer-btn" onclick="baixarAnexo()">⬇ Baixar</button><button class="viewer-btn danger" onclick="fecharViewer()">✕ Fechar</button></div><div class="viewer-frame" id="viewer-frame"></div></div><script>
-const CHAMADOS_DATA = [];
-
-// ─── GOOGLE SHEETS SYNC ──────────────────────────────────────────────────────
-const LS_KEY     = 'pex_corretivas_v1';
-const LS_URL_KEY = 'zamp_script_url';
-const LS_META    = 'pex_meta_v1';
-let SCRIPT_URL = localStorage.getItem('zamp_script_url') || 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
-// Garantir que o localStorage sempre tenha a URL correta
-if (!localStorage.getItem('zamp_script_url')) {
-  localStorage.setItem('zamp_script_url', DEFAULT_SCRIPT_URL);
-}
 let _syncTimer   = null;
 function setSyncStatus(state, msg) {
   const dot = document.getElementById('sync-dot');
