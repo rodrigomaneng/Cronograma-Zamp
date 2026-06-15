@@ -374,6 +374,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 </div>
 
 <script>
+
+// Corrigir URL /dev para /exec no localStorage
+(function(){
+  const k='zamp_script_url';
+  const u=localStorage.getItem(k)||'';
+  if(u.endsWith('/dev')){
+    localStorage.setItem(k, u.replace('/dev','/exec'));
+  }
+})();
 // ─── GOOGLE SHEETS SYNC ──────────────────────────────────────────────────────
 const LS_KEY     = 'pex_corretivas_v1';
 const LS_URL_KEY = 'zamp_script_url';
