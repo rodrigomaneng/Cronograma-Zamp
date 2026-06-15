@@ -280,6 +280,53 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .ch-badge.urg{background:#FEE2E2;color:#B91C1C}
 .ch-info{font-size:11px;color:var(--text2);margin-bottom:.8rem;padding:.5rem .75rem;background:var(--surface2);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
+
+/* CHAMADOS DASHBOARD */
+.ch-filtros{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem 1rem;margin-bottom:.75rem;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.ch-sel{flex:1;min-width:110px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer;outline:none}
+.ch-kpis{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:.85rem}
+.ch-kpi{flex:1;min-width:130px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;position:relative}
+.ch-kpi-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:3px}
+.ch-kpi-v{font-size:26px;font-weight:800;color:var(--text);line-height:1}
+.ch-kpi-s{font-size:10px;color:var(--text2);margin-top:2px}
+.ch-kpi-delta{position:absolute;top:.6rem;right:.75rem;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.ch-kpi-delta.up{background:#D1FAE5;color:#065F46}
+.ch-kpi-delta.dn{background:#FEE2E2;color:#B91C1C}
+.ch-kpi-delta.neu{background:var(--surface2);color:var(--text2)}
+.ch-kpi.ok .ch-kpi-v{color:#10B981}
+.ch-kpi.pend .ch-kpi-v{color:#F59E0B}
+.ch-kpi.urg .ch-kpi-v{color:#EF4444}
+.ch-kpi.blue .ch-kpi-v{color:#3B82F6}
+.ch-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:.85rem}
+.ch-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:.85rem}
+@media(max-width:900px){.ch-grid2{grid-template-columns:1fr}.ch-grid3{grid-template-columns:1fr}}
+.ch-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:0}
+.ch-card-hdr{padding:.6rem 1rem;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--surface2);color:var(--text2);border-bottom:1px solid var(--border)}
+.ch-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid var(--border);font-size:11px}
+.ch-row:last-child{border-bottom:none}
+.ch-rank{font-size:15px;font-weight:800;color:var(--blue);min-width:24px;text-align:center}
+.ch-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-cnt{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--text2);white-space:nowrap}
+.ch-empty{padding:1.5rem;text-align:center;color:var(--text3);font-size:12px}
+.ch-badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.ch-badge.ok{background:#D1FAE5;color:#065F46}
+.ch-badge.exec{background:#DBEAFE;color:#1D4ED8}
+.ch-badge.pend{background:#FEF3C7;color:#92400E}
+.ch-badge.urg{background:#FEE2E2;color:#B91C1C}
+.ch-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.ch-tbl th{background:var(--surface2);padding:7px 8px;text-align:left;font-weight:600;font-size:10px;color:var(--text2);border-bottom:2px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.ch-tbl td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.ch-tbl tr:hover td{background:var(--surface2)}
+.ch-upload{background:var(--surface);border:2px dashed var(--border);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:1rem}
+.ch-upload:hover{border-color:var(--blue)}
+.ch-upload h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:.4rem}
+.ch-upload p{font-size:12px;color:var(--text2)}
+/* MODO APRESENTAÇÃO cards */
+.pres-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:1.25rem}
+.pres-card-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748B;margin-bottom:.75rem}
+.pres-kpi-v{font-size:36px;font-weight:900;color:#fff;line-height:1}
+.pres-kpi-s{font-size:12px;color:#94A3B8;margin-top:4px}
+
 </style>
 </head>
 <body>
@@ -1187,96 +1234,122 @@ abrirDB().then(()=>{
     </div>
   </div>
 
-    <!-- ═══ ABA 3: CHAMADOS ═════════════════════════════════════════════ -->
+      <!-- ═══ ABA 3: CHAMADOS ═════════════════════════════════════════════ -->
   <div class="tab-secao" id="secao-chamados">
 
-    <!-- Upload -->
-    <div class="ch-upload" id="ch-upload" onclick="document.getElementById('ch-file-inp').click()">
+    <!-- UPLOAD -->
+    <div class="ch-upload" id="ch-upload" onclick="document.getElementById('ch-inp').click()">
       <h3>🚨 Carregar CSV de Chamados</h3>
-      <p>Colunas esperadas: Status · Data Inicial · Data Final · Nome loja · Descrição do chamado · Tipo de chamado</p>
-      <input type="file" id="ch-file-inp" accept=".csv" style="display:none" onchange="carregarChamados(this)">
+      <p>Colunas: Status · Data Inicial · Data Final · Nome loja · Descrição do chamado · Tipo de chamado</p>
+      <input type="file" id="ch-inp" accept=".csv" style="display:none" onchange="chCarregar(this)">
     </div>
 
-    <!-- Dashboard (oculto até carregar) -->
+    <!-- DASHBOARD -->
     <div id="ch-dash" style="display:none">
 
-      <!-- Info arquivo + filtros rápidos -->
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.85rem">
-        <span style="font-size:11px;color:var(--text2)">📄 <span id="ch-file-nome"></span></span>
-        <button onclick="document.getElementById('ch-upload').style.display='block';document.getElementById('ch-dash').style.display='none'" style="font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px;color:var(--text2)">↺ Trocar arquivo</button>
+      <!-- Barra superior: arquivo + modo apresentação -->
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.75rem">
+        <span style="font-size:11px;color:var(--text2)">📄 <span id="ch-fnome"></span></span>
+        <button onclick="document.getElementById('ch-upload').style.display='block';document.getElementById('ch-dash').style.display='none'" style="font-size:10px;cursor:pointer;border:1px solid var(--border);background:var(--surface);padding:2px 8px;border-radius:4px;color:var(--text2)">↺ Trocar</button>
+        <button onclick="chModoApresentacao()" style="margin-left:auto;font-size:11px;cursor:pointer;border:1px solid var(--blue);background:var(--blue);color:#fff;padding:4px 14px;border-radius:6px;font-weight:600">📊 Modo Apresentação</button>
+        <button onclick="chExportarCSV()" style="font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);padding:4px 12px;border-radius:6px;color:var(--text2)">⬇ Exportar CSV</button>
       </div>
 
       <!-- FILTROS -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.85rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <input id="ch-srch" placeholder="🔍 Buscar loja, descrição..." oninput="aplicarFiltrosCh()" style="flex:2;min-width:200px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;outline:none">
-        <select id="ch-f-status" onchange="aplicarFiltrosCh()" style="flex:1;min-width:110px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
-          <option value="">Todos status</option>
-          <option value="Concluído">Concluído</option>
-          <option value="Finalizado">Finalizado</option>
-          <option value="Executando">Executando</option>
-          <option value="Pendente">Pendente</option>
-        </select>
-        <select id="ch-f-tipo" onchange="aplicarFiltrosCh()" style="flex:1;min-width:130px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
-          <option value="">Todos os tipos</option>
-        </select>
-        <select id="ch-f-loja" onchange="aplicarFiltrosCh()" style="flex:1;min-width:140px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
-          <option value="">Todas as lojas</option>
-        </select>
-        <select id="ch-f-mes" onchange="aplicarFiltrosCh()" style="flex:1;min-width:110px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px">
-          <option value="">Todos os meses</option>
-        </select>
-        <button onclick="limparFiltrosCh()" style="padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer">✕ Limpar</button>
+      <div class="ch-filtros">
+        <input id="ch-srch" placeholder="🔍 Buscar loja, descrição, tipo..." oninput="chFiltrar()" style="flex:2;min-width:200px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;outline:none">
+        <select id="ch-fs" onchange="chFiltrar()" class="ch-sel"><option value="">Todos status</option></select>
+        <select id="ch-ft" onchange="chFiltrar()" class="ch-sel"><option value="">Todos tipos</option></select>
+        <select id="ch-fl" onchange="chFiltrar()" class="ch-sel"><option value="">Todas as lojas</option></select>
+        <select id="ch-fm" onchange="chFiltrar()" class="ch-sel"><option value="">Todos os meses</option></select>
+        <input id="ch-sla-meta" type="number" value="24" min="1" max="168" onchange="chFiltrar()" title="Meta SLA em horas" style="width:70px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;text-align:center" placeholder="SLA h">
+        <label style="font-size:10px;color:var(--text2);white-space:nowrap">meta SLA</label>
+        <button onclick="chLimpar()" style="padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap">✕ Limpar</button>
       </div>
 
-      <!-- KPIs -->
-      <div class="ch-kpis" id="ch-kpis-box"></div>
+      <!-- KPIs com variação -->
+      <div class="ch-kpis" id="ch-kpis"></div>
 
-      <!-- GRÁFICOS + RANKINGS -->
-      <div class="ch-grid">
+      <!-- LINHA 1: SLA Meta + Tendência -->
+      <div class="ch-grid2">
+        <div class="ch-card">
+          <div class="ch-card-hdr">⏱ SLA: Cumprido vs Violado</div>
+          <div id="ch-sla-gauge" style="padding:.75rem"></div>
+        </div>
+        <div class="ch-card">
+          <div class="ch-card-hdr">📈 Tendência mensal (linha)</div>
+          <div id="ch-tend" style="padding:.5rem"></div>
+        </div>
+      </div>
 
-        <!-- Top 5 Lojas -->
+      <!-- LINHA 2: Emergencial vs Normal + Heatmap semana -->
+      <div class="ch-grid2">
+        <div class="ch-card">
+          <div class="ch-card-hdr">📊 Emergencial vs Normal por mês</div>
+          <div id="ch-emvs" style="padding:.5rem"></div>
+        </div>
+        <div class="ch-card">
+          <div class="ch-card-hdr">📅 Calor por dia da semana</div>
+          <div id="ch-heat" style="padding:.75rem"></div>
+        </div>
+      </div>
+
+      <!-- LINHA 3: Rankings -->
+      <div class="ch-grid3">
         <div class="ch-card">
           <div class="ch-card-hdr">🏪 Top 5 Lojas · mais chamados</div>
-          <div id="ch-top5-loja"></div>
+          <div id="ch-top5l"></div>
         </div>
-
-        <!-- Top 10 Equipamentos -->
         <div class="ch-card">
-          <div class="ch-card-hdr">🔧 Top 10 Equipamentos · tipo de chamado</div>
-          <div id="ch-top10-equip"></div>
+          <div class="ch-card-hdr">🔧 Top 10 Equipamentos</div>
+          <div id="ch-top10e"></div>
         </div>
-
-        <!-- Top 5 Rechamados -->
         <div class="ch-card">
-          <div class="ch-card-hdr">🔁 Top 5 · equipamentos com rechamados</div>
-          <div id="ch-top5-rechamado"></div>
+          <div class="ch-card-hdr">🔁 Top 5 Rechamados</div>
+          <div id="ch-top5r"></div>
         </div>
-
-        <!-- Volume por mês (gráfico) -->
-        <div class="ch-card">
-          <div class="ch-card-hdr">📅 Volume por mês</div>
-          <div id="ch-grafico-mes" style="padding:.5rem"></div>
-        </div>
-
       </div>
 
-      <!-- GRÁFICO STATUS (pizza visual) -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.85rem">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.75rem">📊 Distribuição por Status</div>
-        <div id="ch-grafico-status" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"></div>
+      <!-- LINHA 4: Técnicos + Score saúde + Tempo por equipamento -->
+      <div class="ch-grid3">
+        <div class="ch-card">
+          <div class="ch-card-hdr">👤 Ranking de Técnicos</div>
+          <div id="ch-tec"></div>
+        </div>
+        <div class="ch-card">
+          <div class="ch-card-hdr">🏥 Score de Saúde por Loja</div>
+          <div id="ch-score"></div>
+        </div>
+        <div class="ch-card">
+          <div class="ch-card-hdr">⏱ Tempo médio por Equipamento</div>
+          <div id="ch-tmeq"></div>
+        </div>
       </div>
 
       <!-- LISTA DE CHAMADOS -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
-        <div style="padding:.65rem 1rem;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-          <span>📋 Lista de Chamados · <span id="ch-lista-count">0</span> registros</span>
-          <button onclick="exportarChamadosCSV()" style="font-size:10px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);padding:3px 10px;border-radius:4px;color:var(--text2)">⬇ Exportar</button>
+      <div class="ch-card" style="margin-top:0">
+        <div class="ch-card-hdr" style="display:flex;justify-content:space-between;align-items:center">
+          <span>📋 Lista de Chamados · <span id="ch-lcnt">0</span> registros</span>
         </div>
-        <div style="overflow-x:auto"><table class="ch-tbl" id="ch-tabela-lista"></table></div>
-        <div id="ch-paginacao" style="padding:.5rem 1rem;border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--text2)"></div>
+        <div style="overflow-x:auto">
+          <table class="ch-tbl" id="ch-tbl"></table>
+        </div>
+        <div id="ch-pag" style="padding:.5rem 1rem;border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--text2)"></div>
       </div>
 
     </div>
+  </div>
+
+  <!-- MODO APRESENTAÇÃO (fullscreen overlay) -->
+  <div id="ch-pres" style="display:none;position:fixed;inset:0;background:#0F172A;z-index:9999;overflow-y:auto;padding:2rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <div>
+        <div style="font-size:28px;font-weight:800;color:#fff">🚨 Dashboard de Chamados</div>
+        <div style="font-size:14px;color:#94A3B8" id="ch-pres-sub"></div>
+      </div>
+      <button onclick="document.getElementById('ch-pres').style.display='none'" style="padding:8px 20px;border-radius:8px;border:1px solid #334155;background:#1E293B;color:#94A3B8;cursor:pointer;font-size:14px">✕ Fechar</button>
+    </div>
+    <div id="ch-pres-content" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px"></div>
   </div>
 
 
@@ -1285,383 +1358,363 @@ abrirDB().then(()=>{
 </html>
 
 <script>
-// ═══ SISTEMA DE ABAS ════════════════════════════════════════════════
-function mudarAba(nome, btn) {
-  document.querySelectorAll('.tab-secao').forEach(s => s.classList.remove('ativo'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
-  document.getElementById('secao-' + nome)?.classList.add('ativo');
-  if(btn) btn.classList.add('ativo');
+// ══════════════════════════════════════════════════════════════════════
+// SISTEMA DE ABAS
+// ══════════════════════════════════════════════════════════════════════
+function mudarAba(nome,btn){
+  document.querySelectorAll('.tab-secao').forEach(s=>s.classList.remove('ativo'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('ativo'));
+  document.getElementById('secao-'+nome)?.classList.add('ativo');
+  if(btn)btn.classList.add('ativo');
 }
 
-// ═══ PREVENTIVAS ════════════════════════════════════════════════════
-function parseCsvTab(txt) {
-  const linhas = txt.trim().split('\n');
-  const sep = linhas[0].includes(';') ? ';' : ',';
-  const hdrs = linhas[0].split(sep).map(h => h.trim().replace(/^"|"$/g,''));
-  return linhas.slice(1).filter(l=>l.trim()).map(l=>{
-    const vs = l.split(sep);
-    const obj = {};
-    hdrs.forEach((h,i)=>obj[h]=(vs[i]||'').trim().replace(/^"|"$/g,''));
-    return obj;
+// ══════════════════════════════════════════════════════════════════════
+// PREVENTIVAS
+// ══════════════════════════════════════════════════════════════════════
+function parseCsvGen(txt){
+  const L=txt.trim().split('\n'),sep=L[0].includes(';')?';':',';
+  const H=L[0].split(sep).map(h=>h.trim().replace(/^"|"$/g,''));
+  return L.slice(1).filter(l=>l.trim()).map(l=>{
+    const V=l.split(sep),o={};
+    H.forEach((h,i)=>o[h]=(V[i]||'').trim().replace(/^"|"$/g,''));
+    return o;
   });
 }
-function getMesCh(ds) {
-  if(!ds) return '—';
-  const p1=ds.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
-  const p2=ds.match(/^(\d{4})-(\d{2})-(\d{2})/);
+function getMesCh(d){
+  if(!d)return'—';
+  const p1=d.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  const p2=d.match(/^(\d{4})-(\d{2})-(\d{2})/);
   const M=['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  if(p1) return M[+p1[2]]+'/'+p1[3];
-  if(p2) return M[+p2[2]]+'/'+p2[1];
-  return ds.slice(0,7);
+  if(p1)return M[+p1[2]]+'/'+p1[3];if(p2)return M[+p2[2]]+'/'+p2[1];return d.slice(0,7);
 }
-function carregarPrev(inp) {
+function carregarPrev(inp){
   const f=inp.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    const rows=parseCsvTab(e.target.result);
+  new FileReader().onload=e=>{
+    const rows=parseCsvGen(e.target.result);
     const prev=rows.filter(r=>(r['Modalidades']||r['modalidade']||r['tipo']||'').toUpperCase().includes('PREVENTIVA'));
     document.getElementById('prev-upload').style.display='none';
     document.getElementById('prev-dash').style.display='block';
     document.getElementById('prev-file-nome').textContent=f.name+' · '+rows.length+' registros';
     renderPrev(prev.length?prev:rows);
   };
-  r.readAsText(f,'UTF-8');
+  const r=new FileReader();r.onload=e=>{
+    const rows=parseCsvGen(e.target.result);
+    const prev=rows.filter(r=>(r['Modalidades']||r['modalidade']||r['tipo']||'').toUpperCase().includes('PREVENTIVA'));
+    document.getElementById('prev-upload').style.display='none';
+    document.getElementById('prev-dash').style.display='block';
+    document.getElementById('prev-file-nome').textContent=f.name+' · '+rows.length+' registros';
+    renderPrev(prev.length?prev:rows);
+  };r.readAsText(f,'UTF-8');
 }
 function renderPrev(rows){
-  const total=rows.length;
-  const ok=rows.filter(r=>['concluído','finalizado'].includes((r['Status']||'').toLowerCase())).length;
-  const exec=rows.filter(r=>(r['Status']||'').toLowerCase()==='executando').length;
-  const pend=rows.filter(r=>(r['Status']||'').toLowerCase()==='pendente').length;
-  document.getElementById('pv-total').textContent=total;
-  document.getElementById('pv-ok').textContent=ok;
+  const total=rows.length,ok=rows.filter(r=>['concluído','finalizado'].includes((r['Status']||'').toLowerCase())).length,exec=rows.filter(r=>(r['Status']||'').toLowerCase()==='executando').length,pend=rows.filter(r=>(r['Status']||'').toLowerCase()==='pendente').length;
+  ['pv-total','pv-ok','pv-exec','pv-pend'].forEach((id,i)=>document.getElementById(id).textContent=[total,ok,exec,pend][i]);
   document.getElementById('pv-pct').textContent=total?Math.round(ok/total*100)+'% do total':'—';
-  document.getElementById('pv-exec').textContent=exec;
-  document.getElementById('pv-pend').textContent=pend;
-  const porMes={};
-  rows.forEach(r=>{
-    const m=getMesCh(r['Data Inicial']||r['data_inicial']||r['Data']);
-    if(!porMes[m])porMes[m]={ok:0,exec:0,pend:0,total:0};
-    porMes[m].total++;
-    const st=(r['Status']||'').toLowerCase();
-    if(['concluído','finalizado'].includes(st))porMes[m].ok++;
-    else if(st==='executando')porMes[m].exec++;
-    else porMes[m].pend++;
-  });
-  let h='';
-  Object.keys(porMes).sort().forEach(mes=>{
-    const d=porMes[mes];
-    h+=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:4px">
-        <b style="font-size:13px">📅 ${mes}</b>
-        <span style="font-size:11px;color:var(--text2)">${d.total} preventivas</span>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
-        <span class="ch-badge ok">✓ Concluídas: ${d.ok}</span>
-        <span class="ch-badge exec">⟳ Executando: ${d.exec}</span>
-        <span class="ch-badge pend">⏳ Pendentes: ${d.pend}</span>
-      </div>
-      <div class="ch-sla-bar"><div class="ch-sla-fill" style="width:${d.total?Math.round(d.ok/d.total*100):0}%;background:#10B981"></div></div>
-      <div style="font-size:10px;color:var(--text2);margin-top:3px">${d.total?Math.round(d.ok/d.total*100):0}% realizado</div>
-    </div>`;
-  });
-  document.getElementById('pv-por-mes').innerHTML=h||'<div class="ch-empty">Nenhum dado</div>';
+  const pm={};rows.forEach(r=>{const m=getMesCh(r['Data Inicial']||r['Data']); if(!pm[m])pm[m]={ok:0,exec:0,pend:0,total:0};pm[m].total++;const s=(r['Status']||'').toLowerCase();if(['concluído','finalizado'].includes(s))pm[m].ok++;else if(s==='executando')pm[m].exec++;else pm[m].pend++;});
+  document.getElementById('pv-por-mes').innerHTML=Object.keys(pm).sort().map(mes=>{const d=pm[mes];return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem"><b>📅 ${mes}</b><span style="font-size:11px;color:var(--text2)">${d.total} preventivas</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.4rem"><span class="ch-badge ok">✓ ${d.ok}</span><span class="ch-badge exec">⟳ ${d.exec}</span><span class="ch-badge pend">⏳ ${d.pend}</span></div><div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:${d.total?Math.round(d.ok/d.total*100):0}%;height:100%;background:#10B981;border-radius:3px"></div></div><div style="font-size:10px;color:var(--text2);margin-top:2px">${d.total?Math.round(d.ok/d.total*100):0}% realizado</div></div>`;}).join('')||'<div class="ch-empty">Sem dados</div>';
 }
 
-// ═══ CHAMADOS ════════════════════════════════════════════════════════
-let _chTodos=[], _chFiltrados=[], _chPagina=1;
-const _chPorPagina=25;
+// ══════════════════════════════════════════════════════════════════════
+// CHAMADOS — HELPERS
+// ══════════════════════════════════════════════════════════════════════
+let _chAll=[],_chFilt=[],_chPg=1;
+const _PG=25;
 
-function campoLoja(r){ return r['Nome loja']||r['Nome Fantasia']||r['nome_loja']||r['Loja']||r['Unidade']||'—'; }
-function campoDesc(r){ return (r['Descrição do chamado']||r['Descrição']||r['descricao']||r['info']||'—').split('\n')[0].trim(); }
-function campoTipo(r){ return r['Tipo de chamado']||r['Modalidades']||r['modalidade']||r['tipo']||'—'; }
-function campoStatus(r){ return r['Status']||'—'; }
-function campoDataIni(r){ return r['Data Inicial']||r['data_inicial']||r['Data']||''; }
-function campoDataFim(r){ return r['Data Final']||r['data_final']||r['Data Conclusão']||''; }
+const chLoja=r=>r['Nome loja']||r['Nome Fantasia']||r['nome_loja']||r['Loja']||r['Unidade']||'—';
+const chDesc=r=>(r['Descrição do chamado']||r['Descrição']||r['descricao']||r['info']||'—').split('\n')[0].trim();
+const chTipo=r=>r['Tipo de chamado']||r['Modalidades']||r['modalidade']||r['tipo']||'Normal';
+const chSt=r=>r['Status']||'—';
+const chTec=r=>r['Nome do Usuário']||r['tecnico']||r['Técnico']||'—';
+const chDi=r=>r['Data Inicial']||r['data_inicial']||r['Data']||'';
+const chDf=r=>r['Data Final']||r['data_final']||r['Data Conclusão']||'';
 
-function diffHorasCh(d1,d2){
+function chHoras(d1,d2){
   try{
-    const conv=s=>{
-      if(!s)return null;
-      const m=s.match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
-      if(m)return new Date(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0));
-      return new Date(s);
-    };
-    const dt1=conv(d1),dt2=conv(d2);
-    if(!dt1||!dt2||isNaN(dt1)||isNaN(dt2))return null;
-    const h=(dt2-dt1)/3600000;
-    return h>0&&h<8760?h:null;
+    const cv=s=>{if(!s)return null;const m=s.match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);if(m)return new Date(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0));return new Date(s);};
+    const a=cv(d1),b=cv(d2);if(!a||!b||isNaN(a)||isNaN(b))return null;const h=(b-a)/3600000;return h>0&&h<8760?h:null;
   }catch(e){return null;}
 }
+function chDiaSem(d){
+  try{const m=d.match(/(\d{2})\/(\d{2})\/(\d{4})/);if(m)return new Date(+m[3],+m[2]-1,+m[1]).getDay();return new Date(d).getDay();}catch(e){return-1;}
+}
+const isOk=r=>{const s=(chSt(r)||'').toLowerCase();return s.includes('conclu')||s.includes('finaliz');};
+const isPend=r=>{return(chSt(r)||'').toLowerCase().includes('pend');};
+const isEmerg=r=>chTipo(r).toUpperCase().includes('EMERGENCIAL');
 
-function badgeCh(st){
-  const s=(st||'').toLowerCase();
-  if(s.includes('conclu')||s.includes('finaliz'))return`<span class="ch-badge ok">${st}</span>`;
-  if(s.includes('execut'))return`<span class="ch-badge exec">${st}</span>`;
-  if(s.includes('pend'))return`<span class="ch-badge pend">${st}</span>`;
-  return`<span class="ch-badge urg">${st}</span>`;
+function badgeS(st){const s=(st||'').toLowerCase();if(s.includes('conclu')||s.includes('finaliz'))return`<span class="ch-badge ok">${st}</span>`;if(s.includes('execut'))return`<span class="ch-badge exec">${st}</span>`;if(s.includes('pend'))return`<span class="ch-badge pend">${st}</span>`;return`<span class="ch-badge urg">${st}</span>`;}
+
+function barH(v,mx,cor,h=6){const p=mx?Math.round(v/mx*100):0;return`<div style="background:var(--border);border-radius:3px;height:${h}px;margin-top:3px;overflow:hidden"><div style="width:${p}%;height:100%;background:${cor};border-radius:3px;transition:width .4s"></div></div>`;}
+
+function contMap(arr,fn){const m={};arr.forEach(r=>{const k=fn(r);if(k&&k!=='—')m[k]=(m[k]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
+
+function chEquipTipo(r){
+  const d=chDesc(r).toUpperCase();
+  const eq=['CAMARA DE CONGELADOS','CAMARA DE RESFRIADOS','AR CONDICIONADO','FREEZER CONGELADOS','FREEZER DE MESA','FREEZER RESFRIADOS','DISPENSADOR','BATEDOR','EXAUSTAO','CADEIRA'];
+  for(const e of eq)if(d.includes(e))return e;
+  return chDesc(r).split(' ').slice(0,3).join(' ')||'OUTROS';
 }
 
-function isAtendido(r){
-  const s=(campoStatus(r)||'').toLowerCase();
-  return s.includes('conclu')||s.includes('finaliz');
-}
-
-function carregarChamados(inp){
+// ══════════════════════════════════════════════════════════════════════
+// CARREGAR
+// ══════════════════════════════════════════════════════════════════════
+function chCarregar(inp){
   const f=inp.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=e=>{
-    _chTodos=parseCsvTab(e.target.result);
-    _chFiltrados=[..._chTodos];
-    _chPagina=1;
+    _chAll=parseCsvGen(e.target.result);
+    _chFilt=[..._chAll];_chPg=1;
     document.getElementById('ch-upload').style.display='none';
     document.getElementById('ch-dash').style.display='block';
-    document.getElementById('ch-file-nome').textContent=f.name+' · '+_chTodos.length+' registros';
-    popularSelectsCh();
-    renderDashCh();
-  };
-  r.readAsText(f,'UTF-8');
+    document.getElementById('ch-fnome').textContent=f.name+' · '+_chAll.length+' registros';
+    chPopular();chRender();
+  };r.readAsText(f,'UTF-8');
 }
 
-function popularSelectsCh(){
-  const tipos=[...new Set(_chTodos.map(r=>campoTipo(r)).filter(Boolean))].sort();
-  const lojas=[...new Set(_chTodos.map(r=>campoLoja(r)).filter(v=>v!=='—'))].sort();
-  const meses=[...new Set(_chTodos.map(r=>getMesCh(campoDataIni(r))).filter(v=>v!=='—'))].sort();
-  const selTipo=document.getElementById('ch-f-tipo');
-  selTipo.innerHTML='<option value="">Todos os tipos</option>'+tipos.map(t=>`<option value="${t}">${t}</option>`).join('');
-  const selLoja=document.getElementById('ch-f-loja');
-  selLoja.innerHTML='<option value="">Todas as lojas</option>'+lojas.map(l=>`<option value="${l}">${l}</option>`).join('');
-  const selMes=document.getElementById('ch-f-mes');
-  selMes.innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>`<option value="${m}">${m}</option>`).join('');
+function chPopular(){
+  const opts=(id,vals,label)=>{document.getElementById(id).innerHTML=`<option value="">${label}</option>`+[...new Set(vals)].filter(Boolean).sort().map(v=>`<option value="${v}">${v}</option>`).join('');};
+  opts('ch-fs',_chAll.map(r=>chSt(r)),'Todos status');
+  opts('ch-ft',_chAll.map(r=>chTipo(r)),'Todos tipos');
+  opts('ch-fl',_chAll.map(r=>chLoja(r)).filter(v=>v!=='—'),'Todas as lojas');
+  opts('ch-fm',_chAll.map(r=>getMesCh(chDi(r))).filter(v=>v!=='—'),'Todos os meses');
 }
 
-function aplicarFiltrosCh(){
+function chFiltrar(){
   const srch=(document.getElementById('ch-srch').value||'').toLowerCase();
-  const fStatus=document.getElementById('ch-f-status').value;
-  const fTipo=document.getElementById('ch-f-tipo').value;
-  const fLoja=document.getElementById('ch-f-loja').value;
-  const fMes=document.getElementById('ch-f-mes').value;
-  _chFiltrados=_chTodos.filter(r=>{
-    if(fStatus&&!campoStatus(r).toLowerCase().includes(fStatus.toLowerCase()))return false;
-    if(fTipo&&campoTipo(r)!==fTipo)return false;
-    if(fLoja&&campoLoja(r)!==fLoja)return false;
-    if(fMes&&getMesCh(campoDataIni(r))!==fMes)return false;
-    if(srch){
-      const txt=(campoLoja(r)+' '+campoDesc(r)+' '+campoTipo(r)).toLowerCase();
-      if(!txt.includes(srch))return false;
-    }
+  const fs=document.getElementById('ch-fs').value;
+  const ft=document.getElementById('ch-ft').value;
+  const fl=document.getElementById('ch-fl').value;
+  const fm=document.getElementById('ch-fm').value;
+  _chFilt=_chAll.filter(r=>{
+    if(fs&&!chSt(r).toLowerCase().includes(fs.toLowerCase()))return false;
+    if(ft&&chTipo(r)!==ft)return false;
+    if(fl&&chLoja(r)!==fl)return false;
+    if(fm&&getMesCh(chDi(r))!==fm)return false;
+    if(srch&&!(chLoja(r)+chDesc(r)+chTipo(r)+chSt(r)).toLowerCase().includes(srch))return false;
     return true;
   });
-  _chPagina=1;
-  renderDashCh();
+  _chPg=1;chRender();
+}
+function chLimpar(){
+  ['ch-srch'].forEach(id=>document.getElementById(id).value='');
+  ['ch-fs','ch-ft','ch-fl','ch-fm'].forEach(id=>document.getElementById(id).value='');
+  _chFilt=[..._chAll];_chPg=1;chRender();
 }
 
-function limparFiltrosCh(){
-  document.getElementById('ch-srch').value='';
-  document.getElementById('ch-f-status').value='';
-  document.getElementById('ch-f-tipo').value='';
-  document.getElementById('ch-f-loja').value='';
-  document.getElementById('ch-f-mes').value='';
-  _chFiltrados=[..._chTodos];
-  _chPagina=1;
-  renderDashCh();
-}
+// ══════════════════════════════════════════════════════════════════════
+// RENDER PRINCIPAL
+// ══════════════════════════════════════════════════════════════════════
+function chRender(){
+  const R=_chFilt,N=R.length;
+  const meta=+(document.getElementById('ch-sla-meta')?.value||24);
+  const atend=R.filter(isOk).length;
+  const pend=R.filter(isPend).length;
+  const emerg=R.filter(isEmerg).length;
+  let slaTot=0,slaCnt=0,slaCump=0;
+  R.forEach(r=>{const h=chHoras(chDi(r),chDf(r));if(h!==null){slaTot+=h;slaCnt++;if(h<=meta)slaCump++;}});
+  const slaMed=slaCnt?slaTot/slaCnt:null;
 
-function contarMap(arr,fn){
-  const m={};
-  arr.forEach(r=>{const k=fn(r);if(k&&k!=='—')m[k]=(m[k]||0)+1;});
-  return Object.entries(m).sort((a,b)=>b[1]-a[1]);
-}
-
-function barraH(val,max,cor){
-  const pct=max?Math.round(val/max*100):0;
-  return`<div style="background:var(--border);border-radius:3px;height:6px;margin-top:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${cor};border-radius:3px;transition:width .4s"></div></div>`;
-}
-
-function renderDashCh(){
-  const rows=_chFiltrados;
-  const total=rows.length;
-  const atend=rows.filter(r=>isAtendido(r)).length;
-  const pend=rows.filter(r=>{const s=campoStatus(r).toLowerCase();return s.includes('pend');}).length;
-  const emerg=rows.filter(r=>campoTipo(r).toUpperCase().includes('EMERGENCIAL')).length;
-
-  // SLA
-  let slaTotal=0,slaCnt=0;
-  rows.forEach(r=>{
-    const h=diffHorasCh(campoDataIni(r),campoDataFim(r));
-    if(h!==null){slaTotal+=h;slaCnt++;}
-  });
-  const slaMedio=slaCnt?slaTotal/slaCnt:null;
+  // Comparar com mês anterior (pegar 2 meses mais recentes)
+  const mesList=[...new Set(R.map(r=>getMesCh(chDi(r))).filter(v=>v!=='—'))].sort();
+  let deltaEmerg='',deltaAtend='';
+  if(mesList.length>=2){
+    const [ma,mb]=[mesList[mesList.length-2],mesList[mesList.length-1]];
+    const ra=R.filter(r=>getMesCh(chDi(r))===ma),rb=R.filter(r=>getMesCh(chDi(r))===mb);
+    const dE=rb.filter(isEmerg).length-ra.filter(isEmerg).length;
+    const dA=rb.filter(isOk).length-ra.filter(isOk).length;
+    deltaEmerg=dE>0?`<span class="ch-kpi-delta dn">▲ ${dE}</span>`:dE<0?`<span class="ch-kpi-delta up">▼ ${Math.abs(dE)}</span>`:`<span class="ch-kpi-delta neu">= 0</span>`;
+    deltaAtend=dA>0?`<span class="ch-kpi-delta up">▲ ${dA}</span>`:dA<0?`<span class="ch-kpi-delta dn">▼ ${Math.abs(dA)}</span>`:`<span class="ch-kpi-delta neu">= 0</span>`;
+  }
 
   // KPIs
-  document.getElementById('ch-kpis-box').innerHTML=`
-    <div class="ch-kpi blue"><div class="ch-kpi-l">Total Chamados</div><div class="ch-kpi-v">${total}</div><div class="ch-kpi-s">registros</div></div>
-    <div class="ch-kpi urg"><div class="ch-kpi-l">Emergenciais</div><div class="ch-kpi-v">${emerg}</div><div class="ch-kpi-s">${total?Math.round(emerg/total*100):0}% do total</div></div>
-    <div class="ch-kpi ok"><div class="ch-kpi-l">Atendidos</div><div class="ch-kpi-v">${atend}</div><div class="ch-kpi-s">${total?Math.round(atend/total*100):0}% do total</div></div>
-    <div class="ch-kpi pend"><div class="ch-kpi-l">Pendentes</div><div class="ch-kpi-v">${pend}</div><div class="ch-kpi-s">em aberto</div></div>
-    <div class="ch-kpi blue"><div class="ch-kpi-l">SLA Médio</div><div class="ch-kpi-v">${slaMedio?slaMedio.toFixed(1)+'h':'—'}</div><div class="ch-kpi-s">horas p/ atend.</div></div>
+  document.getElementById('ch-kpis').innerHTML=`
+    <div class="ch-kpi blue"><div class="ch-kpi-l">Total</div><div class="ch-kpi-v">${N}</div><div class="ch-kpi-s">chamados</div></div>
+    <div class="ch-kpi urg" style="position:relative"><div class="ch-kpi-l">Emergenciais</div><div class="ch-kpi-v">${emerg}</div><div class="ch-kpi-s">${N?Math.round(emerg/N*100):0}% do total</div>${deltaEmerg}</div>
+    <div class="ch-kpi ok" style="position:relative"><div class="ch-kpi-l">Atendidos</div><div class="ch-kpi-v">${atend}</div><div class="ch-kpi-s">${N?Math.round(atend/N*100):0}% do total</div>${deltaAtend}</div>
+    <div class="ch-kpi pend"><div class="ch-kpi-l">Pendentes</div><div class="ch-kpi-v">${pend}</div><div class="ch-kpi-s">${N?Math.round(pend/N*100):0}% do total</div></div>
+    <div class="ch-kpi blue"><div class="ch-kpi-l">SLA Médio</div><div class="ch-kpi-v">${slaMed?slaMed.toFixed(1)+'h':'—'}</div><div class="ch-kpi-s">meta: ${meta}h</div></div>
+    <div class="ch-kpi ${slaCnt&&slaCump/slaCnt>=0.8?'ok':'pend'}"><div class="ch-kpi-l">SLA Cumprido</div><div class="ch-kpi-v">${slaCnt?Math.round(slaCump/slaCnt*100)+'%':'—'}</div><div class="ch-kpi-s">${slaCump}/${slaCnt} atend.</div></div>
   `;
 
-  // Top 5 Lojas
-  const top5loja=contarMap(rows,campoLoja).slice(0,5);
-  const maxL=top5loja[0]?.[1]||1;
-  document.getElementById('ch-top5-loja').innerHTML=top5loja.length?
-    top5loja.map(([nome,cnt],i)=>`
-      <div class="ch-row">
-        <div class="ch-rank">${i+1}</div>
-        <div class="ch-name" title="${nome}">
-          ${nome}
-          ${barraH(cnt,maxL,'#3B82F6')}
-        </div>
-        <div class="ch-cnt">${cnt}</div>
-      </div>`).join('')
-    :'<div class="ch-empty">Sem dados</div>';
-
-  // Top 10 Equipamentos (por descrição)
-  const top10eq=contarMap(rows,r=>{
-    const d=campoDesc(r).toUpperCase();
-    // Extrair tipo de equipamento da descrição
-    const equips=['CAMARA DE CONGELADOS','CAMARA DE RESFRIADOS','AR CONDICIONADO','FREEZER CONGELADOS',
-                  'FREEZER DE MESA','FREEZER RESFRIADOS','DISPENSADOR','BATEDOR DE SHAKE','EXAUSTAO','CADEIRA'];
-    for(const eq of equips){if(d.includes(eq))return eq;}
-    return campoDesc(r).split(' ').slice(0,4).join(' ');
-  }).slice(0,10);
-  const maxE=top10eq[0]?.[1]||1;
-  document.getElementById('ch-top10-equip').innerHTML=top10eq.length?
-    top10eq.map(([nome,cnt],i)=>`
-      <div class="ch-row">
-        <div class="ch-rank">${i+1}</div>
-        <div class="ch-name" title="${nome}">
-          ${nome}
-          ${barraH(cnt,maxE,'#F59E0B')}
-        </div>
-        <div class="ch-cnt">${cnt}</div>
-      </div>`).join('')
-    :'<div class="ch-empty">Sem dados</div>';
-
-  // Top 5 Rechamados (mesma loja com 2+ chamados do mesmo tipo)
-  const recMap={};
-  rows.forEach(r=>{
-    const key=campoLoja(r)+'||'+campoDesc(r).slice(0,30);
-    recMap[key]=(recMap[key]||0)+1;
-  });
-  const rechamados=Object.entries(recMap).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  document.getElementById('ch-top5-rechamado').innerHTML=rechamados.length?
-    rechamados.map(([key,cnt],i)=>{
-      const [loja,desc]=key.split('||');
-      return`<div class="ch-row">
-        <div class="ch-rank" style="color:#EF4444">${cnt}x</div>
-        <div class="ch-name">
-          <div style="font-weight:600;font-size:11px">${loja}</div>
-          <div style="font-size:10px;color:var(--text2)">${desc}</div>
-        </div>
-      </div>`;
-    }).join('')
-    :'<div class="ch-empty">Nenhum rechamado identificado</div>';
-
-  // Gráfico volume por mês (barras SVG)
-  const mesMap={};
-  rows.forEach(r=>{
-    const m=getMesCh(campoDataIni(r));
-    if(m!=='—')mesMap[m]=(mesMap[m]||0)+1;
-  });
-  const meses=Object.entries(mesMap).sort((a,b)=>a[0].localeCompare(b[0]));
-  const maxM=Math.max(...meses.map(([,v])=>v),1);
-  const barW=meses.length?Math.min(60,Math.floor(280/meses.length)):40;
-  const svgW=Math.max(280,meses.length*(barW+8)+20);
-  const svgH=120;
-  const svgBars=meses.map(([mes,cnt],i)=>{
-    const bh=Math.round((cnt/maxM)*70);
-    const x=i*(barW+8)+10;
-    const y=svgH-bh-25;
-    return`<rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="3" fill="#3B82F6" opacity="0.85"/>
-<text x="${x+barW/2}" y="${y-3}" text-anchor="middle" font-size="9" fill="var(--text)">${cnt}</text>
-<text x="${x+barW/2}" y="${svgH-8}" text-anchor="middle" font-size="8" fill="var(--text2)">${mes}</text>`;
-  }).join('');
-  document.getElementById('ch-grafico-mes').innerHTML=meses.length?
-    `<svg width="100%" viewBox="0 0 ${svgW} ${svgH}" style="overflow:visible">${svgBars}</svg>`
-    :'<div class="ch-empty">Sem dados</div>';
-
-  // Gráfico de status (barras horizontais)
-  const statusMap=contarMap(rows,campoStatus);
-  const statusCores={'Concluído':'#10B981','Finalizado':'#10B981','Executando':'#3B82F6','Pendente':'#F59E0B'};
-  const maxSt=statusMap[0]?.[1]||1;
-  document.getElementById('ch-grafico-status').innerHTML=statusMap.map(([st,cnt])=>{
-    const pct=Math.round(cnt/total*100);
-    const cor=statusCores[st]||'#94A3B8';
-    return`<div style="flex:1;min-width:140px">
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
-        <span>${badgeCh(st)}</span>
-        <span style="font-weight:700;color:var(--text)">${cnt} <span style="color:var(--text2);font-weight:400">(${pct}%)</span></span>
+  // SLA gauge
+  const slaViol=slaCnt-slaCump,slaP=slaCnt?Math.round(slaCump/slaCnt*100):0;
+  const slaColor=slaP>=80?'#10B981':slaP>=60?'#F59E0B':'#EF4444';
+  document.getElementById('ch-sla-gauge').innerHTML=`
+    <div style="text-align:center;margin-bottom:.75rem">
+      <div style="font-size:48px;font-weight:900;color:${slaColor}">${slaCnt?slaP+'%':'—'}</div>
+      <div style="font-size:12px;color:var(--text2)">dentro da meta de ${meta}h</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:.5rem">
+      <div style="flex:1;background:var(--border);border-radius:4px;height:10px;overflow:hidden">
+        <div style="width:${slaP}%;height:100%;background:${slaColor};border-radius:4px;transition:width .5s"></div>
       </div>
-      <div style="background:var(--border);border-radius:4px;height:8px;overflow:hidden">
-        <div style="width:${Math.round(cnt/maxSt*100)}%;height:100%;background:${cor};border-radius:4px;transition:width .5s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px">
+      <span style="color:#10B981">✓ Cumpridos: <b>${slaCump}</b></span>
+      <span style="color:#EF4444">✗ Violados: <b>${slaViol}</b></span>
+    </div>
+    ${slaCnt?`<div style="margin-top:.75rem;display:flex;gap:8px;flex-wrap:wrap">
+      ${[4,8,24,48].map(h=>{const c=R.filter(r=>{const hr=chHoras(chDi(r),chDf(r));return hr!==null&&hr<=h;}).length;const p=slaCnt?Math.round(c/slaCnt*100):0;return`<div style="flex:1;min-width:60px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px"><div style="font-size:14px;font-weight:700;color:var(--blue)">${p}%</div><div style="font-size:9px;color:var(--text2)">≤${h}h</div></div>`;}).join('')}
+    </div>`:''}
+  `;
+
+  // Tendência (linha SVG)
+  const mesData={};R.forEach(r=>{const m=getMesCh(chDi(r));if(m!=='—'){if(!mesData[m])mesData[m]={total:0,emerg:0,ok:0};mesData[m].total++;if(isEmerg(r))mesData[m].emerg++;if(isOk(r))mesData[m].ok++;}});
+  const meses=Object.keys(mesData).sort();
+  if(meses.length>=2){
+    const W=400,H=100,pad=30;
+    const vals=meses.map(m=>mesData[m].total);
+    const mx=Math.max(...vals,1);
+    const px=(i)=>pad+i*(W-2*pad)/(meses.length-1);
+    const py=(v)=>H-pad-((v/mx)*(H-2*pad));
+    const pts=meses.map((m,i)=>`${px(i)},${py(mesData[m].total)}`).join(' ');
+    const ptsE=meses.map((m,i)=>`${px(i)},${py(mesData[m].emerg)}`).join(' ');
+    const labels=meses.map((m,i)=>`<text x="${px(i)}" y="${H}" text-anchor="middle" font-size="8" fill="var(--text2)">${m.slice(0,3)}</text>`).join('');
+    const dots=meses.map((m,i)=>`<circle cx="${px(i)}" cy="${py(mesData[m].total)}" r="3" fill="#3B82F6"/><title>${m}: ${mesData[m].total}</title>`).join('');
+    document.getElementById('ch-tend').innerHTML=`
+      <div style="display:flex;gap:12px;font-size:10px;color:var(--text2);margin-bottom:4px;padding:0 .5rem">
+        <span style="color:#3B82F6">● Total</span><span style="color:#EF4444">● Emergenciais</span>
       </div>
-    </div>`;
-  }).join('')||'<div class="ch-empty">Sem dados</div>';
-
-  // Tabela paginada
-  renderTabelaCh();
-}
-
-function renderTabelaCh(){
-  const rows=_chFiltrados;
-  const total=rows.length;
-  const start=(_chPagina-1)*_chPorPagina;
-  const end=Math.min(start+_chPorPagina,total);
-  const paginaRows=rows.slice(start,end);
-
-  document.getElementById('ch-lista-count').textContent=total;
-
-  const tbl=`<thead><tr>
-    <th>Loja</th><th>Tipo de Chamado</th><th>Descrição</th>
-    <th>Data Início</th><th>Data Fim</th><th>SLA</th><th>Status</th>
-  </tr></thead><tbody>${
-    paginaRows.map(r=>{
-      const h=diffHorasCh(campoDataIni(r),campoDataFim(r));
-      const sla=h?h.toFixed(1)+'h':'—';
-      const slaColor=h&&h<=8?'#10B981':h&&h<=24?'#F59E0B':'#EF4444';
-      return`<tr>
-        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500" title="${campoLoja(r)}">${campoLoja(r)}</td>
-        <td style="white-space:nowrap"><span class="ch-badge ${campoTipo(r).toUpperCase().includes('EMERGENCIAL')?'urg':'exec'}">${campoTipo(r)}</span></td>
-        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--text2)" title="${campoDesc(r)}">${campoDesc(r)}</td>
-        <td style="white-space:nowrap;font-size:11px">${campoDataIni(r)||'—'}</td>
-        <td style="white-space:nowrap;font-size:11px">${campoDataFim(r)||'—'}</td>
-        <td style="white-space:nowrap;font-weight:700;color:${slaColor}">${sla}</td>
-        <td>${badgeCh(campoStatus(r))}</td>
-      </tr>`;
-    }).join('')
-  }</tbody>`;
-
-  document.getElementById('ch-tabela-lista').innerHTML=tbl;
-
-  // Paginação
-  const totalPags=Math.ceil(total/_chPorPagina);
-  let pags=`<span>${start+1}–${end} de ${total}</span>`;
-  if(totalPags>1){
-    pags+=` <button onclick="_chPagina=Math.max(1,_chPagina-1);renderTabelaCh()" ${_chPagina===1?'disabled':''} style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);border-radius:4px">‹ Ant</button>`;
-    const visP=[1,...Array.from({length:totalPags},((_,i)=>i+1)).filter(p=>Math.abs(p-_chPagina)<=2&&p>1&&p<totalPags),totalPags];
-    const uniq=[...new Set(visP)].sort((a,b)=>a-b);
-    uniq.forEach((p,i)=>{
-      if(i>0&&p-uniq[i-1]>1)pags+=' … ';
-      pags+=`<button onclick="_chPagina=${p};renderTabelaCh()" style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:${p===_chPagina?'var(--blue)':'var(--surface2)'};color:${p===_chPagina?'#fff':'inherit'};border-radius:4px">${p}</button>`;
-    });
-    pags+=` <button onclick="_chPagina=Math.min(${totalPags},_chPagina+1);renderTabelaCh()" ${_chPagina===totalPags?'disabled':''} style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);border-radius:4px">Próx ›</button>`;
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;overflow:visible">
+        <polyline points="${pts}" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linejoin="round"/>
+        <polyline points="${ptsE}" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,2" stroke-linejoin="round"/>
+        ${dots}${labels}
+      </svg>`;
+  } else {
+    document.getElementById('ch-tend').innerHTML='<div class="ch-empty">Necessário ≥ 2 meses de dados</div>';
   }
-  document.getElementById('ch-paginacao').innerHTML=pags;
+
+  // Emergencial vs Normal (barras duplas)
+  if(meses.length){
+    const bW=Math.min(50,Math.floor(340/meses.length));
+    const allN=meses.map(m=>mesData[m].total-mesData[m].emerg);
+    const allE=meses.map(m=>mesData[m].emerg);
+    const mx2=Math.max(...meses.map(m=>mesData[m].total),1);
+    const H2=90,pad2=20;
+    const bars=meses.map((m,i)=>{
+      const x=pad2+i*(bW*2+6);
+      const hN=Math.round((allN[i]/mx2)*(H2-pad2));
+      const hE=Math.round((allE[i]/mx2)*(H2-pad2));
+      return`<rect x="${x}" y="${H2-hN}" width="${bW}" height="${hN}" rx="2" fill="#3B82F6" opacity=".8"/>
+<rect x="${x+bW+2}" y="${H2-hE}" width="${bW}" height="${hE}" rx="2" fill="#EF4444" opacity=".8"/>
+<text x="${x+bW}" y="${H2+10}" text-anchor="middle" font-size="7.5" fill="var(--text2)">${m.slice(0,3)}</text>`;
+    }).join('');
+    const svgW=Math.max(340,meses.length*(bW*2+6)+pad2*2);
+    document.getElementById('ch-emvs').innerHTML=`
+      <div style="display:flex;gap:12px;font-size:10px;color:var(--text2);margin-bottom:4px;padding:0 .5rem">
+        <span style="color:#3B82F6">■ Normal</span><span style="color:#EF4444">■ Emergencial</span>
+      </div>
+      <svg viewBox="0 0 ${svgW} ${H2+15}" style="width:100%;overflow:visible">${bars}</svg>`;
+  } else {
+    document.getElementById('ch-emvs').innerHTML='<div class="ch-empty">Sem dados mensais</div>';
+  }
+
+  // Heatmap dia da semana
+  const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const heatMap=[0,0,0,0,0,0,0];
+  R.forEach(r=>{const d=chDiaSem(chDi(r));if(d>=0)heatMap[d]++;});
+  const mxH=Math.max(...heatMap,1);
+  const heatCor=(v)=>{const p=v/mxH;if(p>0.8)return'#1D4ED8';if(p>0.6)return'#3B82F6';if(p>0.4)return'#93C5FD';if(p>0.2)return'#DBEAFE';return p>0?'#EFF6FF':'var(--surface2)';};
+  document.getElementById('ch-heat').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center">
+      ${dias.map((d,i)=>`
+        <div>
+          <div style="background:${heatCor(heatMap[i])};border-radius:6px;height:50px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:${heatMap[i]>0?'#fff':'var(--text3)'}">${heatMap[i]||'·'}</div>
+          <div style="font-size:9px;color:var(--text2);margin-top:4px">${d}</div>
+        </div>`).join('')}
+    </div>
+    <div style="font-size:10px;color:var(--text2);margin-top:.5rem;text-align:center">chamados por dia da semana</div>
+  `;
+
+  // Top 5 lojas
+  const t5l=contMap(R,chLoja).slice(0,5);const mxL=t5l[0]?.[1]||1;
+  document.getElementById('ch-top5l').innerHTML=t5l.length?t5l.map(([n,c],i)=>`<div class="ch-row"><div class="ch-rank">${i+1}</div><div class="ch-name">${n}${barH(c,mxL,'#3B82F6')}</div><div class="ch-cnt">${c}</div></div>`).join(''):'<div class="ch-empty">Sem dados</div>';
+
+  // Top 10 equipamentos
+  const t10e=contMap(R,chEquipTipo).slice(0,10);const mxE=t10e[0]?.[1]||1;
+  document.getElementById('ch-top10e').innerHTML=t10e.length?t10e.map(([n,c],i)=>`<div class="ch-row"><div class="ch-rank">${i+1}</div><div class="ch-name" title="${n}">${n}${barH(c,mxE,'#F59E0B')}</div><div class="ch-cnt">${c}</div></div>`).join(''):'<div class="ch-empty">Sem dados</div>';
+
+  // Top 5 rechamados
+  const recM={};
+  R.forEach(r=>{const k=chLoja(r)+'||'+chEquipTipo(r);recM[k]=(recM[k]||0)+1;});
+  const t5r=Object.entries(recM).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('ch-top5r').innerHTML=t5r.length?t5r.map(([k,c])=>{const[l,e]=k.split('||');return`<div class="ch-row"><div class="ch-rank" style="color:#EF4444">${c}x</div><div class="ch-name"><div style="font-weight:600">${l}</div><div style="font-size:10px;color:var(--text2)">${e}</div></div></div>`}).join(''):'<div class="ch-empty">Nenhum rechamado</div>';
+
+  // Ranking técnicos
+  const tecM={};const tecH={};const tecC={};
+  R.forEach(r=>{const t=chTec(r);if(t==='—')return;tecM[t]=(tecM[t]||0)+1;const h=chHoras(chDi(r),chDf(r));if(h!==null){tecH[t]=(tecH[t]||0)+h;tecC[t]=(tecC[t]||0)+1;}});
+  const tecArr=Object.entries(tecM).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const mxT=tecArr[0]?.[1]||1;
+  document.getElementById('ch-tec').innerHTML=tecArr.length?tecArr.map(([n,c],i)=>{const sla=tecC[n]?(tecH[n]/tecC[n]).toFixed(1)+'h':'—';return`<div class="ch-row"><div class="ch-rank">${i+1}</div><div class="ch-name">${n}${barH(c,mxT,'#8B5CF6')}</div><div style="text-align:right;font-size:10px"><div style="font-weight:700">${c}</div><div style="color:var(--text2)">${sla}</div></div></div>`}).join(''):'<div class="ch-empty">Campo técnico não encontrado</div>';
+
+  // Score saúde por loja (0-100: penaliza volume + rechamados + SLA violado)
+  const lojas=[...new Set(R.map(chLoja).filter(v=>v!=='—'))];
+  const scores=lojas.map(l=>{
+    const lr=R.filter(r=>chLoja(r)===l);
+    const vol=lr.length;
+    const rec=Object.values((() =>{const m={};lr.forEach(r=>{const k=chEquipTipo(r);m[k]=(m[k]||0)+1;});return m;})()).filter(v=>v>=2).length;
+    let slaV=0,slaC=0;lr.forEach(r=>{const h=chHoras(chDi(r),chDf(r));if(h!==null){slaC++;if(h>meta)slaV++;}});
+    const score=Math.max(0,Math.round(100-(vol*0.5)-(rec*5)-(slaC?(slaV/slaC)*30:0)));
+    return{l,vol,rec,score,slaV};
+  }).sort((a,b)=>a.score-b.score).slice(0,8);
+  const scCor=s=>s>=80?'#10B981':s>=60?'#F59E0B':'#EF4444';
+  document.getElementById('ch-score').innerHTML=scores.length?scores.map(({l,vol,score})=>`<div class="ch-row"><div style="width:36px;height:36px;border-radius:50%;background:${scCor(score)};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#fff;flex-shrink:0">${score}</div><div class="ch-name" style="margin-left:4px"><div style="font-weight:600;font-size:11px">${l}</div>${barH(score,100,scCor(score))}</div><div class="ch-cnt">${vol} ch.</div></div>`).join(''):'<div class="ch-empty">Sem dados</div>';
+
+  // Tempo médio por equipamento
+  const eqH={};const eqC={};
+  R.forEach(r=>{const e=chEquipTipo(r),h=chHoras(chDi(r),chDf(r));if(h!==null){eqH[e]=(eqH[e]||0)+h;eqC[e]=(eqC[e]||0)+1;}});
+  const eqArr=Object.entries(eqC).map(([e,c])=>({e,c,med:eqH[e]/c})).sort((a,b)=>b.med-a.med).slice(0,8);
+  const mxTM=Math.max(...eqArr.map(x=>x.med),1);
+  document.getElementById('ch-tmeq').innerHTML=eqArr.length?eqArr.map(({e,c,med})=>`<div class="ch-row"><div class="ch-name"><div style="font-size:10px;font-weight:600">${e}</div>${barH(med,mxTM,'#F59E0B')}</div><div style="text-align:right;font-size:10px;flex-shrink:0;margin-left:4px"><div style="font-weight:700;color:var(--blue)">${med.toFixed(1)}h</div><div style="color:var(--text2)">${c} ch.</div></div></div>`).join(''):'<div class="ch-empty">Sem datas de conclusão</div>';
+
+  // Tabela
+  chRenderTabela();
 }
 
-function exportarChamadosCSV(){
-  const rows=_chFiltrados;
-  if(!rows.length)return;
-  const hdrs=['Loja','Tipo','Descrição','Data Início','Data Fim','SLA (h)','Status'];
-  const linhas=rows.map(r=>{
-    const h=diffHorasCh(campoDataIni(r),campoDataFim(r));
-    return[campoLoja(r),campoTipo(r),campoDesc(r),campoDataIni(r),campoDataFim(r),h?h.toFixed(1):'',campoStatus(r)].map(v=>`"${v}"`).join(';');
-  });
-  const csv=hdrs.join(';')+'\n'+linhas.join('\n');
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download='chamados_filtrados.csv';
-  a.click();
+function chRenderTabela(){
+  const R=_chFilt,N=R.length,s=(_chPg-1)*_PG,e=Math.min(s+_PG,N);
+  document.getElementById('ch-lcnt').textContent=N;
+  document.getElementById('ch-tbl').innerHTML=`<thead><tr><th>Loja</th><th>Tipo</th><th>Equipamento</th><th>Data Início</th><th>SLA</th><th>Status</th></tr></thead><tbody>`+
+    R.slice(s,e).map(r=>{const h=chHoras(chDi(r),chDf(r));const sla=h?h.toFixed(1)+'h':'—';const meta=+(document.getElementById('ch-sla-meta')?.value||24);const sc=h?h<=meta?'#10B981':h<=meta*2?'#F59E0B':'#EF4444':'var(--text2)';return`<tr><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500" title="${chLoja(r)}">${chLoja(r)}</td><td><span class="ch-badge ${isEmerg(r)?'urg':'exec'}">${chTipo(r)}</span></td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--text2)">${chEquipTipo(r)}</td><td style="white-space:nowrap;font-size:11px">${chDi(r)||'—'}</td><td style="font-weight:700;color:${sc};white-space:nowrap">${sla}</td><td>${badgeS(chSt(r))}</td></tr>`;}).join('')+'</tbody>';
+  const tp=Math.ceil(N/_PG);
+  let pg=`<span>${s+1}–${e} de ${N}</span>`;
+  if(tp>1){
+    pg+=` <button onclick="_chPg=Math.max(1,_chPg-1);chRenderTabela()" ${_chPg===1?'disabled':''} style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);border-radius:4px">‹</button>`;
+    [...new Set([1,...Array.from({length:tp},(_,i)=>i+1).filter(p=>Math.abs(p-_chPg)<=1),tp])].sort((a,b)=>a-b).forEach((p,i,arr)=>{if(i>0&&p-arr[i-1]>1)pg+=' … ';pg+=`<button onclick="_chPg=${p};chRenderTabela()" style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:${p===_chPg?'var(--blue)':'var(--surface2)'};color:${p===_chPg?'#fff':'inherit'};border-radius:4px">${p}</button>`;});
+    pg+=` <button onclick="_chPg=Math.min(${tp},_chPg+1);chRenderTabela()" ${_chPg===tp?'disabled':''} style="padding:2px 8px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);border-radius:4px">›</button>`;
+  }
+  document.getElementById('ch-pag').innerHTML=pg;
+}
+
+function chExportarCSV(){
+  if(!_chFilt.length)return;
+  const H=['Loja','Tipo','Equipamento','Data Início','Data Fim','SLA(h)','Status'];
+  const csv=H.join(';')+'\n'+_chFilt.map(r=>{const h=chHoras(chDi(r),chDf(r));return[chLoja(r),chTipo(r),chEquipTipo(r),chDi(r),chDf(r),h?h.toFixed(1):'',chSt(r)].map(v=>`"${v}"`).join(';');}).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='chamados.csv';a.click();
+}
+
+// MODO APRESENTAÇÃO
+function chModoApresentacao(){
+  if(!_chFilt.length){alert('Carregue um CSV primeiro.');return;}
+  const R=_chFilt,N=R.length,meta=+(document.getElementById('ch-sla-meta')?.value||24);
+  const atend=R.filter(isOk).length,emerg=R.filter(isEmerg).length;
+  let slaTot=0,slaCnt=0,slaCump=0;
+  R.forEach(r=>{const h=chHoras(chDi(r),chDf(r));if(h!==null){slaTot+=h;slaCnt++;if(h<=meta)slaCump++;}});
+  const slaMed=slaCnt?slaTot/slaCnt:null;
+  const slaP=slaCnt?Math.round(slaCump/slaCnt*100):null;
+  const t5l=contMap(R,chLoja).slice(0,5);
+  const t5r=Object.entries((() =>{const m={};R.forEach(r=>{const k=chLoja(r)+'||'+chEquipTipo(r);m[k]=(m[k]||0)+1;});return m;})()).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const slaColor=slaP>=80?'#10B981':slaP>=60?'#F59E0B':'#EF4444';
+  document.getElementById('ch-pres-sub').textContent=`${N} chamados · meta SLA ${meta}h · ${new Date().toLocaleDateString('pt-BR')}`;
+  document.getElementById('ch-pres-content').innerHTML=`
+    <div class="pres-card"><div class="pres-card-t">Total Chamados</div><div class="pres-kpi-v">${N}</div></div>
+    <div class="pres-card"><div class="pres-card-t">Emergenciais</div><div class="pres-kpi-v" style="color:#EF4444">${emerg}</div><div class="pres-kpi-s">${N?Math.round(emerg/N*100):0}% do total</div></div>
+    <div class="pres-card"><div class="pres-card-t">Atendidos</div><div class="pres-kpi-v" style="color:#10B981">${atend}</div><div class="pres-kpi-s">${N?Math.round(atend/N*100):0}% do total</div></div>
+    <div class="pres-card"><div class="pres-card-t">SLA Cumprido (meta ${meta}h)</div><div class="pres-kpi-v" style="color:${slaColor}">${slaP!==null?slaP+'%':'—'}</div><div class="pres-kpi-s">${slaMed?'média: '+slaMed.toFixed(1)+'h':''}</div></div>
+    <div class="pres-card" style="grid-column:span 2"><div class="pres-card-t">🏪 Top 5 Lojas</div>${t5l.map(([n,c],i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1E293B;font-size:13px;color:#E2E8F0"><span>${i+1}. ${n}</span><b>${c}</b></div>`).join('')}</div>
+    <div class="pres-card" style="grid-column:span 2"><div class="pres-card-t">🔁 Rechamados</div>${t5r.length?t5r.map(([k,c])=>{const[l,e]=k.split('||');return`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1E293B;font-size:12px;color:#E2E8F0"><span>${l} · <span style="color:#94A3B8">${e}</span></span><b style="color:#EF4444">${c}x</b></div>`;}).join(''):'<div style="color:#64748B;font-size:12px">Nenhum rechamado</div>'}
+    </div>
+  `;
+  document.getElementById('ch-pres').style.display='block';
+  document.getElementById('ch-pres').scrollTop=0;
 }
 </script>
