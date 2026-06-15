@@ -774,6 +774,7 @@ function render(){
   const fTec=document.getElementById('fTec').value;
   const fStatus=document.getElementById('fStatus').value;
   const fAcao=document.getElementById('fAcao').value;
+  const fEquip=document.getElementById('fEquip')?.value||'';
   const q=document.getElementById('srch').value.toLowerCase().trim();
   const isFiltered=fCli||fReg||fMes||fSup||fTec||fStatus||fAcao||q||activeCls.size>0||_statusFilter;
   let tot=0,totV=0,html='';
@@ -796,8 +797,6 @@ function render(){
       if(fMes&&r.mes!==fMes)return false;
       if(fSup&&(ex.sup||'')!==fSup)return false;
       if(fTec&&(ex.tec||'')!==fTec)return false;
-      if(fEquip&&(r.equip||''!==fEquip)return false;
-      const fEquip=document.getElementById('fEquip')?.value||'';
       if(fEquip&&r.equip!==fEquip)return false;
       if(fStatus&&r.status!==fStatus)return false;
       if(_statusFilter&&STATUS_MATCH[_statusFilter]&&!STATUS_MATCH[_statusFilter](r.status))return false;
