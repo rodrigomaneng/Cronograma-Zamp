@@ -1372,7 +1372,7 @@ function mudarAba(nome,btn){
 // PREVENTIVAS
 // ══════════════════════════════════════════════════════════════════════
 function parseCsvGen(txt){
-  const L=txt.trim().split('\n'),sep=L[0].includes(';')?';':',';
+  const L=txt.trim().split('\n');const sep=L[0].includes('\t')?'\t':L[0].includes(';')?';':',';
   const H=L[0].split(sep).map(h=>h.trim().replace(/^"|"$/g,''));
   return L.slice(1).filter(l=>l.trim()).map(l=>{
     const V=l.split(sep),o={};
@@ -1430,9 +1430,9 @@ function renderPrev(rows){
 let _chAll=[],_chFilt=[],_chPg=1;
 const _PG=25;
 
-const chLoja=r=>r['Nome loja']||r['Nome Fantasia']||r['nome_loja']||r['Loja']||r['Unidade']||'—';
+const chLoja=r=>r['Nome Fantasia']||r['Nome loja']||r['Loja']||'—';
 const chDesc=r=>(r['Descrição do chamado']||r['Descrição']||r['descricao']||r['info']||'—').split('\n')[0].trim();
-const chTipo=r=>r['Tipo de chamado']||r['Modalidades']||r['modalidade']||r['tipo']||'Normal';
+const chTipo=r=>r['Modalidades']||r['Tipo de chamado']||r['tipo']||'Normal';
 const chSt=r=>r['Status']||'—';
 const chTec=r=>r['Nome do Usuário']||r['tecnico']||r['Técnico']||'—';
 const chDi=r=>r['Data Inicial']||r['data_inicial']||r['Data']||'';
@@ -1458,10 +1458,18 @@ function barH(v,mx,cor,h=6){const p=mx?Math.round(v/mx*100):0;return`<div style=
 function contMap(arr,fn){const m={};arr.forEach(r=>{const k=fn(r);if(k&&k!=='—')m[k]=(m[k]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
 
 function chEquipTipo(r){
-  const d=chDesc(r).toUpperCase();
-  const eq=['CAMARA DE CONGELADOS','CAMARA DE RESFRIADOS','AR CONDICIONADO','FREEZER CONGELADOS','FREEZER DE MESA','FREEZER RESFRIADOS','DISPENSADOR','BATEDOR','EXAUSTAO','CADEIRA'];
-  for(const e of eq)if(d.includes(e))return e;
-  return chDesc(r).split(' ').slice(0,3).join(' ')||'OUTROS';
+  // Coluna dedicada Equipamento do CSV
+  const eq=(r['Equipamento']||r['equipamento']||'').trim().toUpperCase();
+  if(eq&&eq!=='')return eq;
+  // Fallback: extrair da Descricao
+  const desc=r['Descrição']||r['Descrição do chamado']||r['info']||'';
+  const d=desc.toUpperCase();
+  const tipos=['CAMARA DE CONGELADOS','CÂMARA DE CONGELADOS','CAMARA DE RESFRIADOS',
+    'CÂMARA DE RESFRIADOS','AR CONDICIONADO','FREEZER CONGELADOS','FREEZER DE MESA',
+    'FREEZER RESFRIADOS','DISPENSADOR DE BATATAS','BATEDOR DE SHAKE',
+    'EXAUSTAO','EXAUSTÃO','CADEIRA','BALCAO','BALCÃO','GELADEIRA'];
+  for(const t of tipos)if(d.includes(t))return t;
+  return desc.split(' ').slice(0,4).join(' ')||'NÃO IDENTIFICADO';
 }
 
 // ══════════════════════════════════════════════════════════════════════
