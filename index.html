@@ -1430,11 +1430,11 @@ function renderPrev(rows){
 let _chAll=[],_chFilt=[],_chPg=1;
 const _PG=25;
 
-const chLoja=r=>r['Nome Fantasia']||r['Nome loja']||r['Loja']||'—';
+const chLoja = r => (r['Nome Fantasia']||r['Nome loja']||r['Loja']||'--').trim();
 const chDesc=r=>(r['Descrição do chamado']||r['Descrição']||r['descricao']||r['info']||'—').split('\n')[0].trim();
-const chTipo=r=>r['Modalidades']||r['Tipo de chamado']||r['tipo']||'Normal';
+const chTipo = r => (r['Modalidades']||r['Tipo de chamado']||'Normal').trim();
 const chSt=r=>r['Status']||'—';
-const chTec=r=>r['Nome do Usuário']||r['tecnico']||r['Técnico']||'—';
+const chTec = r => (r['Nome do Usuário']||r['Nome do Usuario']||'--').trim();
 const chDi=r=>r['Data Inicial']||r['data_inicial']||r['Data']||'';
 const chDf=r=>r['Data Final']||r['data_final']||r['Data Conclusão']||'';
 
@@ -1458,18 +1458,14 @@ function barH(v,mx,cor,h=6){const p=mx?Math.round(v/mx*100):0;return`<div style=
 function contMap(arr,fn){const m={};arr.forEach(r=>{const k=fn(r);if(k&&k!=='—')m[k]=(m[k]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1]);}
 
 function chEquipTipo(r){
-  // Coluna dedicada Equipamento do CSV
-  const eq=(r['Equipamento']||r['equipamento']||'').trim().toUpperCase();
-  if(eq&&eq!=='')return eq;
-  // Fallback: extrair da Descricao
-  const desc=r['Descrição']||r['Descrição do chamado']||r['info']||'';
-  const d=desc.toUpperCase();
-  const tipos=['CAMARA DE CONGELADOS','CÂMARA DE CONGELADOS','CAMARA DE RESFRIADOS',
-    'CÂMARA DE RESFRIADOS','AR CONDICIONADO','FREEZER CONGELADOS','FREEZER DE MESA',
-    'FREEZER RESFRIADOS','DISPENSADOR DE BATATAS','BATEDOR DE SHAKE',
-    'EXAUSTAO','EXAUSTÃO','CADEIRA','BALCAO','BALCÃO','GELADEIRA'];
-  for(const t of tipos)if(d.includes(t))return t;
-  return desc.split(' ').slice(0,4).join(' ')||'NÃO IDENTIFICADO';
+  var eq = (r['Equipamento']||r['equipamento']||'').trim();
+  if(eq) return eq.toUpperCase();
+  var d = (r['Descrição']||r['info']||'').toUpperCase();
+  var ts = ['CAMARA DE CONGELADOS','CAMARA DE RESFRIADOS','AR CONDICIONADO',
+    'FREEZER CONGELADOS','FREEZER DE MESA','FREEZER RESFRIADOS',
+    'DISPENSADOR','BATEDOR DE SHAKE','EXAUSTAO'];
+  for(var i=0;i<ts.length;i++) if(d.indexOf(ts[i])>=0) return ts[i];
+  return 'NAO IDENTIFICADO';
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -1655,7 +1651,20 @@ function chRender(){
   const recM={};
   R.forEach(r=>{const k=chLoja(r)+'||'+chEquipTipo(r);recM[k]=(recM[k]||0)+1;});
   const t5r=Object.entries(recM).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  document.getElementById('ch-top5r').innerHTML=t5r.length?t5r.map(([k,c])=>{const[l,e]=k.split('||');return`<div class="ch-row"><div class="ch-rank" style="color:#EF4444">${c}x</div><div class="ch-name"><div style="font-weight:600">${l}</div><div style="font-size:10px;color:var(--text2)">${e}</div></div></div>`}).join(''):'<div class="ch-empty">Nenhum rechamado</div>';
+  document.getElementById('ch-top5r').innerHTML = t5r.length
+    ? t5r.map(function(item){
+        var loja  = (item[0].split('||')[0]||'--');
+        var equip = (item[0].split('||')[1]||'--');
+        var cnt   = item[1];
+        return '<div class="ch-row">'
+          + '<div class="ch-rank" style="font-size:20px;color:#EF4444;font-weight:900;min-width:40px">'+cnt+'x</div>'
+          + '<div class="ch-name">'
+            + '<div style="font-weight:700;font-size:12px;color:var(--text)">'+loja+'</div>'
+            + '<div style="font-size:10px;color:var(--text2);margin-top:2px">'+equip+'</div>'
+          + '</div>'
+        + '</div>';
+      }).join('')
+    : '<div class="ch-empty">Nenhum rechamado identificado</div>';
 
   // Ranking técnicos
   const tecM={};const tecH={};const tecC={};
