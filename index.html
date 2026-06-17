@@ -1434,6 +1434,88 @@ abrirDB().then(()=>{
 
 
   
+  <!-- ═══ ABA 4: INDICADORES ══════════════════════════════════════════ -->
+  <div class="tab-secao" id="secao-indicadores">
+  <div class="ind-wrap">
+
+    <div class="ind-toolbar">
+      <input id="fBusca" type="text" placeholder="Buscar loja, BKN, equipamento...">
+      <select id="fMes"><option value="">Todos os meses</option></select>
+      <select id="fReg"><option value="">Todas as regionais</option></select>
+      <select id="fEq"><option value="">Todos os equipamentos</option></select>
+      <select id="fSt"><option value="">Todos os status</option></select>
+      <button id="limpar">&#x2715; Limpar</button>
+      <button class="primary" onclick="indExportar()">&#x2B07; Exportar CSV</button>
+    </div>
+
+    <div class="ind-upd" id="ind-upd"></div>
+
+    <div class="ind-kpis">
+      <div class="ind-kpi c1"><div class="lbl">Total de OS</div><div class="val" id="kIndTotal">—</div><div class="sub" id="kIndTotalSub"></div></div>
+      <div class="ind-kpi"><div class="lbl">Valor Total</div><div class="val" style="font-size:20px" id="kIndValor">—</div><div class="sub">carteira filtrada</div></div>
+      <div class="ind-kpi c2"><div class="lbl">Ag. Aprovacao</div><div class="val" id="kIndAg">—</div><div class="sub" id="kIndAgVal"></div></div>
+      <div class="ind-kpi c3"><div class="lbl">Aprovado / Validado</div><div class="val" id="kIndAprov">—</div><div class="sub" id="kIndAprovVal"></div></div>
+      <div class="ind-kpi c4"><div class="lbl">Negado / Invalidado</div><div class="val" id="kIndNeg">—</div><div class="sub" id="kIndNegPct"></div></div>
+      <div class="ind-kpi c1"><div class="lbl">Lojas BKN</div><div class="val" id="kIndLojas">—</div><div class="sub">unidades unicas</div></div>
+    </div>
+
+    <div class="ind-charts">
+      <div class="ind-chart-box">
+        <div class="ind-chart-title">Por Status</div>
+        <div class="ind-chart-body" id="gStatus"></div>
+      </div>
+      <div class="ind-chart-box">
+        <div class="ind-chart-title">Por Equipamento (Top 10)</div>
+        <div class="ind-chart-body" id="gEquip"></div>
+      </div>
+      <div class="ind-chart-box">
+        <div class="ind-chart-title">Evolucao Mensal</div>
+        <div class="ind-chart-body" id="gMes"></div>
+      </div>
+      <div class="ind-chart-box">
+        <div class="ind-chart-title">Por Regional (Valor)</div>
+        <div class="ind-chart-body" id="gReg"></div>
+      </div>
+    </div>
+
+    <div class="ind-tables">
+      <div class="ind-table-box">
+        <div class="ind-table-title">Por Loja BKN <span id="ind-loja-cnt" style="font-weight:400;color:var(--text3)"></span></div>
+        <div class="ind-table-wrap">
+          <table class="itbl" id="tLoja">
+            <thead><tr>
+              <th data-k="bkn">BKN</th>
+              <th data-k="unidade">Loja</th>
+              <th data-k="regional">Regional</th>
+              <th data-k="qtd" style="text-align:right">Qtd</th>
+              <th data-k="valor" style="text-align:right">Valor</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ind-table-box">
+        <div class="ind-table-title">Detalhe de OS <span id="cnt" style="font-weight:400;color:var(--text3)"></span></div>
+        <div class="ind-table-wrap">
+          <table class="itbl" id="tDet">
+            <thead><tr>
+              <th data-k="bkn">BKN</th>
+              <th data-k="unidade">Loja</th>
+              <th data-k="equip">Equipamento</th>
+              <th data-k="status">Status</th>
+              <th data-k="regional">Regional</th>
+              <th data-k="mes">Mes</th>
+              <th data-k="valor" style="text-align:right">Valor</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
 </div><!-- /main -->
 
 
