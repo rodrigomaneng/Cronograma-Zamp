@@ -1794,34 +1794,46 @@ abrirDB().then(()=>{
       document.getElementById(id).onchange=render;
     });
     document.getElementById('fBusca').oninput=render;
-    document.getElementById('limpar').onclick=function(){
-      ['fMes','fReg','fEq','fSt'].forEach(function(id){document.getElementById(id).value='';});
-      document.getElementById('fBusca').value='';
+    var btnLimpar = document.getElementById('limpar');
+    if(btnLimpar) btnLimpar.onclick=function(){
+      ['fMes','fReg','fEq','fSt'].forEach(function(id){
+        var el=document.getElementById(id); if(el) el.value='';
+      });
+      var fb=document.getElementById('fBusca'); if(fb) fb.value='';
       render();
     };
   }
 
-  // Inicializar quando aba for aberta
-  var _mudarAbaOrig2 = typeof mudarAba !== 'undefined' ? mudarAba : function(){};
+  // ── Init robusto: tenta imediatamente e também ao trocar aba ──
   var _indReady = false;
-  mudarAba = function(nome, btn){
-    _mudarAbaOrig2(nome, btn);
-    if(nome === 'indicadores' && !_indReady){
-      _indReady = true;
-      setTimeout(init, 100);
-    } else if(nome === 'indicadores'){
-      render();
+
+  function tryInit(){
+    if(_indReady) return;
+    if(typeof REGISTROS === 'undefined' || !REGISTROS.length) return;
+    if(!document.getElementById('kIndTotal')) return;
+    _indReady = true;
+    init();
+  }
+
+  // Tentar ao carregar
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(tryInit, 300); });
+  } else {
+    setTimeout(tryInit, 300);
+  }
+  // Tentar com delay maior (aguarda abrirDB)
+  setTimeout(tryInit, 1500);
+  setTimeout(tryInit, 3000);
+
+  // Interceptar mudarAba
+  var _origAba = window.mudarAba;
+  window.mudarAba = function(nome, btn){
+    if(_origAba) _origAba(nome, btn);
+    if(nome === 'indicadores'){
+      if(!_indReady) tryInit();
+      else render();
     }
   };
-
-  // Também inicializar se a aba já estiver ativa ao carregar
-  setTimeout(function(){
-    var sec = document.getElementById('secao-indicadores');
-    if(sec && sec.classList.contains('ativo') && !_indReady){
-      _indReady = true;
-      init();
-    }
-  }, 800);
 
 })();
 </script>
@@ -1844,12 +1856,31 @@ function mudarAba(nome,btn){
 // PREVENTIVAS
 // ══════════════════════════════════════════════════════════════════════
 function parseCsvGen(txt){
-  const L=txt.trim().split('\n');const sep=L[0].includes('\t')?'\t':L[0].includes(';')?';':',';
-  const H=L[0].split(sep).map(h=>h.trim().replace(/^"|"$/g,''));
-  return L.slice(1).filter(l=>l.trim()).map(l=>{
-    const V=l.split(sep),o={};
-    H.forEach((h,i)=>o[h]=(V[i]||'').trim().replace(/^"|"$/g,''));
-    return o;
+  // Parser robusto: detecta separador, trata campos com aspas
+  function parseLinha(linha, sep){
+    var campos = [], cur = '', inQ = false;
+    for(var i=0; i<linha.length; i++){
+      var c=linha[i];
+      if(c==='"'){
+        if(inQ && linha[i+1]==='"'){ cur+='"'; i++; }
+        else inQ=!inQ;
+      } else if(c===sep && !inQ){
+        campos.push(cur.trim()); cur='';
+      } else { cur+=c; }
+    }
+    campos.push(cur.trim());
+    return campos;
+  }
+  var linhas = txt.trim().split('\n').filter(function(l){return l.trim();});
+  if(!linhas.length) return [];
+  var primeira = linhas[0];
+  var sep = primeira.includes('\t')?'\t':primeira.includes(';')?';':',';
+  var hdrs = parseLinha(primeira, sep).map(function(h){return h.replace(/^["\s]+|["\s]+$/g,'');});
+  return linhas.slice(1).filter(function(l){return l.trim();}).map(function(l){
+    var vals = parseLinha(l, sep);
+    var obj = {};
+    hdrs.forEach(function(h,i){ obj[h] = (vals[i]||'').replace(/^["\s]+|["\s]+$/g,''); });
+    return obj;
   });
 }
 function mesParaNum(m){
@@ -1948,6 +1979,12 @@ function chCarregar(inp){
   const r=new FileReader();
   r.onload=e=>{
     _chAll=parseCsvGen(e.target.result);
+    // Debug: verificar colunas detectadas
+    if(_chAll.length>0){
+      const cols=Object.keys(_chAll[0]);
+      console.log('[Chamados] Colunas detectadas:', cols);
+      console.log('[Chamados] 1a linha:', _chAll[0]);
+    }
     _chFilt=[..._chAll];_chPg=1;
     document.getElementById('ch-upload').style.display='none';
     document.getElementById('ch-dash').style.display='block';
