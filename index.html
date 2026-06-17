@@ -1560,12 +1560,13 @@ function indRender(){
   var agVal=ag.reduce(function(s,r){return s+(+r.valor||0);},0);
   var aprovVal=aprov.reduce(function(s,r){return s+(+r.valor||0);},0);
 
-  document.getElementById('ind-kpis').innerHTML=
-    '<div class="ind-kpi blue"><div class="ind-kpi-l">Total OS</div><div class="ind-kpi-v">'+N+'</div><div class="ind-kpi-s">propostas</div></div>'+
-    '<div class="ind-kpi"><div class="ind-kpi-l">Valor Total</div><div class="ind-kpi-v" style="font-size:20px">'+indBRL(totalVal)+'</div><div class="ind-kpi-s">carteira</div></div>'+
+  var kpiNeg = N ? Math.round(neg.length/N*100)+'% do total' : '--';
+  document.getElementById('ind-kpis').innerHTML =
+    '<div class="ind-kpi blue"><div class="ind-kpi-l">Total OS</div><div class="ind-kpi-v">'+N+'</div><div class="ind-kpi-s">'+REGISTROS.length+' na base</div></div>'+
+    '<div class="ind-kpi"><div class="ind-kpi-l">Valor Total</div><div class="ind-kpi-v" style="font-size:20px">'+indBRL(totalVal)+'</div><div class="ind-kpi-s">carteira filtrada</div></div>'+
     '<div class="ind-kpi pend"><div class="ind-kpi-l">Ag. Aprovação</div><div class="ind-kpi-v">'+ag.length+'</div><div class="ind-kpi-s">'+indBRL(agVal)+'</div></div>'+
-    '<div class="ind-kpi ok"><div class="ind-kpi-l">Aprovado/Validado</div><div class="ind-kpi-v">'+aprov.length+'</div><div class="ind-kpi-s">'+indBRL(aprovVal)+'</div></div>'+
-    '<div class="ind-kpi urg"><div class="ind-kpi-l">Negado/Invalidado</div><div class="ind-kpi-v">'+neg.length+'</div><div class="ind-kpi-s">'+N?Math.round(neg.length/N*100)+'% do total':''+'</div></div>'+
+    '<div class="ind-kpi ok"><div class="ind-kpi-l">Aprovado / Validado</div><div class="ind-kpi-v">'+aprov.length+'</div><div class="ind-kpi-s">'+indBRL(aprovVal)+'</div></div>'+
+    '<div class="ind-kpi urg"><div class="ind-kpi-l">Negado / Invalidado</div><div class="ind-kpi-v">'+neg.length+'</div><div class="ind-kpi-s">'+kpiNeg+'</div></div>'+
     '<div class="ind-kpi blue"><div class="ind-kpi-l">Lojas BKN</div><div class="ind-kpi-v">'+lojas.size+'</div><div class="ind-kpi-s">unidades</div></div>';
 
   // Gráfico por status
@@ -1724,13 +1725,20 @@ function indExportar(){
   a.download='indicadores_corretivas.csv';a.click();
 }
 
-// Inicializar quando a aba for aberta pela primeira vez
-var _indInit=false;
-var _origMudarAba=mudarAba;
-mudarAba=function(nome,btn){
-  _origMudarAba(nome,btn);
-  if(nome==='indicadores'&&!_indInit){
-    _indInit=true;
+// Inicializar indicadores após page load (usa REGISTROS das corretivas)
+window.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof REGISTROS !== 'undefined' && REGISTROS.length > 0){
+      indPopular();
+      indRender();
+    }
+  }, 500);
+});
+// Atualizar indicadores ao trocar para a aba
+var _mudarAbaOrig = mudarAba;
+mudarAba = function(nome, btn){
+  _mudarAbaOrig(nome, btn);
+  if(nome === 'indicadores'){
     indPopular();
     indRender();
   }
