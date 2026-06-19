@@ -1561,10 +1561,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
 
     <div class="ind-toolbar">
       <input id="fBusca" type="text" placeholder="Buscar loja, BKN, equipamento...">
-      <select id="fMes"><option value="">Todos os meses</option></select>
-      <select id="fReg"><option value="">Todas as regionais</option></select>
-      <select id="fEq"><option value="">Todos os equipamentos</option></select>
-      <select id="fSt"><option value="">Todos os status</option></select>
+      <div class="msel-wrap" id="wrapIndMes"></div>
+      <div class="msel-wrap" id="wrapIndReg"></div>
+      <div class="msel-wrap" id="wrapIndEq"></div>
+      <div class="msel-wrap" id="wrapIndSt"></div>
       <button id="limpar">&#x2715; Limpar</button>
       <button class="primary" onclick="indExportar()">&#x2B07; Exportar CSV</button>
     </div>
@@ -1610,6 +1610,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
               <th data-k="regional">Regional</th>
               <th data-k="qtd" style="text-align:right">Qtd</th>
               <th data-k="valor" style="text-align:right">Valor</th>
+              <th></th>
             </tr></thead>
             <tbody></tbody>
           </table>
@@ -1627,6 +1628,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
               <th data-k="regional">Regional</th>
               <th data-k="mes">Mes</th>
               <th data-k="valor" style="text-align:right">Valor</th>
+              <th></th>
             </tr></thead>
             <tbody></tbody>
           </table>
@@ -1694,21 +1696,22 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
 
   function popularFiltros(){
     var DATA=getDATA();
-    function populaSelect(id,vals,label){
-      var el=document.getElementById(id);
-      var cur=el.value;
-      el.innerHTML='<option value="">'+label+'</option>'+
-        vals.map(function(v){return'<option value="'+v+'">'+v+'</option>';}).join('');
-      if(cur)el.value=cur;
-    }
     var meses=[...new Set(DATA.map(function(d){return d.mes||'';}).filter(Boolean))].sort(function(a,b){return mesNum(a)-mesNum(b);}).map(mesLabel);
     var regs=[...new Set(DATA.map(function(d){return d.regional||'';}).filter(Boolean))].sort();
     var eqs=[...new Set(DATA.map(function(d){return d.equip||'';}).filter(Boolean))].sort();
     var sts=[...new Set(DATA.map(function(d){return d.status||'';}).filter(Boolean))].sort();
-    populaSelect('fMes',meses,'Todos os meses');
-    populaSelect('fReg',regs,'Todas as regionais');
-    populaSelect('fEq',eqs,'Todos os equipamentos');
-    populaSelect('fSt',sts,'Todos os status');
+    if(!_mselInstances['wrapIndMes'])
+      _mselInstances['wrapIndMes']=new MultiSelect('wrapIndMes','Mês',meses,render);
+    else _mselInstances['wrapIndMes'].setItems(meses);
+    if(!_mselInstances['wrapIndReg'])
+      _mselInstances['wrapIndReg']=new MultiSelect('wrapIndReg','Regional',regs,render);
+    else _mselInstances['wrapIndReg'].setItems(regs);
+    if(!_mselInstances['wrapIndEq'])
+      _mselInstances['wrapIndEq']=new MultiSelect('wrapIndEq','Equipamento',eqs,render);
+    else _mselInstances['wrapIndEq'].setItems(eqs);
+    if(!_mselInstances['wrapIndSt'])
+      _mselInstances['wrapIndSt']=new MultiSelect('wrapIndSt','Status',sts,render);
+    else _mselInstances['wrapIndSt'].setItems(sts);
     // Info total
     var el=document.getElementById('ind-upd');
     if(el) el.textContent='Base: '+DATA.length+' registros · '+BRL(DATA.reduce(function(s,d){return s+(+d.valor||0);},0))+' em carteira';
@@ -1716,23 +1719,17 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
 
   function render(){
     var DATA=getDATA();
-    var mes=document.getElementById('fMes').value;
-    var reg=document.getElementById('fReg').value;
-    var eq=document.getElementById('fEq').value;
-    var st=document.getElementById('fSt').value;
+    var fMes=_mselInstances['wrapIndMes']?_mselInstances['wrapIndMes'].getSelected():[];
+    var fReg=_mselInstances['wrapIndReg']?_mselInstances['wrapIndReg'].getSelected():[];
+    var fEq=_mselInstances['wrapIndEq']?_mselInstances['wrapIndEq'].getSelected():[];
+    var fSt=_mselInstances['wrapIndSt']?_mselInstances['wrapIndSt'].getSelected():[];
     var busca=(document.getElementById('fBusca').value||'').toLowerCase();
 
-    // Converter label de mês de volta para formato interno
-    var mesInterno='';
-    if(mes){
-      DATA.forEach(function(d){if(mesLabel(d.mes)===mes)mesInterno=d.mes;});
-    }
-
     var f=DATA.filter(function(d){
-      if(mesInterno&&d.mes!==mesInterno)return false;
-      if(reg&&d.regional!==reg)return false;
-      if(eq&&d.equip!==eq)return false;
-      if(st&&d.status!==st)return false;
+      if(fMes.length){var ml=mesLabel(d.mes);if(!fMes.includes(ml))return false;}
+      if(fReg.length&&!fReg.includes(d.regional))return false;
+      if(fEq.length&&!fEq.includes(d.equip))return false;
+      if(fSt.length&&!fSt.includes(d.status))return false;
       if(busca){
         var txt=((d.bkn||'')+(d.unidade||'')+(d.equip||'')+(d.desc||'')).toLowerCase();
         if(txt.indexOf(busca)<0)return false;
@@ -1862,6 +1859,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
         '<td>'+d.regional+'</td>'+
         '<td style="white-space:nowrap">'+mesLabel(d.mes)+'</td>'+
         '<td class="num">'+BRL(d.valor)+'</td>'+
+        '<td><button class="ver-btn" onclick="openDetailZamp(\''+d._uid+'\')" style="font-size:11px;padding:2px 8px">Ver</button></td>'+
       '</tr>';
     }).join('');
   }
@@ -1876,10 +1874,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
     var st=document.getElementById('fSt').value;
     var busca=(document.getElementById('fBusca').value||'').toLowerCase();
     var f=DATA.filter(function(d){
-      if(mesInterno&&d.mes!==mesInterno)return false;
-      if(reg&&d.regional!==reg)return false;
-      if(eq&&d.equip!==eq)return false;
-      if(st&&d.status!==st)return false;
+      if(fMes.length){var ml=mesLabel(d.mes);if(!fMes.includes(ml))return false;}
+      if(fReg.length&&!fReg.includes(d.regional))return false;
+      if(fEq.length&&!fEq.includes(d.equip))return false;
+      if(fSt.length&&!fSt.includes(d.status))return false;
       if(busca&&!((d.bkn||'')+(d.unidade||'')+(d.equip||'')).toLowerCase().includes(busca))return false;
       return true;
     });
@@ -1910,15 +1908,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();})
         sortDet.k=k;render();
       };
     });
-    // Filtros
-    ['fMes','fReg','fEq','fSt'].forEach(function(id){
-      document.getElementById(id).onchange=render;
-    });
+    // Filtros — onChange registrado no MultiSelect constructor
     document.getElementById('fBusca').oninput=render;
     var btnLimpar = document.getElementById('limpar');
     if(btnLimpar) btnLimpar.onclick=function(){
-      ['fMes','fReg','fEq','fSt'].forEach(function(id){
-        var el=document.getElementById(id); if(el) el.value='';
+      ['wrapIndMes','wrapIndReg','wrapIndEq','wrapIndSt'].forEach(function(id){
+        if(_mselInstances[id]) _mselInstances[id].clearAll();
       });
       var fb=document.getElementById('fBusca'); if(fb) fb.value='';
       render();
