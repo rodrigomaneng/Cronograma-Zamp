@@ -405,6 +405,49 @@ table.itbl .num{text-align:right;font-variant-numeric:tabular-nums}
 .ind-badge.neg{background:#FEE2E2;color:#B91C1C}
 .ind-badge.outro{background:#F1F5F9;color:#64748B}
 
+
+/* ── MULTI-SELECT DROPDOWN ────────────────────────────────────────── */
+.msel-wrap{position:relative;display:inline-block;}
+.msel-btn{
+  display:flex;align-items:center;gap:6px;
+  background:#fff;border:1px solid #d0d5dd;border-radius:8px;
+  padding:7px 12px;font-size:13px;cursor:pointer;white-space:nowrap;
+  min-width:140px;justify-content:space-between;
+  color:#344054;transition:border-color .15s;user-select:none;
+}
+.msel-btn:hover{border-color:#7c5cfc;}
+.msel-btn.active{border-color:#7c5cfc;box-shadow:0 0 0 3px rgba(124,92,252,.12);}
+.msel-badge{
+  background:#7c5cfc;color:#fff;border-radius:10px;
+  padding:1px 7px;font-size:11px;font-weight:700;
+}
+.msel-caret{margin-left:4px;font-size:10px;color:#667085;}
+.msel-panel{
+  position:absolute;top:calc(100% + 4px);left:0;z-index:999;
+  background:#fff;border:1px solid #d0d5dd;border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:200px;
+  padding:8px 0;display:none;max-height:300px;overflow-y:auto;
+}
+.msel-panel.open{display:block;}
+.msel-search{
+  margin:4px 10px 8px;padding:5px 10px;border:1px solid #d0d5dd;
+  border-radius:6px;font-size:12px;width:calc(100% - 20px);box-sizing:border-box;
+}
+.msel-item{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 14px;font-size:13px;cursor:pointer;color:#344054;
+  transition:background .1s;
+}
+.msel-item:hover{background:#f4f0ff;}
+.msel-item input[type=checkbox]{
+  accent-color:#7c5cfc;width:14px;height:14px;cursor:pointer;flex-shrink:0;
+}
+.msel-item.checked{font-weight:600;color:#7c5cfc;}
+.msel-clear{
+  border-top:1px solid #eee;margin-top:4px;padding:7px 14px;
+  font-size:12px;color:#7c5cfc;cursor:pointer;text-align:center;
+}
+.msel-clear:hover{background:#f4f0ff;}
 </style>
 </head>
 <body>
@@ -497,16 +540,12 @@ table.itbl .num{text-align:right;font-variant-numeric:tabular-nums}
   <div class="toolbar">
     <input class="srch" id="srch" placeholder="Buscar loja, chamado, BKN, descrição…" oninput="render()">
     <select class="sel" id="fCli" onchange="render()"><option value="">Cliente</option></select>
-    <select class="sel" id="fReg" onchange="render()"><option value="">Regional</option></select>
+    <div class="msel-wrap" id="wrapReg"></div>
     <select class="sel" id="fMes" onchange="render()"><option value="">Mês</option></select>
     <select class="sel" id="fSup" onchange="render()"><option value="">Supervisor</option></select>
     <select class="sel" id="fTec" onchange="render()"><option value="">Técnico</option></select>
-    <select class="sel" id="fEquip" onchange="render()"><option value="">Equipamento</option></select>
-    <select class="sel" id="fStatus" onchange="render()">
-      <option value="">Status base</option>
-      <option>Aguardando Aprovação</option><option>Aprovado</option>
-      <option>Validado</option><option>Negado</option>
-    </select>
+    <div class="msel-wrap" id="wrapEquip"></div>
+    <div class="msel-wrap" id="wrapStatus"></div>
     <select class="sel" id="fAcao" onchange="render()">
       <option value="">Ação</option>
       <option value="pend">Sem ação</option><option value="prog">Programadas</option>
@@ -636,7 +675,7 @@ async function salvarRegistrosNoSheets() { /* reservado para uso futuro */ }
 
 async function carregarDoSheets() {
   if (!SCRIPT_URL) {
-    load(); gerarData(); repovoarSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
+    load(); gerarData(); repovoarSelects(); initMultiSelects(); repovoarSupTec();repovoarEquip(); buildLegend(); buildFluxo();
     render(); updateKPIs(); updateProgress(); updateBtns();
     setSyncStatus('off', 'Não conectado — clique em ⚙ Configurar para sincronizar com a equipe');
     return;
@@ -915,11 +954,12 @@ function repovoarSelects(){
   const regs=[...new Set(REGISTROS.map(r=>r.regional))].filter(Boolean).sort();
   const meses=[...new Set(REGISTROS.map(r=>r.mes))].filter(Boolean).sort();
   const clis=[...new Set(REGISTROS.map(r=>r.cliente))].filter(Boolean).sort();
-  const fR=document.getElementById('fReg'),fM=document.getElementById('fMes'),fC=document.getElementById('fCli');
-  [fR,fM,fC].forEach(el=>{while(el.options.length>1)el.remove(1);});
-  regs.forEach(v=>fR.insertAdjacentHTML('beforeend',`<option>${v}</option>`));
+  const fM=document.getElementById('fMes'),fC=document.getElementById('fCli');
+  [fM,fC].forEach(el=>{while(el.options.length>1)el.remove(1);});
   meses.forEach(v=>fM.insertAdjacentHTML('beforeend',`<option>${v}</option>`));
   clis.forEach(v=>fC.insertAdjacentHTML('beforeend',`<option>${v}</option>`));
+  // Atualizar multi-select de regionais preservando seleção
+  if(_mselInstances['wrapReg']) _mselInstances['wrapReg'].setItems(regs);
 }
 function repovoarSupTec(){
   const sups=[...new Set(Object.values(cardExtra).map(e=>e.sup).filter(s=>s&&s.trim()))].sort();
@@ -930,11 +970,8 @@ function repovoarSupTec(){
   tecs.forEach(t=>fT.insertAdjacentHTML('beforeend',`<option>${t}</option>`));
 }
 function repovoarEquip(){
-  const sel=document.getElementById('fEquip');
-  if(!sel)return;
-  const cur=sel.value;
   const equips=[...new Set(REGISTROS.map(r=>r.equip).filter(Boolean))].sort();
-  sel.innerHTML='<option value="">Equipamento</option>'+equips.map(e=>`<option value="${e}"${e===cur?' selected':''}>${e}</option>`).join('');
+  if(_mselInstances['wrapEquip']) _mselInstances['wrapEquip'].setItems(equips);
 }
 
 function buildLegend(){
@@ -963,15 +1000,15 @@ function statusClass(s){
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 function render(){
   const fCli=document.getElementById('fCli').value;
-  const fReg=document.getElementById('fReg').value;
+  const fReg=_mselInstances['wrapReg']?_mselInstances['wrapReg'].getSelected():[];
   const fMes=document.getElementById('fMes').value;
   const fSup=document.getElementById('fSup').value;
   const fTec=document.getElementById('fTec').value;
-  const fStatus=document.getElementById('fStatus').value;
+  const fStatus=_mselInstances['wrapStatus']?_mselInstances['wrapStatus'].getSelected():[];
   const fAcao=document.getElementById('fAcao').value;
-  const fEquip=document.getElementById('fEquip')?.value||'';
+  const fEquip=_mselInstances['wrapEquip']?_mselInstances['wrapEquip'].getSelected():[];
   const q=document.getElementById('srch').value.toLowerCase().trim();
-  const isFiltered=fCli||fReg||fMes||fSup||fTec||fStatus||fAcao||q||activeCls.size>0||_statusFilter;
+  const isFiltered=fCli||fReg.length||fMes||fSup||fTec||fStatus.length||fAcao||q||activeCls.size>0||_statusFilter||fEquip.length;
   let tot=0,totV=0,html='';
 
   const STATUS_MATCH = {
@@ -988,12 +1025,12 @@ function render(){
       const id=r._id; const isProg=!!progState[id],isExec=!!execState[id],isFat=!!fatState[id];
       const ex=cardExtra[id]||{};
       if(fCli&&r.cliente!==fCli)return false;
-      if(fReg&&r.regional!==fReg)return false;
+      if(fReg.length&&!fReg.includes(r.regional))return false;
       if(fMes&&r.mes!==fMes)return false;
       if(fSup&&(ex.sup||'')!==fSup)return false;
       if(fTec&&(ex.tec||'')!==fTec)return false;
-      if(fEquip&&r.equip!==fEquip)return false;
-      if(fStatus&&r.status!==fStatus)return false;
+      if(fEquip.length&&!fEquip.includes(r.equip))return false;
+      if(fStatus.length&&!fStatus.some(s=>r.status===s))return false;
       if(_statusFilter&&STATUS_MATCH[_statusFilter]&&!STATUS_MATCH[_statusFilter](r.status))return false;
       if(activeCls.size>0&&!activeCls.has(r.cliente))return false;
       if(fAcao==='pend'&&(isFat||isProg||isExec))return false;
@@ -2253,4 +2290,105 @@ function chModoApresentacao(){
   document.getElementById('ch-pres').style.display='block';
   document.getElementById('ch-pres').scrollTop=0;
 }
+
+// ── MULTI-SELECT ───────────────────────────────────────────────────────────
+class MultiSelect {
+  constructor(containerId, placeholder, items, onChange) {
+    this.id = containerId;
+    this.placeholder = placeholder;
+    this.selected = new Set();
+    this.onChange = onChange;
+    this.items = items;
+    this.render(items);
+  }
+  render(items) {
+    this.items = items || this.items;
+    const wrap = document.getElementById(this.id);
+    if (!wrap) return;
+    const sel = this.selected;
+    const n = sel.size;
+    wrap.innerHTML = `
+      <div class="msel-btn${n ? ' active' : ''}" onclick="__mselToggle('${this.id}')">
+        <span>${this.placeholder}${n ? '' : ''}</span>
+        ${n ? `<span class="msel-badge">${n}</span>` : ''}
+        <span class="msel-caret">▾</span>
+      </div>
+      <div class="msel-panel" id="panel_${this.id}">
+        ${this.items.length > 6 ? `<input class="msel-search" placeholder="Buscar…" oninput="__mselSearch('${this.id}',this.value)">` : ''}
+        <div class="msel-options">
+          ${this.items.map(v => `
+            <label class="msel-item${sel.has(v) ? ' checked' : ''}">
+              <input type="checkbox" ${sel.has(v) ? 'checked' : ''} onchange="__mselCheck('${this.id}','${v.replace(/'/g,"\\'")}',this.checked)">
+              ${v}
+            </label>`).join('')}
+        </div>
+        ${n ? `<div class="msel-clear" onclick="__mselClear('${this.id}')">Limpar seleção</div>` : ''}
+      </div>`;
+    wrap.__msel = this;
+  }
+  getSelected() { return [...this.selected]; }
+  setItems(items) { this.render(items); }
+  clear() { this.selected.clear(); this.render(); this.onChange(); }
+}
+
+const _mselInstances = {};
+
+function __mselToggle(id) {
+  const panel = document.getElementById('panel_' + id);
+  const isOpen = panel.classList.contains('open');
+  // fecha todos
+  document.querySelectorAll('.msel-panel.open').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.msel-btn.open').forEach(b => b.classList.remove('open'));
+  if (!isOpen) {
+    panel.classList.add('open');
+    const srch = panel.querySelector('.msel-search');
+    if (srch) setTimeout(() => srch.focus(), 50);
+  }
+}
+
+function __mselCheck(id, value, checked) {
+  const inst = _mselInstances[id];
+  if (!inst) return;
+  if (checked) inst.selected.add(value); else inst.selected.delete(value);
+  inst.render();
+  inst.onChange();
+}
+
+function __mselSearch(id, q) {
+  const inst = _mselInstances[id];
+  if (!inst) return;
+  const lq = q.toLowerCase();
+  const optDiv = document.querySelector(`#panel_${id} .msel-options`);
+  if (!optDiv) return;
+  optDiv.innerHTML = inst.items
+    .filter(v => v.toLowerCase().includes(lq))
+    .map(v => `
+      <label class="msel-item${inst.selected.has(v) ? ' checked' : ''}">
+        <input type="checkbox" ${inst.selected.has(v) ? 'checked' : ''} onchange="__mselCheck('${id}','${v.replace(/'/g,"\\'")}',this.checked)">
+        ${v}
+      </label>`).join('');
+}
+
+function __mselClear(id) {
+  const inst = _mselInstances[id];
+  if (!inst) return;
+  inst.clear();
+}
+
+// Fechar ao clicar fora
+document.addEventListener('click', e => {
+  if (!e.target.closest('.msel-wrap')) {
+    document.querySelectorAll('.msel-panel.open').forEach(p => p.classList.remove('open'));
+  }
+});
+
+// Inicializar os 3 multi-selects
+function initMultiSelects() {
+  _mselInstances['wrapReg'] = new MultiSelect('wrapReg', 'Regional', [], render);
+  _mselInstances['wrapEquip'] = new MultiSelect('wrapEquip', 'Equipamento', [], render);
+  _mselInstances['wrapStatus'] = new MultiSelect('wrapStatus', 'Status', [
+    'Aguardando Aprovação','Aprovado','Validado','Negado','Invalidado','Validação Negada'
+  ], render);
+}
+
 </script>
