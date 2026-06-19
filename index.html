@@ -1634,7 +1634,6 @@ abrirDB().then(()=>{
     // Info total
     var el=document.getElementById('ind-upd');
     if(el) el.textContent='Base: '+DATA.length+' registros · '+BRL(DATA.reduce(function(s,d){return s+(+d.valor||0);},0))+' em carteira';
-  },0))+' em carteira';
   }
 
   function render(){
