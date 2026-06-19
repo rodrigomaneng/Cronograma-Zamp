@@ -448,6 +448,35 @@ table.itbl .num{text-align:right;font-variant-numeric:tabular-nums}
   font-size:12px;color:#7c5cfc;cursor:pointer;text-align:center;
 }
 .msel-clear:hover{background:#f4f0ff;}
+
+/* ── Detail Modal ─────────────────────────────────────────────────────────── */
+#zamp-detail-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
+  z-index:9999;align-items:center;justify-content:center;
+}
+#zamp-detail-overlay.open{display:flex;}
+#zamp-detail-box{
+  background:#fff;border-radius:14px;width:min(680px,96vw);
+  max-height:88vh;overflow-y:auto;padding:28px 28px 22px;
+  box-shadow:0 8px 40px rgba(0,0,0,.22);position:relative;
+}
+#zamp-detail-box h2{margin:0 0 16px;font-size:17px;color:#1a1a2e;font-weight:700;}
+.zdgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-bottom:14px;}
+.zdgrid-full{margin-bottom:14px;}
+.zdi{background:#f7f7fb;border-radius:8px;padding:8px 12px;}
+.zdi-lbl{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.zdi-val{font-size:13px;color:#1a1a2e;word-break:break-word;}
+.zdtag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;}
+.zdclose{position:absolute;top:14px;right:16px;background:none;border:none;
+  font-size:22px;cursor:pointer;color:#999;line-height:1;}
+.zdclose:hover{color:#333;}
+.ver-btn{
+  font-size:11px;padding:3px 10px;border-radius:6px;
+  background:#7c5cfc;color:#fff;border:none;cursor:pointer;
+  font-weight:600;letter-spacing:.02em;white-space:nowrap;
+}
+.ver-btn:hover{background:#5b3fd8;}
+
 </style>
 </head>
 <body>
@@ -1107,6 +1136,9 @@ function render(){
                 </div>
               </div>
               <div class="card-anexos" id="anexos-${id}"></div>
+              <div style="margin-top:6px;text-align:right" onclick="event.stopPropagation()">
+                <button class="ver-btn" onclick="openDetailZamp('${id}')">🔍 Ver detalhes</button>
+              </div>
             </div>`;
           }).join('')}
         </div>
@@ -1324,6 +1356,58 @@ abrirDB().then(()=>{
     setSyncStatus('off', 'Não conectado ao Google Sheets — clique em ⚙ Configurar para salvar na nuvem');
   }
 });
+
+function openDetailZamp(id){
+  const r = REGISTROS.find(x=>x._uid===id||x._id===id);
+  if(!r) return;
+  const ex = getExtra ? getExtra(id) : (cardExtra[id]||{});
+  const isProg = !!progState[id];
+  const isExec = !!execState[id];
+  const isFat  = !!fatState[id];
+
+  document.getElementById('zd-title').textContent =
+    (r.cliente||'—') + (r.chamado ? ' – Chamado '+r.chamado : '');
+
+  const pairs = [
+    ['Cliente',   r.cliente],
+    ['Regional',  r.regional],
+    ['Unidade',   r.unidade],
+    ['Chamado',   r.chamado],
+    ['BKN',       r.bkn],
+    ['Equipamento', r.equip],
+    ['Mês',       r.mes],
+    ['Status',    r.status],
+    ['Valor',     r.valor>0 ? fmt(r.valor) : null],
+    ['Criado em', r.created],
+    ['Supervisor (campo)', ex.sup],
+    ['Técnico (campo)',    ex.tec],
+    ['Data (campo)',       ex.data ? fmtData(ex.data) : null],
+    ['Programada',  isProg ? '✅ Sim' : '—'],
+    ['Executada',   isExec ? '✅ Sim' : '—'],
+    ['Faturada',    isFat  ? '✅ Sim' : '—'],
+  ];
+
+  document.getElementById('zd-grid').innerHTML = pairs.map(([lbl, val]) =>
+    val ? `<div class="zdi"><div class="zdi-lbl">${lbl}</div><div class="zdi-val">${val}</div></div>` : ''
+  ).join('');
+
+  // Full-width blocks
+  const blocks = [
+    ['Descrição', r.desc],
+    ['Observações (campo)', ex.obs],
+  ];
+  document.getElementById('zd-full').innerHTML = blocks.map(([lbl, val]) =>
+    val ? `<div class="zdi" style="margin-bottom:8px"><div class="zdi-lbl">${lbl}</div><div class="zdi-val">${val}</div></div>` : ''
+  ).join('');
+
+  document.getElementById('zamp-detail-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDetailZamp(){
+  document.getElementById('zamp-detail-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();});
 </script>
 
   </div><!-- /secao-corretivas -->
@@ -1873,8 +1957,70 @@ abrirDB().then(()=>{
   };
 
 })();
+
+function openDetailZamp(id){
+  const r = REGISTROS.find(x=>x._uid===id||x._id===id);
+  if(!r) return;
+  const ex = getExtra ? getExtra(id) : (cardExtra[id]||{});
+  const isProg = !!progState[id];
+  const isExec = !!execState[id];
+  const isFat  = !!fatState[id];
+
+  document.getElementById('zd-title').textContent =
+    (r.cliente||'—') + (r.chamado ? ' – Chamado '+r.chamado : '');
+
+  const pairs = [
+    ['Cliente',   r.cliente],
+    ['Regional',  r.regional],
+    ['Unidade',   r.unidade],
+    ['Chamado',   r.chamado],
+    ['BKN',       r.bkn],
+    ['Equipamento', r.equip],
+    ['Mês',       r.mes],
+    ['Status',    r.status],
+    ['Valor',     r.valor>0 ? fmt(r.valor) : null],
+    ['Criado em', r.created],
+    ['Supervisor (campo)', ex.sup],
+    ['Técnico (campo)',    ex.tec],
+    ['Data (campo)',       ex.data ? fmtData(ex.data) : null],
+    ['Programada',  isProg ? '✅ Sim' : '—'],
+    ['Executada',   isExec ? '✅ Sim' : '—'],
+    ['Faturada',    isFat  ? '✅ Sim' : '—'],
+  ];
+
+  document.getElementById('zd-grid').innerHTML = pairs.map(([lbl, val]) =>
+    val ? `<div class="zdi"><div class="zdi-lbl">${lbl}</div><div class="zdi-val">${val}</div></div>` : ''
+  ).join('');
+
+  // Full-width blocks
+  const blocks = [
+    ['Descrição', r.desc],
+    ['Observações (campo)', ex.obs],
+  ];
+  document.getElementById('zd-full').innerHTML = blocks.map(([lbl, val]) =>
+    val ? `<div class="zdi" style="margin-bottom:8px"><div class="zdi-lbl">${lbl}</div><div class="zdi-val">${val}</div></div>` : ''
+  ).join('');
+
+  document.getElementById('zamp-detail-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDetailZamp(){
+  document.getElementById('zamp-detail-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();});
 </script>
 
+
+<!-- ── Zamp Detail Modal ────────────────────────────────────────────── -->
+<div id="zamp-detail-overlay" onclick="closeDetailZamp()">
+  <div id="zamp-detail-box" onclick="event.stopPropagation()">
+    <button class="zdclose" onclick="closeDetailZamp()">✕</button>
+    <h2 id="zd-title">Detalhes</h2>
+    <div class="zdgrid" id="zd-grid"></div>
+    <div class="zdgrid-full" id="zd-full"></div>
+  </div>
+</div>
 </body>
 </html>
 
@@ -2391,4 +2537,56 @@ function initMultiSelects() {
   ], render);
 }
 
+
+function openDetailZamp(id){
+  const r = REGISTROS.find(x=>x._uid===id||x._id===id);
+  if(!r) return;
+  const ex = getExtra ? getExtra(id) : (cardExtra[id]||{});
+  const isProg = !!progState[id];
+  const isExec = !!execState[id];
+  const isFat  = !!fatState[id];
+
+  document.getElementById('zd-title').textContent =
+    (r.cliente||'—') + (r.chamado ? ' – Chamado '+r.chamado : '');
+
+  const pairs = [
+    ['Cliente',   r.cliente],
+    ['Regional',  r.regional],
+    ['Unidade',   r.unidade],
+    ['Chamado',   r.chamado],
+    ['BKN',       r.bkn],
+    ['Equipamento', r.equip],
+    ['Mês',       r.mes],
+    ['Status',    r.status],
+    ['Valor',     r.valor>0 ? fmt(r.valor) : null],
+    ['Criado em', r.created],
+    ['Supervisor (campo)', ex.sup],
+    ['Técnico (campo)',    ex.tec],
+    ['Data (campo)',       ex.data ? fmtData(ex.data) : null],
+    ['Programada',  isProg ? '✅ Sim' : '—'],
+    ['Executada',   isExec ? '✅ Sim' : '—'],
+    ['Faturada',    isFat  ? '✅ Sim' : '—'],
+  ];
+
+  document.getElementById('zd-grid').innerHTML = pairs.map(([lbl, val]) =>
+    val ? `<div class="zdi"><div class="zdi-lbl">${lbl}</div><div class="zdi-val">${val}</div></div>` : ''
+  ).join('');
+
+  // Full-width blocks
+  const blocks = [
+    ['Descrição', r.desc],
+    ['Observações (campo)', ex.obs],
+  ];
+  document.getElementById('zd-full').innerHTML = blocks.map(([lbl, val]) =>
+    val ? `<div class="zdi" style="margin-bottom:8px"><div class="zdi-lbl">${lbl}</div><div class="zdi-val">${val}</div></div>` : ''
+  ).join('');
+
+  document.getElementById('zamp-detail-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDetailZamp(){
+  document.getElementById('zamp-detail-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailZamp();});
 </script>
