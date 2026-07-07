@@ -2358,4 +2358,13 @@ function openDetailZamp(id){
   var pairs=[['Cliente',r.cliente],['Regional',r.regional],['Unidade / Loja',r.unidade],['BKN',r.bkn],['Chamado',r.chamado],['Equipamento',r.equip],['Mês',r.mes],['Status',r.status],['Criado em',r.created],['Supervisor',ex.sup],['Técnico',ex.tec],['Data agendada',ex.data||''],['Programada',isProg?'✅ Sim':'—'],['Executada',isExec?'✅ Sim':'—'],['Faturada',isFat?'✅ Sim':'—']];
   document.getElementById('zd-grid').innerHTML=pairs.map(function(p){return p[1]?'<div class="zdi"><div class="zdi-lbl">'+p[0]+'</div><div class="zdi-val">'+p[1]+'</div></div>':'';}).join('');
   var blocks=[['Descrição do Serviço',r.desc_full||r.desc],['Obs. Orçamento',r.obs_orc],['Observações (campo)',ex.obs]];
-  document.getElementById('zd-full').innerHTML=blocks.map(function(b){return b[1]?'<div class="zdi" style="margin-bottom:8px"><div class="zdi-lbl">'+b[0]+'</div><div class="zdi-val">'+b[1]+'</div></div>':'';}).join(
+  document.getElementById('zd-full').innerHTML=blocks.map(function(b){return b[1]?'<div class="zdi" style="margin-bottom:8px"><div class="zdi-lbl">'+b[0]+'</div><div class="zdi-val">'+b[1]+'</div></div>':'';}).join('');
+  document.getElementById('zamp-detail-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDetailZamp(){
+  document.getElementById('zamp-detail-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDetailZamp();});
+</script>
