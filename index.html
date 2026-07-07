@@ -1618,7 +1618,8 @@ abrirDB().then(()=>{
 
   function getDATA(){
     if(typeof REGISTROS==='undefined')return[];
-    return REGISTROS;
+    // Indicadores refletem apenas os cards reais do export do PCM (exclui arquivados)
+    return REGISTROS.filter(function(r){return !r.arquivado;});
   }
 
   function popularFiltros(){
