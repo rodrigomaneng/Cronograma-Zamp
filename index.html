@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ZAMP · Cronograma de Corretivas</title>
+<title>Zamp - Gestão de dados e Performance</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -456,7 +456,7 @@ table.itbl .num{text-align:right;font-variant-numeric:tabular-nums}
       <span id="logo-fallback" style="display:none;font-size:20px;font-weight:800;letter-spacing:.04em;color:#fff">ZAMP</span>
       <div style="width:1px;height:28px;background:rgba(255,255,255,.2)"></div>
       <div>
-        <h1>Cronograma de Corretivas</h1>
+        <h1>Zamp - Gestão de dados e Performance</h1>
         <div class="top-sub">Maneng Refrigeração · <span id="top-total">497</span> chamados · <span id="top-date">Abr 2026</span></div>
       </div>
     </div>
@@ -2043,6 +2043,17 @@ function chCarregar(inp){
   };r.readAsText(f,'UTF-8');
 }
 
+function zSetChamados(rows){
+  // injeta dados ao vivo no dashboard ORIGINAL de chamados (SLA, tendência, heatmap, rankings)
+  _chAll = rows;
+  _chFilt = _chAll.slice();
+  _chPg = 1;
+  var up=document.getElementById('ch-upload'); if(up) up.style.display='none';
+  var dash=document.getElementById('ch-dash'); if(dash) dash.style.display='block';
+  var fn=document.getElementById('ch-fnome'); if(fn) fn.textContent='BASE GERAL (ao vivo) · '+_chAll.length+' chamados';
+  chPopular(); chRender();
+}
+window.zSetChamados = zSetChamados;
 function chPopular(){
   const opts=(id,vals,label)=>{document.getElementById(id).innerHTML=`<option value="">${label}</option>`+[...new Set(vals)].filter(Boolean).sort().map(v=>`<option value="${v}">${v}</option>`).join('');};
   opts('ch-fs',_chAll.map(r=>chSt(r)),'Todos status');
@@ -2402,63 +2413,22 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDetailZ
     var b=el.querySelector('button'); if(b&&retry) b.onclick=retry;
   }
 
-  // ═══════════════════════ CHAMADOS (dashboard próprio, ao vivo) ═════════
+  // ═══════════════════════ CHAMADOS (dashboard ORIGINAL, ao vivo) ═════════
   var _chLoaded=false;
   function zLoadChamados(force){
     if(_chLoaded && !force) return;
-    var sec=document.getElementById('secao-chamados'); if(!sec) return;
-    var up=document.getElementById('ch-upload'), old=document.getElementById('ch-dash');
+    var up=document.getElementById('ch-upload'), dash=document.getElementById('ch-dash');
     if(up) up.style.display='none';
-    if(old) old.style.display='none';
-    var body=document.getElementById('chz-body');
-    if(!body){ body=document.createElement('div'); body.id='chz-body'; sec.insertBefore(body, sec.firstChild); }
-    zLoading(body);
+    if(dash) dash.style.display='block';
+    var fn=document.getElementById('ch-fnome'); if(fn) fn.textContent='Carregando ao vivo…';
     zFetch('chamados').then(function(j){
-      _chLoaded=true;
-      var G=function(r,k){return r[k]||'';};
-      var mes=function(r){ try{ return (window.getMesCh? window.getMesCh(G(r,'Data Inicial')) : '') || '—'; }catch(e){ return '—'; } };
-      var isC=function(r){ var s=G(r,'Status').toUpperCase(); return s==='CONCLUÍDO'||s==='CONCLUIDO'||s==='FINALIZADO'; };
-      var stEq=function(d,s){ return d.filter(function(r){return G(r,'Status').toUpperCase()===s;}).length; };
-      zDash({
-        mount:body, pfx:'chz', dados:j.dados,
-        srcTxt:'BASE GERAL (ao vivo) · '+j.total+' chamados · '+zStamp(j.geradoEm),
-        onReload:function(){ zLoadChamados(true); },
-        kpis:function(d){
-          var ok=d.filter(isC).length;
-          return [
-            {l:'Total',v:d.length,s:'chamados',cls:'blue'},
-            {l:'Concluídos',v:ok,s:d.length?Math.round(ok/d.length*100)+'%':'—',cls:'ok'},
-            {l:'Executando',v:stEq(d,'EXECUTANDO'),s:'em campo',cls:'pend'},
-            {l:'Pendentes',v:stEq(d,'PENDENTE'),s:'a atender',cls:'urg'},
-            {l:'Lojas',v:new Set(d.map(function(r){return G(r,'Nome Fantasia');})).size,s:'atendidas',cls:'blue'}
-          ];
-        },
-        extraMount:function(d){
-          var pm={}; d.forEach(function(r){var m=mes(r); if(!pm[m])pm[m]={ok:0,tot:0}; pm[m].tot++; if(isC(r))pm[m].ok++;});
-          var ks=Object.keys(pm).sort(function(a,b){ var f=window.mesParaNum||function(){return 0;}; return f(a)-f(b); });
-          return '<div class="ch-card" style="margin:.4rem 0"><div class="ch-card-hdr">📅 Por mês</div><div style="display:flex;gap:8px;flex-wrap:wrap;padding:.6rem">'+ks.map(function(m){var x=pm[m];var pct=x.tot?Math.round(x.ok/x.tot*100):0;return '<div style="min-width:110px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem"><b style="font-size:12px">'+zEsc(m)+'</b><div style="font-size:11px;color:var(--text2)">'+x.ok+'/'+x.tot+' · '+pct+'%</div></div>';}).join('')+'</div></div>';
-        },
-        filtros:[
-          {id:'st',label:'Todos status',get:function(r){return G(r,'Status');}},
-          {id:'tipo',label:'Todas modalidades',get:function(r){return G(r,'Modalidades');}},
-          {id:'loja',label:'Todas as lojas',get:function(r){return G(r,'Nome Fantasia');}},
-          {id:'mes',label:'Todos os meses',get:function(r){return mes(r);}},
-          {id:'eq',label:'Todos equipamentos',get:function(r){return G(r,'Equipamento');}}
-        ],
-        busca:function(r){return G(r,'Nome Fantasia')+' '+G(r,'Descrição')+' '+G(r,'info')+' '+G(r,'Nome do Usuário')+' '+G(r,'ID');},
-        colunas:[
-          {h:'ID',get:function(r){return G(r,'ID');}},
-          {h:'Status',get:function(r){return G(r,'Status');}},
-          {h:'Início',get:function(r){return G(r,'Data Inicial');}},
-          {h:'Fim',get:function(r){return G(r,'Data Final');}},
-          {h:'Loja',get:function(r){return G(r,'Nome Fantasia');}},
-          {h:'Equipamento',get:function(r){return G(r,'Equipamento');}},
-          {h:'Descrição',get:function(r){return G(r,'info')||G(r,'Descrição');}},
-          {h:'Técnico',get:function(r){return G(r,'Nome do Usuário');}},
-          {h:'Prioridade',get:function(r){return G(r,'Prioridade');}}
-        ]
-      });
-    }).catch(function(e){ zErro(body, e, function(){ zLoadChamados(true); }); });
+      if(typeof window.zSetChamados==='function'){ window.zSetChamados(j.dados); _chLoaded=true; }
+      else if(fn){ fn.textContent='Erro: função de render indisponível.'; }
+    }).catch(function(e){
+      if(fn) fn.innerHTML='⚠️ Falha ao ler ao vivo ('+zEsc(e.message)+'). Use o upload manual ou <a href="#" id="ch-retry" onclick="return false">tentar de novo</a>.';
+      var r=document.getElementById('ch-retry'); if(r) r.onclick=function(){ zLoadChamados(true); return false; };
+      if(up) up.style.display='block';
+    });
   }
 
   // ═══════════════════════ genérico: filtro + tabela paginada ════════════
@@ -2558,10 +2528,31 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDetailZ
           ];
         },
         extraMount:function(d){
-          // por mês
           var pm={}; d.forEach(function(r){var m=G(r,'MÊS')||'—'; if(!pm[m])pm[m]={ok:0,tot:0}; pm[m].tot++; if(st(r)==='CONCLUIDA')pm[m].ok++;});
-          var meses=Object.keys(pm).sort(function(a,b){return zMesPrev(a)-zMesPrev(b);});
-          return '<div class="ch-card" style="margin:.4rem 0"><div class="ch-card-hdr">📅 Por mês</div><div style="display:flex;gap:8px;flex-wrap:wrap;padding:.6rem">'+meses.map(function(m){var x=pm[m];var pct=x.tot?Math.round(x.ok/x.tot*100):0;return '<div style="min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem"><b style="font-size:12px">'+zEsc(m)+'</b><div style="font-size:11px;color:var(--text2)">'+x.ok+'/'+x.tot+' · '+pct+'%</div><div style="background:var(--border);border-radius:3px;height:5px;margin-top:3px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:#10B981"></div></div></div>';}).join('')+'</div></div>';
+          var meses=Object.keys(pm).filter(function(m){return m!=='—';}).sort(function(a,b){return zMesPrev(a)-zMesPrev(b);});
+          // ---- linha de tendência (% concluídas por mês) ----
+          var W=Math.max(340, meses.length*95), H=150, pad=30;
+          var pts=meses.map(function(m,i){ var x=pad+(meses.length<=1?0:(W-2*pad)*i/(meses.length-1)); var pct=pm[m].tot?pm[m].ok/pm[m].tot:0; return {x:x,y:H-pad-(H-2*pad)*pct,m:m,pct:Math.round(pct*100)}; });
+          var poly=pts.map(function(p){return p.x+','+p.y;}).join(' ');
+          var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:'+W+'px;height:auto">'
+            +'<line x1="'+pad+'" y1="'+(H-pad)+'" x2="'+(W-pad)+'" y2="'+(H-pad)+'" stroke="var(--border)"/>'
+            +'<polyline points="'+poly+'" fill="none" stroke="#10B981" stroke-width="2.5"/>'
+            +pts.map(function(p){return '<circle cx="'+p.x+'" cy="'+p.y+'" r="3.5" fill="#10B981"><title>'+zEsc(p.m)+': '+p.pct+'%</title></circle>'
+              +'<text x="'+p.x+'" y="'+(H-pad+15)+'" font-size="10" text-anchor="middle" fill="var(--text2)">'+zEsc(p.m.slice(0,3))+'</text>'
+              +'<text x="'+p.x+'" y="'+(p.y-7)+'" font-size="10" text-anchor="middle" fill="var(--text2)">'+p.pct+'%</text>';}).join('')
+            +'</svg>';
+          // ---- distribuição por status ----
+          var sd={}; d.forEach(function(r){var s=G(r,'STATUS DE EXECUÇÃO')||'—'; sd[s]=(sd[s]||0)+1;});
+          var sdArr=Object.keys(sd).map(function(k){return [k,sd[k]];}).sort(function(a,b){return b[1]-a[1];});
+          var mx=sdArr.length?sdArr[0][1]:1;
+          var bars=sdArr.map(function(e){var pct=Math.round(e[1]/mx*100);return '<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:145px;font-size:11px;color:var(--text2)">'+zEsc(e[0]||'—')+'</span><div style="flex:1;background:var(--border);border-radius:3px;height:12px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:#3B82F6"></div></div><span style="width:46px;text-align:right;font-size:11px">'+e[1]+'</span></div>';}).join('');
+          // ---- cards por mês ----
+          var cards=meses.map(function(m){var x=pm[m];var pct=x.tot?Math.round(x.ok/x.tot*100):0;return '<div style="min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem"><b style="font-size:12px">'+zEsc(m)+'</b><div style="font-size:11px;color:var(--text2)">'+x.ok+'/'+x.tot+' · '+pct+'%</div><div style="background:var(--border);border-radius:3px;height:5px;margin-top:3px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:#10B981"></div></div></div>';}).join('');
+          return '<div class="ch-grid2">'
+            +'<div class="ch-card"><div class="ch-card-hdr">📈 Tendência de conclusão por mês</div><div style="padding:.6rem">'+svg+'</div></div>'
+            +'<div class="ch-card"><div class="ch-card-hdr">📊 Distribuição por status de execução</div><div style="padding:.6rem">'+bars+'</div></div>'
+            +'</div>'
+            +'<div class="ch-card" style="margin:.4rem 0"><div class="ch-card-hdr">📅 Por mês</div><div style="display:flex;gap:8px;flex-wrap:wrap;padding:.6rem">'+cards+'</div></div>';
         },
         filtros:[
           {id:'reg',label:'Todas as regiões',get:function(r){return G(r,'REGIÃO');}},
