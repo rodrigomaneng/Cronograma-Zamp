@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cronograma Zamp · AO VIVO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F4F0;--surface:#fff;--surface2:#F0EFE9;--border:#E2E0D8;
+  --text:#1A1916;--text2:#6B6960;--text3:#A09E96;
+  --blue:#1E3A5F;--blue-lt:#EEF3F9;
+  --red:#B91C1C;--red-lt:#FEE2E2;
+  --amber:#92400E;--amber-lt:#FEF3C7;
+  --green:#065F46;--green-lt:#D1FAE5;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.top{background:var(--blue);color:#fff;padding:.9rem 1.5rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.top-inner{display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto;gap:1rem;flex-wrap:wrap}
+.top h1{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.top-sub{font-size:11px;opacity:.7;margin-top:2px;font-family:var(--mono)}
+.top-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.top-btn{padding:5px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;font-size:12px;cursor:pointer;font-family:var(--sans)}
+.top-btn:hover{background:rgba(255,255,255,.25)}
+.main{max-width:1400px;margin:0 auto;padding:1.25rem 1rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.1rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem}
+.kpi-l{font-size:10px;color:var(--text3);margin-bottom:4px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em}
+.kpi-v{font-size:21px;font-weight:600;color:var(--blue)}
+.kpi-s{font-size:10px;color:var(--text3);margin-top:2px}
+.bars{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.1rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:720px){.bars{grid-template-columns:1fr}}
+.bars h3{font-size:11px;font-family:var(--mono);text-transform:uppercase;color:var(--text2);margin-bottom:.6rem;letter-spacing:.05em}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px}
+.bar-lbl{width:120px;flex-shrink:0;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;background:var(--surface2);border-radius:4px;height:16px;overflow:hidden}
+.bar-fill{height:100%;background:var(--blue);border-radius:4px}
+.bar-val{width:120px;flex-shrink:0;text-align:right;font-family:var(--mono);color:var(--text);font-size:11px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.8rem;align-items:center}
+.filters select,.filters input{padding:6px 10px;border:1px solid var(--border);border-radius:7px;font-family:var(--sans);font-size:13px;background:var(--surface)}
+.filters input[type=search]{min-width:220px;flex:1}
+.count-info{font-size:12px;color:var(--text2);font-family:var(--mono);margin-left:auto}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:auto;max-height:70vh}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{position:sticky;top:0;background:var(--surface2);text-align:left;padding:8px 10px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;z-index:2}
+tbody td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr:hover{background:var(--blue-lt)}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:500;white-space:nowrap}
+.st-val{background:var(--green-lt);color:var(--green)}
+.st-apr{background:var(--blue-lt);color:var(--blue)}
+.st-agu{background:var(--amber-lt);color:var(--amber)}
+.st-neg{background:var(--red-lt);color:var(--red)}
+.st-def{background:var(--surface2);color:var(--text2)}
+.val{font-family:var(--mono);text-align:right;white-space:nowrap}
+.chk{display:flex;gap:6px;justify-content:center}
+.chk input{width:15px;height:15px;cursor:pointer}
+.mono{font-family:var(--mono)}
+.loading{text-align:center;padding:3rem;color:var(--text2)}
+.spin{display:inline-block;width:22px;height:22px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.err{background:var(--red-lt);color:var(--red);padding:1rem;border-radius:10px;margin:1rem 0}
+.note{background:var(--amber-lt);color:var(--amber);padding:.6rem 1rem;border-radius:8px;font-size:12px;margin-bottom:1rem}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="top-inner">
+    <div>
+      <h1><span class="live-dot"></span> Cronograma Zamp <span style="opacity:.6;font-weight:400">· AO VIVO</span></h1>
+      <div class="top-sub" id="subInfo">carregando direto do PCM…</div>
+    </div>
+    <div class="top-meta">
+      <span class="top-sub"><span id="syncDot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#F59E0B;margin-right:5px;vertical-align:middle"></span><span id="syncMsg">estado…</span></span>
+      <span class="top-sub" id="lastUpd"></span>
+      <button class="top-btn" id="btnReload">↻ Atualizar</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="note">
+    <b>Robô ao vivo:</b> os orçamentos vêm direto da API do PCM (Bubble) e as marcações <b>prog/exec/fat</b> são lidas e gravadas ao vivo na planilha (mesmo Web App do Apps Script que o site oficial usa) — compartilhadas com toda a equipe. Sem CSV, sem pipeline, sem tarefa agendada. Marcações antigas (uid migrado) são recuperadas automaticamente.
+  </div>
+
+  <div id="content">
+    <div class="loading"><span class="spin"></span> Buscando orçamentos do PCM ao vivo…</div>
+  </div>
+</div>
+
+<script>
+// ===================== CONFIG =====================
+const API = 'https://pcmbm.zamp.com.br';
+const FORNECEDOR_ID = '1769790775865x157720073711129280'; // MANENG
+const STATE_KEY = 'zamp_live_state_v1';
+const STATE_URL = 'https://script.google.com/macros/s/AKfycby3ccqyJCFLll6wdEqTQBLC5UA92jcaXNjK1hTIQ460SsB_MQowJC1pRSTn_deHyhoKeA/exec';
+const O2N = {"c2166d7af84":"c04gx66hp","c304cd4c0a7":"c012bj2a2","cef0e384e29":"c0021ws3z","c4b97835ec8":"c00kj3vz7","c8b93f4aba1":"c02i1lw0l","c19a7af3fe0":"c05hmt1za","ceb496bbded":"c01f64k2s","ce569e62252":"c018rvqhi","c043e881eda":"c017bb98l","ce0871b834c":"c00utv8uf","cbc3816e45f":"c04fklkf3","cd0d975aaf9":"c04e2bn9q","cdd18ec0811":"c015nyhp6","c0970badc91":"c00zrre8l","cbc5688f26f":"c02pv3z38","cb24ed767d4":"c058fj4fb","cf8dc0434a8":"c05k9se2d","c27fd4c4539":"c00k5p3ot","c7572fa3558":"c09n70ze9","cb792678837":"c01jpz7ke","ce3c45539c2":"c00pjs03r","c8c9e04128e":"c03efdc24","c91b097df67":"c00hjj8zj","cd9122798fc":"c0bcvtpef","cfc00fb7f1b":"c04tgunm5","c6a401e271d":"c02zwb7gt","c2717b2982c":"c020t33vs","c09c2e1ac5b":"c028n1pev","c25f9d342d3":"c01shraj5","c5d0f06afd4":"c06yiz26x","c59e8083ba3":"c00k4f5md","cce7ecb06ad":"c00jow3wu","c7f6f037d55":"c00gfifkq","c3721e032bc":"c06p0rejn","cd166d3bafe":"c01w8c7wx","c0e63c4ccc8":"c01hxu08q","c3c5904da64":"c01fknznt","cc018891339":"c000gdl29","ced3382b807":"c03fy5krk","c931107f1af":"c04dc1v3o","c530b1d2c6e":"c02fnrqsr","c4de3e8ecdc":"c05kjzmh5","c46f4a7083b":"c01xmmmzp","cbc5bfcf894":"c03mu9f9k","c06a5b0d2a1":"c06k2gbma","c21dbb7633e":"c0854ern2","cf90f4ace8d":"c08b9n0jb","c88a6d66937":"c04evk6ms","c483fb2d46b":"c03mgi959","c35e71bcef4":"c06wgwa3x","c83f35cd2cd":"c00lwp9mj","ce9887dfdec":"c00hbayhh","cd00a982ff7":"c01soozzd","ca76ac64af3":"c02bftq8f","c4d924ed3ca":"c02l1uxdb","cae59d3d5e2":"c04mx2jg1","c14d7e9941e":"c00kiue89","cbc0bbb1bda":"c02uk8jx5","c447224c091":"c03ensxn1","c21f5b58d1e":"c00tybz1t","c391fa51c77":"c01azznfy","cdcd53e40f2":"c04kld253","c6cee5fc4a0":"c02mt0g5q","c3c3caa978e":"c01f1bg19","c1a3b8e6a26":"c02norfqt","c5720ed3f41":"c05gtw5fi","c088faca4fa":"c0502fa6t","c48440fe1e2":"c06fzfqe4","c6ea775f515":"c00qe5ow1","c53faf8af11":"c022jhe7v","cac8a577dd7":"c03utydux","c6bb16b2391":"c00q23lgi","c6786168be4":"c00w40ly3","c9b34a47e09":"c00dikety","c3a46713f84":"c00g7b2ld","c104de5eea4":"c012rt8c3","c14738a4345":"c01av5t1x","c5b5de15bae":"c00ctu9bm","c0e040947e1":"c04qua5zv","ca047a78a92":"c01ime1k1","c59194759d3":"c04z6ig9c","c0002c1d0c9":"c00w8kheo","c85a519afa3":"c00wh6xli","c130f0992ed":"c025d3jmz","ca98959e850":"c05nmed67","cf5c4c26f44":"c01v6or61","ce60d2919a9":"c02kucluk","cdb4501e7a2":"c076rsgwm","cde409efa0a":"c02lsgumq","c0f4f8c3f13":"c02zrluvy","ce5233fb4b3":"c01ozsg6w","cd378fae0ad":"c030iwlbp","c49fc7cebb1":"c06o4f6gq","ce3e60f7421":"c04rmz262","c6e6c14ec6f":"c00fq7dw5","c70548fd293":"c01topav6","c7702e51fe1":"c00cra9vu","c65a67a1709":"c02qzmev9","cd6abe0d367":"c03tk3lof","c0f4011e678":"c00o0bfic","c3e6db2d208":"c02hp86p4","c678fb03219":"c001ht355","c6be724b8fa":"c03y56bqy","cafb129e0ce":"c02qi9rva","cbf0d6f1846":"c01jzlokr","cb524323932":"c04odvfks","c5bbda2ea04":"c07c9ewiz","c46da7c8afb":"c05o53qnq","cd2d19be445":"c01cukoiv","c26b2dcc6ce":"c06s904e0","cd4821a003a":"c02zaml4o","ce33d9f3a33":"c04swry6t","ce9aba2dc4b":"c02i6ipwp","ce3e9e47acd":"c026bapvq","caf05825903":"c002g1tyv","c9ab16c393f":"c08vfchv5","c4aeb366222":"c07fd0469","c660d1c3432":"c05w98ps9","ca3ba1c0630":"c01nod2zv","ce4194b1b95":"c05hew22c","c05a75a7f10":"c07attibu","c576659e9eb":"c06c8ec4r","c9011f9e6b9":"c01upgiog","c4f37940e74":"c04z60tos","cb46431e895":"c0601evox","c1c9e7e5467":"c06cpozo7","cf92539a5d6":"c00mluamc","c1118912a90":"c02263uq8","c4e5876b94d":"c00g95fpq","cee1c8633a9":"c00ox993e","c0b8413ad81":"c01mfirc0","cef146a94f3":"c02cdmv0q","cd80be12e59":"c011ohbn5","cf6892a7b1c":"c03w3bnlm","c655ee76f98":"c0295ohf2","ce235bc3dee":"c02cr6oel","c9b2999ca28":"c049zjqd5","cdec17b92d8":"c01h2f6jr","c2da3d406c4":"c038fgo66","ce2247dd3e0":"c02b2h0bm","c2df842bfe2":"c00ofo8oa","c1a5d1f9b4e":"c00di4y0z","cdcd2eef82c":"c00k8kmvw","c9de973bc55":"c016sgzvm","cc354149f00":"c02aa0ktk","cbeb27e06ee":"c09iwm99g","c6a460db4c3":"c00qpkw68","c725fe63309":"c011aycnl","c8b9c9d0e23":"c02sxg5m2","cb27660d33c":"c02mt2uvl","c09e15b0d93":"c000xnrqm","c747ec96be8":"c031d1y7s","cbc4baa1853":"c06z35hwy","c7868649243":"c02enrji4","cb5b8893e0e":"c009e1psw","c60bce0f68e":"c02ue7wuz","c31919b4801":"c05skrorm","c95309b55f8":"c07dgmwld","cab4c842eb0":"c0896ed4k","c5a3167e54a":"c02wvfl36","cc8fa0cfac0":"c04553ext","c200b8535d1":"c028eftqi","c3a2624b4b4":"c006p5b8n","c74988e4160":"c03s26yd4","c8146ee6822":"c02wfm8e5","c5c10c1de00":"c036oco6j","ca25b2d0190":"c01fgi5y1","c5df9b4ddea":"c03d8t3tj","cf2f86cbd37":"c04s9x12u","c18f1c264de":"c024yfksz","cc3b758be0d":"c00lblyp8","c9ad7019da3":"c01nq1k7z","ce7ee916947":"c0054w5w0","cbae62a17bb":"c00pfxahy","c54038e1761":"c023iskd6","c28ebbc9dc0":"c01hknr6x","c1be1aa9309":"c01nzu95a","ce094edfea7":"c02i0nwwx","c5bc14b1862":"c005dmdya","c8f39439a66":"c03ae1y93","cdb5b4029f4":"c008uz9l3","c034706f345":"c0113m5mu","ccb590485c8":"c058kfrvi","c51756dfe58":"c00q0pvgi","c098253c788":"c03r8zz5s","c3f0e43fec1":"c02zjji2j","c5b293badb4":"c03amspij","c0bd027ae89":"c019e6r52","c3c8a6993bd":"c00eat9e5","c806d6b2140":"c0048vvkx","ce98edeb9d1":"c043kkm8b","c2cd5ca4c4e":"c0406vbko","c45b53f1169":"c00q31d8a","cc9a6bc1930":"c027xudmj","c1b141c6d2a":"c00b2n5u2","c61ab23058d":"c04qoldrw","cd1c3fd6e94":"c008de3n1","c543132efb8":"c01s5jolk","c51c5df64b9":"c01cv2t4z","c24dc35ce66":"c06peg13p","c793eff5f1b":"c046w5sn7","c913069876a":"c017qgmbx","ce077fd2530":"c00a174vm","c2a0f89c6fd":"c06d1ds7s","c7e998a9582":"c00e47qma","c0288b1945e":"c04n22244","c4862829e4a":"c02gf0btb","c42f3be0123":"c004txxun","c4f62811bb7":"c09x7kicc","c95ba3babc5":"c02ijaf3f","c06f784694b":"c04ibw5h6","c2c433848b4":"c03dsqx6x","c48fe1cd27e":"c00yacgaw","cd05b4b220a":"c06ctfaoj","c3a4bc4ddee":"c02xxxene","c09f74faf3b":"c011w980b","c5e1f5d4f17":"c08cu56lg","ccb18eb322a":"c0bdh7bot","c4e588195bf":"c07vg6p6s","c151588b206":"c05d3b2h8","c6b25d741df":"c00ydnf2m","c623d465697":"c03iwmgkq","c73751b2bce":"c01gfxgnc","c7cc98e7757":"c04qvusw8","c57c098bf02":"c0470zskx","cc77a5642dc":"c01yzkkd7","cd3437c7a8b":"c00c9ocq8","cccc556739f":"c00jm98jf","c66274975ea":"c08r6084f","cbfaa5cdbae":"c01vilyp0","c60fa16c4bd":"c05lfztg2","c384b62f79d":"c02xve1ew","c70fbc38ed3":"c032a5fut","cc31d4c667d":"c01b0lrc1","cd486f9fb58":"c007868ol","c2286c7a67c":"c03k6r44z","cfaea9044d3":"c03b5dk47","cf7bf4018f2":"c0053kyyx","ccd7500bc7c":"c03ykoohw","c1312d57c13":"c02y446mg","c4d89f65a74":"c00lix97b","cca37b58d41":"c01h8ix60","c95f3682454":"c01rgz14x","c57df14fb21":"c00y4c6lt","ca6c2910014":"c00b3u3n9","ca4ea61adc3":"c01vrimfk","c07921e03c9":"c01nl5jrq","cfc8416f972":"c028ee2s4","cebf478d965":"c021bq57a","cb42718f622":"c06qq9ni6","c711a8575e3":"c02od4dt3","ce3a59d5bb3":"c02ldtsi5","cf4ec34870e":"c00qrfk3x","cd7228d0ee1":"c00sh2vv3","cd914a6042e":"c00nbk9t0","ce9b77fd236":"c03tghf5v","c586e1549dd":"c01ft8anb","c05c86ee431":"c01gvwh33","cf1c8440eb0":"c02f8gnfb","c9ceabf8341":"c00p4gow2","ca66abb2ba8":"c021abtcl","c3ab895eb78":"c00fu1xs5","c30c17d956d":"c07fyw5oe","c0822205212":"c01cvpadn","ceefd7ba3cb":"c03pf148t","c56d97d8ab8":"c065lc14y","cf6645493d3":"c02uku0fg","c43b148e4e0":"c06rgklcr","caee4a3f1d8":"c015fmbjk","c4b583501d7":"c011nmeyp","c623d4a79ef":"c00vz8n8j","c04495f3e3f":"c03zegadh","c8fea41ea0d":"c02lp5qfk","c31b725fed2":"c00ka6rmz","c9daaaf1299":"c008cvpzl","c6f5a764bf1":"c0267f1bz","c10b56389fb":"c01hyuyxv","cac42963443":"c0236s7a4","c0048fad143":"c01p42194","ce6c53c429e":"c03ql0ams","c49dac99c15":"c00vbfh80","c18c807f359":"c01zzrtfb","ce3330a0ae9":"c056rfz0y","c168c081a76":"c06mtzvcl","ce3beeb8ada":"c04cbb4qk","c1342999f35":"c01bgvb66","c7282a14216":"c01c95dev","c39785c9b10":"c0a2vafxc","cb9268305ed":"c035xzocz","cfb22be1b96":"c00v9jahd","c527b2f8110":"c0056j2nj","cc702caa512":"c011i56jc","cceb5f147cc":"c02kcwmkw","c10b2771211":"c03uqityp","c3bee629d6a":"c001dp34k","c5da5f1a26d":"c00i11b90","ccab31c2026":"c00a82dff","c7d1b8a2072":"c00a41qa8","c0c647e6e7b":"c0077lj2n","c89cef93317":"c02t2kj2q","cb0e453122e":"c01f5sogb","c898e56b6ac":"c00sjlqhz","c442c7e37b4":"c04ajr7dd","c2e7e488c1e":"c0073e6jq","c4aa875faa4":"c019youb4","c5de8ba8794":"c09a1c2sx","cf54160c2ca":"c02aqmwcm","cce59a6503d":"c01dqz18c","c65ee96cffa":"c09j2fk0a","ce90d08ac69":"c03u2fgvh","c95cd122394":"c02ym637z","c38cc19f960":"c041igrhd","cc11b201fed":"c07oo39xb","c45afff1531":"c07d0jrfb","cc2fe2852ef":"c04ynkiu2","ca29c3dd517":"c07d9mt7a","cf399fadba7":"c001iakdj","cd3119bd8be":"c01jj9q3x","cdaa049ae48":"c06e4wyhg","ccabfe10f12":"c00o9h6i6","c221b69f955":"c01wqzqtr","ca94091846d":"c03ku1x78","cc9e73fcb72":"c0315o2bk","c171296926b":"c05h6hz2w","c66af132eee":"c01tyvx7f","cef53388717":"c053q0uw3","ce437bd0d29":"c012v4ctp","cfca0fc57db":"c00z9aud5","c6d1e34fd1a":"c017iybmp","c11e4f8acb7":"c03vubw5w","c4f7ce58060":"c00ktj0dc","cdb1ed281f9":"c01te5skk","c47d36640b5":"c026ekbi8","c8f2ff16a4f":"c007q6rmx","c019da904cf":"c00ih23p7","ce416641d5b":"c001jfa9u","cfa060faab8":"c075utnq4","c28700a7ac4":"c08va8193","c66bf87e874":"c05v6drmc","caeafa431ca":"c0bgi5z3t","c479abcee53":"c02jjn5i1","c70312feb75":"c05fxnzqu","c3d20bab1c1":"c02y9k7gv","c2548fd0f27":"c004q22ac","c45a8837c82":"c00zemkjt","cb0e7dbbd13":"c02fytmor","c8016a56640":"c07oha1qy","c089105cd9d":"c007pq6bc","c91e83ca504":"c03n7ddhf","c5de76e4eaf":"c04rh5h5p","c14599bda1c":"c018hj9i3","c0b6a006ee1":"c038s53ag","c6f96a69708":"c0499kdbf","c7ec32c1669":"c06575snb","c68c58c02f8":"c00y8dhn6","c20b90163d6":"c04dk44o4","cdbbc102d5a":"c05jd3ex4","cb18fb44b32":"c06g0ag97","ce1c9681718":"c03a7d0qr","c85f38f2b1f":"c008z7jmk","c84b32bb470":"c00dlhibc","cbe4b95b311":"c02pwwsiz","c3bd687b180":"c00n1jdd3","ca8231572a1":"c02tdmo99","c4509dc6d57":"c04bw59lx","c9f11f6001d":"c040xnpd9","cc8fc7639b4":"c01y9oixy","c3215952b89":"c01imjulg","c12a3475c31":"c02tg59hz","c2fcbcf55a8":"c01k7poum","c62c8df4b16":"c092qyscj","c2456333786":"c016ye5mr","c6142e51cff":"c011srkug","c4726aa2222":"c070wq7tc","c85c4f68780":"c02f4135k","c1425cc9931":"c02hhnvas","c911949462f":"c017k3bje","c1ceb11ce96":"c05zmwhx7","cca15113cd2":"c00403g8k","ce9c87f48e3":"c005u38km","c1f2a2759bf":"c02yhzx4h","cdfd9a6b2b2":"c04xu9pu9","ce8a490a80e":"c01utoh3v","c0af960b491":"c02ubfiou","c8bc55dc57b":"c00c22ctl","cb5fb70e85d":"c009yv3nx","c128aec1adc":"c006f4k6u","c8ca26303e9":"c00374hqu","c13cbec7c9e":"c059703fj","ce36e3d193d":"c009ogwfy","c2b240052c7":"c01kybqkw","c31a04d55dd":"c05itzavz","c139df23a1e":"c01inovwj","c90c1008f4b":"c02xxg9gf","c2f22c06d7d":"c023tnmwj","c00de19f608":"c00agzbtq","cd500e61612":"c04ic6hbj","c10e3e0b9c4":"c0399dc8h","ce577d3e091":"c0398rwen","ce0cdc6915e":"c02zu0hmy","c3c6da271f4":"c01ogr92c","ca17dba0e7a":"c02j6l85o","c019c4d85f0":"c01hv1ake","c17d3e2d947":"c00qlz2pw","c6415c23776":"c0046n4se","cf6b8788fef":"c00p6lzpg","c59a1a71f0a":"c05arpubh","cf281be30bf":"c03ds2izv","c47d00fb64d":"c02tx8tfx","c3033d68c69":"c009e815c","c19114793c2":"c00q72t60","c5019f7fbf5":"c036kk4fn","c84d834c75a":"c02tj9c5n","cce0fe0b4ce":"c0287ssza","cf4b56bd266":"c00hsxnuu","c6d508d0f6b":"c019e4sbb","c25e585f9b2":"c02137fup","cd9d4c33189":"c01fjcles","c1d4a60e2ca":"c0061ltz4","cc3f5cb3ad9":"c01rughgw","c41fbf60309":"c01niel15","cf28e4a1f26":"c04vl4h11","c0925683217":"c01odc19i","c6e00a98c22":"c07e35uh7","cb5ff4b7706":"c009s9db3","c6d72ef8046":"c06sprtiz","c258c29697c":"c04lwm3hh","c74c3ba6185":"c020kwxln","c2c317a55e8":"c00b4t0w5","cea828ca7f6":"c009qgstm","c40b7f9dd2a":"c03swm909","cfcbf1147c0":"c01ekchzo","c03de997520":"c09ej156y","c07f123cc54":"c0061ui6e","c3ea89b2402":"c00l1em4s","c12d61cbeb2":"c04o7nqdy","c58a4735162":"c0ajsnso7","c51c2e56377":"c014cow3b","c43b12d51df":"c00vvzzsr","c10aac2dd2f":"c0062xroi","c3677d069a6":"c04gslqul","c8e0fd45a43":"c022efgl3","cd879e69153":"c02fnm8j9","c30b3aec27c":"c02m34plb","c3aa0003ae6":"c0aawy443","c27c36cd778":"c01l98lpg","c9894845f4e":"c03lt7g30","c38c8f75e8c":"c03ba3iks","cfd2465c27b":"c07twgowu","ca42fb30398":"c00umpzuu","c60a1f03fdf":"c04hvife7","cb2468ecd13":"c045o18ig","cd4fb62a724":"c04tolly5"}; // migração uid antigo(hex) -> novo(base36)
+
+const STATUS_PRIO = {
+  'Validado':1,'Aprovado':2,'Aguardando Validação':3,
+  'Aguardando aprovação Coord.':4,'Aguardando Aprovação Capex':5,
+  'Aguardando Aprovação':6,'Negado':7,'Validação Negada':8,'Invalidado':9
+};
+const REGIONAIS = {
+  SPS:'SP Capital',SPL:'SP Capital',SIN:'SP Interior',SIS:'SP Interior',
+  RNE:'Nordeste',RCO:'Centro-Oeste',SCN:'Sul/Centro',SUL:'Sul',RCL:'RCL'
+};
+
+// ===================== UID (idêntico ao site/pipeline) =====================
+function md5Short(str){
+  let h=5381;
+  for(let i=0;i<str.length;i++) h=((h<<5)+h)+str.charCodeAt(i);
+  return Math.abs(h).toString(36).padStart(8,'0');
+}
+function getClienteFromLoja(loja){
+  const u=(loja||'').toUpperCase();
+  if(u.startsWith('FS ')||u.startsWith('FS-')||u.startsWith('FS–')||u.includes('FILIAL BK')) return 'ZAMP-BK';
+  const mult=['SHOP','DRIVE','ROAD SHOP','ILS ','ILR ','FC ','NORTH SHOP','PARK SHOP','MAG ','MAXI ','MAUA'];
+  if(mult.some(t=>u.includes(t))) return 'MULTIPLAN';
+  if(u.includes('EXTRA')||u.includes('CARREFOUR')) return 'CARREFOUR';
+  if(u.includes('ASSAI')) return 'ASSAI';
+  if(u.includes('KARIM')) return 'KARIM';
+  return 'OUTROS';
+}
+
+// ===================== FETCH (paginado) =====================
+async function fetchAllOrc(){
+  const constraints = JSON.stringify([
+    {key:'fornecedor',constraint_type:'equals',value:FORNECEDOR_ID},
+    {key:'enabled',constraint_type:'equals',value:true}
+  ]);
+  let cursor=0, all=[], guard=0;
+  while(guard++<200){
+    const url = API+'/api/1.1/obj/tabela_orc?limit=100&cursor='+cursor
+      +'&constraints='+encodeURIComponent(constraints);
+    const resp = await fetch(url,{headers:{'Accept':'application/json'}});
+    if(!resp.ok) throw new Error('HTTP '+resp.status+' na API do PCM');
+    const j = await resp.json();
+    const res = j.response||{};
+    const r = res.results||[];
+    all = all.concat(r);
+    cursor += r.length;
+    if(!res.remaining || r.length===0) break;
+  }
+  return all;
+}
+
+// ===================== TRANSFORM (porta do processarCSV) =====================
+function processar(rawList){
+  const raw = rawList.map(x=>{
+    const status = (x['status-txt']||'').trim();
+    return {
+      chamado:(x.chamado||'').trim(),
+      bkn:String(x.bkn==null?'':x.bkn).trim(),
+      loja:(x.loja||'').trim(),
+      mes:(x.month||'').trim(),
+      status,
+      regional:(x.regional||'').trim(),
+      valor:Number(x.valor_total)||0,
+      valor_mo:Number(x.valor_mo)||0,
+      desc:((x.descricao||'')+'').split('\n')[0].trim(),
+      created:x['Created Date']||'',
+      _prio:STATUS_PRIO[status]||99
+    };
+  }).filter(r=>r.loja);
+
+  raw.sort((a,b)=>a._prio-b._prio);
+
+  const seen={}, out=[];
+  for(const r of raw){
+    const rawId = r.chamado+'__'+r.bkn+'__'+r.loja.slice(0,25)+'__'+r.mes;
+    let uid='c'+md5Short(rawId);
+    if(uid in seen){ seen[uid]++; uid=uid+'_'+seen[uid]; } else seen[uid]=0;
+    out.push({
+      _uid:uid, chamado:r.chamado, bkn:r.bkn, unidade:r.loja, desc:r.desc,
+      status:r.status, regional:r.regional, mes:r.mes,
+      valor:Math.round(r.valor*100)/100, valor_mo:Math.round(r.valor_mo*100)/100,
+      cliente:getClienteFromLoja(r.loja), created:r.created
+    });
+  }
+  out.sort((a,b)=> (a.created<b.created?1:a.created>b.created?-1:0));
+  return out;
+}
+
+// ===================== ESTADO (prog/exec/fat) — AO VIVO na planilha (mesmo backend do site oficial) =====================
+let PROG=new Set(), EXEC=new Set(), FAT=new Set();          // _uid (base36) marcados, p/ exibir
+let rawProg={}, rawExec={}, rawFat={}, EXTRA={};            // estado bruto (preserva chaves antigas no round-trip)
+const N2O={};                                              // reverso novo->[antigas]
+for(const k in O2N){ (N2O[O2N[k]]=N2O[O2N[k]]||[]).push(k); }
+function resolveUid(k){ const base=k.split('_')[0]; return O2N[base]||k; }
+function buildSets(){
+  PROG=new Set(); EXEC=new Set(); FAT=new Set();
+  for(const k in rawProg) PROG.add(resolveUid(k));
+  for(const k in rawExec) EXEC.add(resolveUid(k));
+  for(const k in rawFat)  FAT.add(resolveUid(k));
+}
+const RAWMAP={prog:()=>rawProg,exec:()=>rawExec,fat:()=>rawFat};
+const SETMAP ={prog:()=>PROG,exec:()=>EXEC,fat:()=>FAT};
+function toggleEstado(k,uid,on){
+  const raw=RAWMAP[k](), set=SETMAP[k]();
+  if(on){ raw[uid]=true; set.add(uid); }
+  else{
+    set.delete(uid);
+    for(const kk of Object.keys(raw)){ if(resolveUid(kk)===uid) delete raw[kk]; }
+  }
+  cacheEstado();
+}
+function cacheEstado(){ try{localStorage.setItem(STATE_KEY,JSON.stringify({prog:rawProg,exec:rawExec,fat:rawFat,extra:EXTRA}));}catch(e){} }
+function loadCacheEstado(){ try{const s=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');rawProg=s.prog||{};rawExec=s.exec||{};rawFat=s.fat||{};EXTRA=s.extra||{};}catch(e){} }
+async function carregarEstado(){
+  try{
+    const r=await fetch(STATE_URL+'?action=status');
+    const j=await r.json();
+    rawProg=j.prog||{}; rawExec=j.exec||{}; rawFat=j.fat||{}; EXTRA=j.extra||{};
+    buildSets(); cacheEstado(); setSync('ok','estado sincronizado');
+  }catch(e){
+    loadCacheEstado(); buildSets(); setSync('err','estado offline (cache local)');
+  }
+}
+let _saveTimer=null;
+function agendarSalvar(){ clearTimeout(_saveTimer); setSync('loading','salvando…'); _saveTimer=setTimeout(salvarEstado,900); }
+async function salvarEstado(){
+  try{
+    const extraLimpo={};
+    for(const kk in EXTRA){ const v=EXTRA[kk]; if(v&&(v.data||v.sup||v.tec||v.obs)) extraLimpo[kk]=v; }
+    const payload={action:'setStatus',prog:rawProg,exec:rawExec,fat:rawFat,extra:extraLimpo};
+    await fetch(STATE_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+    setSync('ok','salvo na planilha · '+new Date().toLocaleTimeString('pt-BR'));
+  }catch(e){ setSync('err','erro ao salvar'); }
+}
+function setSync(state,msg){
+  const dot=document.getElementById('syncDot'); if(dot) dot.style.background = state==='ok'?'#22C55E':state==='err'?'#EF4444':'#F59E0B';
+  const el=document.getElementById('syncMsg'); if(el) el.textContent=msg;
+}
+
+// ===================== HELPERS =====================
+const BRL = v => 'R$ '+(Number(v)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function statusClass(s){
+  const u=(s||'').toLowerCase();
+  if(u.includes('validado')&&!u.includes('negada')) return 'st-val';
+  if(u.includes('aprovado')) return 'st-apr';
+  if(u.includes('aguardando')) return 'st-agu';
+  if(u.includes('negad')||u.includes('invalidado')) return 'st-neg';
+  return 'st-def';
+}
+
+let REGISTROS=[];
+
+// ===================== RENDER =====================
+function render(){
+  const content=document.getElementById('content');
+  const fReg=document.getElementById('fReg')?.value||'';
+  const fCli=document.getElementById('fCli')?.value||'';
+  const fSt=document.getElementById('fSt')?.value||'';
+  const q=(document.getElementById('fQ')?.value||'').toLowerCase();
+
+  let rows=REGISTROS.filter(r=>{
+    if(fReg && r.regional!==fReg) return false;
+    if(fCli && r.cliente!==fCli) return false;
+    if(fSt && r.status!==fSt) return false;
+    if(q){ const blob=(r.chamado+' '+r.bkn+' '+r.unidade+' '+r.desc).toLowerCase(); if(!blob.includes(q)) return false; }
+    return true;
+  });
+
+  const total=rows.length;
+  const somaTot=rows.reduce((s,r)=>s+r.valor,0);
+  const somaMo=rows.reduce((s,r)=>s+r.valor_mo,0);
+
+  // agregados
+  const byStatus={}, byReg={};
+  rows.forEach(r=>{ byStatus[r.status]=(byStatus[r.status]||0)+1; const g=REGIONAIS[r.regional]||r.regional||'—'; byReg[g]=(byReg[g]||0)+r.valor; });
+
+  const kpis=`<div class="kpis">
+    <div class="kpi"><div class="kpi-l">Orçamentos</div><div class="kpi-v">${total}</div><div class="kpi-s">registros ativos</div></div>
+    <div class="kpi"><div class="kpi-l">Valor total</div><div class="kpi-v">${BRL(somaTot)}</div><div class="kpi-s">MO+MA</div></div>
+    <div class="kpi"><div class="kpi-l">Mão de obra</div><div class="kpi-v">${BRL(somaMo)}</div><div class="kpi-s">soma valor_mo</div></div>
+    <div class="kpi"><div class="kpi-l">Validados</div><div class="kpi-v">${byStatus['Validado']||0}</div><div class="kpi-s">status = Validado</div></div>
+    <div class="kpi"><div class="kpi-l">Aguardando</div><div class="kpi-v">${(byStatus['Aguardando Aprovação']||0)+(byStatus['Aguardando Validação']||0)}</div><div class="kpi-s">aprovação/validação</div></div>
+  </div>`;
+
+  const stEntries=Object.entries(byStatus).sort((a,b)=>b[1]-a[1]);
+  const stMax=Math.max(1,...stEntries.map(e=>e[1]));
+  const regEntries=Object.entries(byReg).sort((a,b)=>b[1]-a[1]);
+  const regMax=Math.max(1,...regEntries.map(e=>e[1]));
+  const bars=`<div class="bars">
+    <div><h3>Por status (qtd)</h3>${stEntries.map(([k,v])=>
+      `<div class="bar-row"><div class="bar-lbl">${k}</div><div class="bar-track"><div class="bar-fill" style="width:${v/stMax*100}%"></div></div><div class="bar-val">${v}</div></div>`).join('')}</div>
+    <div><h3>Por região (R$)</h3>${regEntries.map(([k,v])=>
+      `<div class="bar-row"><div class="bar-lbl">${k}</div><div class="bar-track"><div class="bar-fill" style="width:${v/regMax*100}%"></div></div><div class="bar-val">${BRL(v)}</div></div>`).join('')}</div>
+  </div>`;
+
+  const regOpts=[...new Set(REGISTROS.map(r=>r.regional).filter(Boolean))].sort();
+  const cliOpts=[...new Set(REGISTROS.map(r=>r.cliente).filter(Boolean))].sort();
+  const stOpts=[...new Set(REGISTROS.map(r=>r.status).filter(Boolean))].sort();
+  const sel=(id,val,opts,label)=>`<select id="${id}"><option value="">${label}</option>${opts.map(o=>`<option ${o===val?'selected':''}>${o}</option>`).join('')}</select>`;
+
+  const filters=`<div class="filters">
+    ${sel('fReg',fReg,regOpts,'Todas regionais')}
+    ${sel('fCli',fCli,cliOpts,'Todos clientes')}
+    ${sel('fSt',fSt,stOpts,'Todos status')}
+    <input type="search" id="fQ" placeholder="Buscar chamado, BKN, loja, descrição…" value="${q.replace(/"/g,'&quot;')}">
+    <span class="count-info">${total} de ${REGISTROS.length}</span>
+  </div>`;
+
+  const body=rows.map(r=>{
+    const s={prog:PROG.has(r._uid),exec:EXEC.has(r._uid),fat:FAT.has(r._uid)};
+    return `<tr>
+      <td class="mono">${r.chamado||'—'}</td>
+      <td class="mono">${r.bkn||'—'}</td>
+      <td>${r.unidade}</td>
+      <td>${r.regional||'—'}</td>
+      <td>${r.cliente}</td>
+      <td class="mono">${r.mes||'—'}</td>
+      <td><span class="pill ${statusClass(r.status)}">${r.status||'—'}</span></td>
+      <td class="val">${BRL(r.valor)}</td>
+      <td><div class="chk">
+        <input type="checkbox" title="Programado" data-uid="${r._uid}" data-k="prog" ${s.prog?'checked':''}>
+        <input type="checkbox" title="Executado" data-uid="${r._uid}" data-k="exec" ${s.exec?'checked':''}>
+        <input type="checkbox" title="Faturado"  data-uid="${r._uid}" data-k="fat"  ${s.fat?'checked':''}>
+      </div></td>
+    </tr>`;
+  }).join('');
+
+  const table=`<div class="tbl-wrap"><table>
+    <thead><tr>
+      <th>Chamado</th><th>BKN</th><th>Loja / Unidade</th><th>Reg.</th><th>Cliente</th><th>Mês</th><th>Status</th><th style="text-align:right">Valor</th><th style="text-align:center">P·E·F</th>
+    </tr></thead><tbody>${body||'<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text3)">Nenhum registro com esses filtros.</td></tr>'}</tbody>
+  </table></div>`;
+
+  content.innerHTML=kpis+bars+filters+table;
+
+  // religar eventos
+  ['fReg','fCli','fSt'].forEach(id=>document.getElementById(id).addEventListener('change',render));
+  const q2=document.getElementById('fQ'); q2.addEventListener('input',debounce(render,200));
+  content.querySelectorAll('.chk input').forEach(cb=>cb.addEventListener('change',e=>{
+    const uid=e.target.dataset.uid,k=e.target.dataset.k;
+    toggleEstado(k,uid,e.target.checked); agendarSalvar();
+  }));
+}
+
+function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
+
+// ===================== BOOT =====================
+async function boot(){
+  const content=document.getElementById('content');
+  document.getElementById('subInfo').textContent='buscando direto do PCM (Bubble)…';
+  content.innerHTML='<div class="loading"><span class="spin"></span> Buscando orçamentos do PCM ao vivo…</div>';
+  try{
+    const t0=performance.now();
+    const [raw]=await Promise.all([fetchAllOrc(), carregarEstado()]);
+    REGISTROS=processar(raw);
+    const secs=((performance.now()-t0)/1000).toFixed(1);
+    const somaTot=REGISTROS.reduce((s,r)=>s+r.valor,0);
+    document.getElementById('subInfo').textContent=`${REGISTROS.length} orçamentos · ${BRL(somaTot)} · fornecedor MANENG`;
+    const now=new Date();
+    document.getElementById('lastUpd').textContent='atualizado '+now.toLocaleTimeString('pt-BR')+' ('+secs+'s)';
+    render();
+  }catch(err){
+    content.innerHTML='<div class="err"><b>Não consegui carregar do PCM.</b><br>'+String(err.message||err)+
+      '<br><br>Verifique se você está logado em pcmbm.zamp.com.br ou tente Atualizar.</div>';
+    document.getElementById('subInfo').textContent='erro ao carregar';
+  }
+}
+document.getElementById('btnReload').addEventListener('click',boot);
+boot();
+</script>
+</body>
+</html>
