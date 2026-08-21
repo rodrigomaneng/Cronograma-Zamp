@@ -3020,23 +3020,22 @@ const ESCOPO_LOJAS = [{"bkn":"26164","nome":"AEROPORTO GOIANIA","regional":"CENT
 
 
 <script>
-/* ============ OVERLAY AO VIVO v4 — Corretivas (PCM) + histórico preservado ============
-   REGRA CENTRAL: nunca remover registros. REGISTROS = HISTÓRICO (embutido, acumulado
-   desde o início do contrato) UNIDO com o PCM ao vivo (por _uid). Novos sobem, antigos
-   permanecem. Registros fora do board atual do PCM ficam marcados como histórico (arquivado).
-   - Indicadores: painel próprio ao vivo dentro da aba Corretivas (mesma fonte).
-   - Estado prog/exec/fat: mesmo Apps Script; traduz uid antigo(hex)->novo(base36).
-   - VER: resumo completo (aprovação, subida, execução, classe, laudo, garantia...).
-   - Preventivas/Chamados/Escopo/Organograma: inalterados (planilhas Google). */
+/* ================= OVERLAY AO VIVO v5 =================
+   1a aba (Programacoes Corretivas): cards do PCM ao vivo (merge, historico nunca some) +
+     programar/executar/faturar salvando na planilha (so com senha).
+   ultima aba (Corretiva / Indicadores PCM BM): analise ao vivo (leitura) com filtros por
+     regiao, cliente, tipo, supervisor, status, mes.
+   Senha para editar: M@neng2026. Sem senha = somente leitura. */
 (function(){
   var API='https://pcmbm.zamp.com.br';
-  var FID='1769790775865x157720073711129280'; /* MANENG */
+  var FID='1769790775865x157720073711129280';
   var O2N={"c2166d7af84":"c04gx66hp","c304cd4c0a7":"c012bj2a2","cef0e384e29":"c0021ws3z","c4b97835ec8":"c00kj3vz7","c8b93f4aba1":"c02i1lw0l","c19a7af3fe0":"c05hmt1za","ceb496bbded":"c01f64k2s","ce569e62252":"c018rvqhi","c043e881eda":"c017bb98l","ce0871b834c":"c00utv8uf","cbc3816e45f":"c04fklkf3","cd0d975aaf9":"c04e2bn9q","cdd18ec0811":"c015nyhp6","c0970badc91":"c00zrre8l","cbc5688f26f":"c02pv3z38","cb24ed767d4":"c058fj4fb","cf8dc0434a8":"c05k9se2d","c27fd4c4539":"c00k5p3ot","c7572fa3558":"c09n70ze9","cb792678837":"c01jpz7ke","ce3c45539c2":"c00pjs03r","c8c9e04128e":"c03efdc24","c91b097df67":"c00hjj8zj","cd9122798fc":"c0bcvtpef","cfc00fb7f1b":"c04tgunm5","c6a401e271d":"c02zwb7gt","c2717b2982c":"c020t33vs","c09c2e1ac5b":"c028n1pev","c25f9d342d3":"c01shraj5","c5d0f06afd4":"c06yiz26x","c59e8083ba3":"c00k4f5md","cce7ecb06ad":"c00jow3wu","c7f6f037d55":"c00gfifkq","c3721e032bc":"c06p0rejn","cd166d3bafe":"c01w8c7wx","c0e63c4ccc8":"c01hxu08q","c3c5904da64":"c01fknznt","cc018891339":"c000gdl29","ced3382b807":"c03fy5krk","c931107f1af":"c04dc1v3o","c530b1d2c6e":"c02fnrqsr","c4de3e8ecdc":"c05kjzmh5","c46f4a7083b":"c01xmmmzp","cbc5bfcf894":"c03mu9f9k","c06a5b0d2a1":"c06k2gbma","c21dbb7633e":"c0854ern2","cf90f4ace8d":"c08b9n0jb","c88a6d66937":"c04evk6ms","c483fb2d46b":"c03mgi959","c35e71bcef4":"c06wgwa3x","c83f35cd2cd":"c00lwp9mj","ce9887dfdec":"c00hbayhh","cd00a982ff7":"c01soozzd","ca76ac64af3":"c02bftq8f","c4d924ed3ca":"c02l1uxdb","cae59d3d5e2":"c04mx2jg1","c14d7e9941e":"c00kiue89","cbc0bbb1bda":"c02uk8jx5","c447224c091":"c03ensxn1","c21f5b58d1e":"c00tybz1t","c391fa51c77":"c01azznfy","cdcd53e40f2":"c04kld253","c6cee5fc4a0":"c02mt0g5q","c3c3caa978e":"c01f1bg19","c1a3b8e6a26":"c02norfqt","c5720ed3f41":"c05gtw5fi","c088faca4fa":"c0502fa6t","c48440fe1e2":"c06fzfqe4","c6ea775f515":"c00qe5ow1","c53faf8af11":"c022jhe7v","cac8a577dd7":"c03utydux","c6bb16b2391":"c00q23lgi","c6786168be4":"c00w40ly3","c9b34a47e09":"c00dikety","c3a46713f84":"c00g7b2ld","c104de5eea4":"c012rt8c3","c14738a4345":"c01av5t1x","c5b5de15bae":"c00ctu9bm","c0e040947e1":"c04qua5zv","ca047a78a92":"c01ime1k1","c59194759d3":"c04z6ig9c","c0002c1d0c9":"c00w8kheo","c85a519afa3":"c00wh6xli","c130f0992ed":"c025d3jmz","ca98959e850":"c05nmed67","cf5c4c26f44":"c01v6or61","ce60d2919a9":"c02kucluk","cdb4501e7a2":"c076rsgwm","cde409efa0a":"c02lsgumq","c0f4f8c3f13":"c02zrluvy","ce5233fb4b3":"c01ozsg6w","cd378fae0ad":"c030iwlbp","c49fc7cebb1":"c06o4f6gq","ce3e60f7421":"c04rmz262","c6e6c14ec6f":"c00fq7dw5","c70548fd293":"c01topav6","c7702e51fe1":"c00cra9vu","c65a67a1709":"c02qzmev9","cd6abe0d367":"c03tk3lof","c0f4011e678":"c00o0bfic","c3e6db2d208":"c02hp86p4","c678fb03219":"c001ht355","c6be724b8fa":"c03y56bqy","cafb129e0ce":"c02qi9rva","cbf0d6f1846":"c01jzlokr","cb524323932":"c04odvfks","c5bbda2ea04":"c07c9ewiz","c46da7c8afb":"c05o53qnq","cd2d19be445":"c01cukoiv","c26b2dcc6ce":"c06s904e0","cd4821a003a":"c02zaml4o","ce33d9f3a33":"c04swry6t","ce9aba2dc4b":"c02i6ipwp","ce3e9e47acd":"c026bapvq","caf05825903":"c002g1tyv","c9ab16c393f":"c08vfchv5","c4aeb366222":"c07fd0469","c660d1c3432":"c05w98ps9","ca3ba1c0630":"c01nod2zv","ce4194b1b95":"c05hew22c","c05a75a7f10":"c07attibu","c576659e9eb":"c06c8ec4r","c9011f9e6b9":"c01upgiog","c4f37940e74":"c04z60tos","cb46431e895":"c0601evox","c1c9e7e5467":"c06cpozo7","cf92539a5d6":"c00mluamc","c1118912a90":"c02263uq8","c4e5876b94d":"c00g95fpq","cee1c8633a9":"c00ox993e","c0b8413ad81":"c01mfirc0","cef146a94f3":"c02cdmv0q","cd80be12e59":"c011ohbn5","cf6892a7b1c":"c03w3bnlm","c655ee76f98":"c0295ohf2","ce235bc3dee":"c02cr6oel","c9b2999ca28":"c049zjqd5","cdec17b92d8":"c01h2f6jr","c2da3d406c4":"c038fgo66","ce2247dd3e0":"c02b2h0bm","c2df842bfe2":"c00ofo8oa","c1a5d1f9b4e":"c00di4y0z","cdcd2eef82c":"c00k8kmvw","c9de973bc55":"c016sgzvm","cc354149f00":"c02aa0ktk","cbeb27e06ee":"c09iwm99g","c6a460db4c3":"c00qpkw68","c725fe63309":"c011aycnl","c8b9c9d0e23":"c02sxg5m2","cb27660d33c":"c02mt2uvl","c09e15b0d93":"c000xnrqm","c747ec96be8":"c031d1y7s","cbc4baa1853":"c06z35hwy","c7868649243":"c02enrji4","cb5b8893e0e":"c009e1psw","c60bce0f68e":"c02ue7wuz","c31919b4801":"c05skrorm","c95309b55f8":"c07dgmwld","cab4c842eb0":"c0896ed4k","c5a3167e54a":"c02wvfl36","cc8fa0cfac0":"c04553ext","c200b8535d1":"c028eftqi","c3a2624b4b4":"c006p5b8n","c74988e4160":"c03s26yd4","c8146ee6822":"c02wfm8e5","c5c10c1de00":"c036oco6j","ca25b2d0190":"c01fgi5y1","c5df9b4ddea":"c03d8t3tj","cf2f86cbd37":"c04s9x12u","c18f1c264de":"c024yfksz","cc3b758be0d":"c00lblyp8","c9ad7019da3":"c01nq1k7z","ce7ee916947":"c0054w5w0","cbae62a17bb":"c00pfxahy","c54038e1761":"c023iskd6","c28ebbc9dc0":"c01hknr6x","c1be1aa9309":"c01nzu95a","ce094edfea7":"c02i0nwwx","c5bc14b1862":"c005dmdya","c8f39439a66":"c03ae1y93","cdb5b4029f4":"c008uz9l3","c034706f345":"c0113m5mu","ccb590485c8":"c058kfrvi","c51756dfe58":"c00q0pvgi","c098253c788":"c03r8zz5s","c3f0e43fec1":"c02zjji2j","c5b293badb4":"c03amspij","c0bd027ae89":"c019e6r52","c3c8a6993bd":"c00eat9e5","c806d6b2140":"c0048vvkx","ce98edeb9d1":"c043kkm8b","c2cd5ca4c4e":"c0406vbko","c45b53f1169":"c00q31d8a","cc9a6bc1930":"c027xudmj","c1b141c6d2a":"c00b2n5u2","c61ab23058d":"c04qoldrw","cd1c3fd6e94":"c008de3n1","c543132efb8":"c01s5jolk","c51c5df64b9":"c01cv2t4z","c24dc35ce66":"c06peg13p","c793eff5f1b":"c046w5sn7","c913069876a":"c017qgmbx","ce077fd2530":"c00a174vm","c2a0f89c6fd":"c06d1ds7s","c7e998a9582":"c00e47qma","c0288b1945e":"c04n22244","c4862829e4a":"c02gf0btb","c42f3be0123":"c004txxun","c4f62811bb7":"c09x7kicc","c95ba3babc5":"c02ijaf3f","c06f784694b":"c04ibw5h6","c2c433848b4":"c03dsqx6x","c48fe1cd27e":"c00yacgaw","cd05b4b220a":"c06ctfaoj","c3a4bc4ddee":"c02xxxene","c09f74faf3b":"c011w980b","c5e1f5d4f17":"c08cu56lg","ccb18eb322a":"c0bdh7bot","c4e588195bf":"c07vg6p6s","c151588b206":"c05d3b2h8","c6b25d741df":"c00ydnf2m","c623d465697":"c03iwmgkq","c73751b2bce":"c01gfxgnc","c7cc98e7757":"c04qvusw8","c57c098bf02":"c0470zskx","cc77a5642dc":"c01yzkkd7","cd3437c7a8b":"c00c9ocq8","cccc556739f":"c00jm98jf","c66274975ea":"c08r6084f","cbfaa5cdbae":"c01vilyp0","c60fa16c4bd":"c05lfztg2","c384b62f79d":"c02xve1ew","c70fbc38ed3":"c032a5fut","cc31d4c667d":"c01b0lrc1","cd486f9fb58":"c007868ol","c2286c7a67c":"c03k6r44z","cfaea9044d3":"c03b5dk47","cf7bf4018f2":"c0053kyyx","ccd7500bc7c":"c03ykoohw","c1312d57c13":"c02y446mg","c4d89f65a74":"c00lix97b","cca37b58d41":"c01h8ix60","c95f3682454":"c01rgz14x","c57df14fb21":"c00y4c6lt","ca6c2910014":"c00b3u3n9","ca4ea61adc3":"c01vrimfk","c07921e03c9":"c01nl5jrq","cfc8416f972":"c028ee2s4","cebf478d965":"c021bq57a","cb42718f622":"c06qq9ni6","c711a8575e3":"c02od4dt3","ce3a59d5bb3":"c02ldtsi5","cf4ec34870e":"c00qrfk3x","cd7228d0ee1":"c00sh2vv3","cd914a6042e":"c00nbk9t0","ce9b77fd236":"c03tghf5v","c586e1549dd":"c01ft8anb","c05c86ee431":"c01gvwh33","cf1c8440eb0":"c02f8gnfb","c9ceabf8341":"c00p4gow2","ca66abb2ba8":"c021abtcl","c3ab895eb78":"c00fu1xs5","c30c17d956d":"c07fyw5oe","c0822205212":"c01cvpadn","ceefd7ba3cb":"c03pf148t","c56d97d8ab8":"c065lc14y","cf6645493d3":"c02uku0fg","c43b148e4e0":"c06rgklcr","caee4a3f1d8":"c015fmbjk","c4b583501d7":"c011nmeyp","c623d4a79ef":"c00vz8n8j","c04495f3e3f":"c03zegadh","c8fea41ea0d":"c02lp5qfk","c31b725fed2":"c00ka6rmz","c9daaaf1299":"c008cvpzl","c6f5a764bf1":"c0267f1bz","c10b56389fb":"c01hyuyxv","cac42963443":"c0236s7a4","c0048fad143":"c01p42194","ce6c53c429e":"c03ql0ams","c49dac99c15":"c00vbfh80","c18c807f359":"c01zzrtfb","ce3330a0ae9":"c056rfz0y","c168c081a76":"c06mtzvcl","ce3beeb8ada":"c04cbb4qk","c1342999f35":"c01bgvb66","c7282a14216":"c01c95dev","c39785c9b10":"c0a2vafxc","cb9268305ed":"c035xzocz","cfb22be1b96":"c00v9jahd","c527b2f8110":"c0056j2nj","cc702caa512":"c011i56jc","cceb5f147cc":"c02kcwmkw","c10b2771211":"c03uqityp","c3bee629d6a":"c001dp34k","c5da5f1a26d":"c00i11b90","ccab31c2026":"c00a82dff","c7d1b8a2072":"c00a41qa8","c0c647e6e7b":"c0077lj2n","c89cef93317":"c02t2kj2q","cb0e453122e":"c01f5sogb","c898e56b6ac":"c00sjlqhz","c442c7e37b4":"c04ajr7dd","c2e7e488c1e":"c0073e6jq","c4aa875faa4":"c019youb4","c5de8ba8794":"c09a1c2sx","cf54160c2ca":"c02aqmwcm","cce59a6503d":"c01dqz18c","c65ee96cffa":"c09j2fk0a","ce90d08ac69":"c03u2fgvh","c95cd122394":"c02ym637z","c38cc19f960":"c041igrhd","cc11b201fed":"c07oo39xb","c45afff1531":"c07d0jrfb","cc2fe2852ef":"c04ynkiu2","ca29c3dd517":"c07d9mt7a","cf399fadba7":"c001iakdj","cd3119bd8be":"c01jj9q3x","cdaa049ae48":"c06e4wyhg","ccabfe10f12":"c00o9h6i6","c221b69f955":"c01wqzqtr","ca94091846d":"c03ku1x78","cc9e73fcb72":"c0315o2bk","c171296926b":"c05h6hz2w","c66af132eee":"c01tyvx7f","cef53388717":"c053q0uw3","ce437bd0d29":"c012v4ctp","cfca0fc57db":"c00z9aud5","c6d1e34fd1a":"c017iybmp","c11e4f8acb7":"c03vubw5w","c4f7ce58060":"c00ktj0dc","cdb1ed281f9":"c01te5skk","c47d36640b5":"c026ekbi8","c8f2ff16a4f":"c007q6rmx","c019da904cf":"c00ih23p7","ce416641d5b":"c001jfa9u","cfa060faab8":"c075utnq4","c28700a7ac4":"c08va8193","c66bf87e874":"c05v6drmc","caeafa431ca":"c0bgi5z3t","c479abcee53":"c02jjn5i1","c70312feb75":"c05fxnzqu","c3d20bab1c1":"c02y9k7gv","c2548fd0f27":"c004q22ac","c45a8837c82":"c00zemkjt","cb0e7dbbd13":"c02fytmor","c8016a56640":"c07oha1qy","c089105cd9d":"c007pq6bc","c91e83ca504":"c03n7ddhf","c5de76e4eaf":"c04rh5h5p","c14599bda1c":"c018hj9i3","c0b6a006ee1":"c038s53ag","c6f96a69708":"c0499kdbf","c7ec32c1669":"c06575snb","c68c58c02f8":"c00y8dhn6","c20b90163d6":"c04dk44o4","cdbbc102d5a":"c05jd3ex4","cb18fb44b32":"c06g0ag97","ce1c9681718":"c03a7d0qr","c85f38f2b1f":"c008z7jmk","c84b32bb470":"c00dlhibc","cbe4b95b311":"c02pwwsiz","c3bd687b180":"c00n1jdd3","ca8231572a1":"c02tdmo99","c4509dc6d57":"c04bw59lx","c9f11f6001d":"c040xnpd9","cc8fc7639b4":"c01y9oixy","c3215952b89":"c01imjulg","c12a3475c31":"c02tg59hz","c2fcbcf55a8":"c01k7poum","c62c8df4b16":"c092qyscj","c2456333786":"c016ye5mr","c6142e51cff":"c011srkug","c4726aa2222":"c070wq7tc","c85c4f68780":"c02f4135k","c1425cc9931":"c02hhnvas","c911949462f":"c017k3bje","c1ceb11ce96":"c05zmwhx7","cca15113cd2":"c00403g8k","ce9c87f48e3":"c005u38km","c1f2a2759bf":"c02yhzx4h","cdfd9a6b2b2":"c04xu9pu9","ce8a490a80e":"c01utoh3v","c0af960b491":"c02ubfiou","c8bc55dc57b":"c00c22ctl","cb5fb70e85d":"c009yv3nx","c128aec1adc":"c006f4k6u","c8ca26303e9":"c00374hqu","c13cbec7c9e":"c059703fj","ce36e3d193d":"c009ogwfy","c2b240052c7":"c01kybqkw","c31a04d55dd":"c05itzavz","c139df23a1e":"c01inovwj","c90c1008f4b":"c02xxg9gf","c2f22c06d7d":"c023tnmwj","c00de19f608":"c00agzbtq","cd500e61612":"c04ic6hbj","c10e3e0b9c4":"c0399dc8h","ce577d3e091":"c0398rwen","ce0cdc6915e":"c02zu0hmy","c3c6da271f4":"c01ogr92c","ca17dba0e7a":"c02j6l85o","c019c4d85f0":"c01hv1ake","c17d3e2d947":"c00qlz2pw","c6415c23776":"c0046n4se","cf6b8788fef":"c00p6lzpg","c59a1a71f0a":"c05arpubh","cf281be30bf":"c03ds2izv","c47d00fb64d":"c02tx8tfx","c3033d68c69":"c009e815c","c19114793c2":"c00q72t60","c5019f7fbf5":"c036kk4fn","c84d834c75a":"c02tj9c5n","cce0fe0b4ce":"c0287ssza","cf4b56bd266":"c00hsxnuu","c6d508d0f6b":"c019e4sbb","c25e585f9b2":"c02137fup","cd9d4c33189":"c01fjcles","c1d4a60e2ca":"c0061ltz4","cc3f5cb3ad9":"c01rughgw","c41fbf60309":"c01niel15","cf28e4a1f26":"c04vl4h11","c0925683217":"c01odc19i","c6e00a98c22":"c07e35uh7","cb5ff4b7706":"c009s9db3","c6d72ef8046":"c06sprtiz","c258c29697c":"c04lwm3hh","c74c3ba6185":"c020kwxln","c2c317a55e8":"c00b4t0w5","cea828ca7f6":"c009qgstm","c40b7f9dd2a":"c03swm909","cfcbf1147c0":"c01ekchzo","c03de997520":"c09ej156y","c07f123cc54":"c0061ui6e","c3ea89b2402":"c00l1em4s","c12d61cbeb2":"c04o7nqdy","c58a4735162":"c0ajsnso7","c51c2e56377":"c014cow3b","c43b12d51df":"c00vvzzsr","c10aac2dd2f":"c0062xroi","c3677d069a6":"c04gslqul","c8e0fd45a43":"c022efgl3","cd879e69153":"c02fnm8j9","c30b3aec27c":"c02m34plb","c3aa0003ae6":"c0aawy443","c27c36cd778":"c01l98lpg","c9894845f4e":"c03lt7g30","c38c8f75e8c":"c03ba3iks","cfd2465c27b":"c07twgowu","ca42fb30398":"c00umpzuu","c60a1f03fdf":"c04hvife7","cb2468ecd13":"c045o18ig","cd4fb62a724":"c04tolly5"};
+  var SENHA='M@neng2026';
+  var EDIT=false; try{ EDIT=sessionStorage.getItem('zamp_edit')==='1'; }catch(e){}
   var PRIO={'Validado':1,'Aprovado':2,'Aguardando Validação':3,'Aguardando aprovação Coord.':4,'Aguardando Aprovação Capex':5,'Aguardando Aprovação':6,'Negado':7,'Validação Negada':8,'Invalidado':9};
   function md5s(str){var h=5381;for(var i=0;i<str.length;i++)h=((h<<5)+h)+str.charCodeAt(i);return Math.abs(h).toString(36).padStart(8,'0');}
   function cliente(loja){var u=(loja||'').toUpperCase();if(u.indexOf('FS ')===0||u.indexOf('FS-')===0||u.indexOf('FS–')===0||u.indexOf('FILIAL BK')>=0)return 'ZAMP-BK';var m=['SHOP','DRIVE','ROAD SHOP','ILS ','ILR ','FC ','NORTH SHOP','PARK SHOP','MAG ','MAXI ','MAUA'];for(var j=0;j<m.length;j++){if(u.indexOf(m[j])>=0)return 'MULTIPLAN';}if(u.indexOf('EXTRA')>=0||u.indexOf('CARREFOUR')>=0)return 'CARREFOUR';if(u.indexOf('ASSAI')>=0)return 'ASSAI';if(u.indexOf('KARIM')>=0)return 'KARIM';return 'OUTROS';}
   async function fetchAll(){
-    /* SEM filtro enabled: traz TODO o histórico do MANENG no PCM (ativos + inativos) */
     var cons=JSON.stringify([{key:'fornecedor',constraint_type:'equals',value:FID}]);
     var cur=0,all=[],g=0;
     while(g++<400){
@@ -3061,8 +3060,7 @@ const ESCOPO_LOJAS = [{"bkn":"26164","nome":"AEROPORTO GOIANIA","regional":"CENT
         dias_garantia:x.dias_garantia||'',data_fim_garantia:x.data_fim_garantia||'',
         aprovado_parcial:!!x.aprovado_parcial,aprovado_total:!!x.aprovado_total,
         laudo:x.laudo||'',ordem:(x.ordem_txt||x.ordem||x.id_ordem||''),numero:(x.number_view||''),
-        _enabled:(x.enabled!==false),
-        _p:PRIO[st]||99};
+        _enabled:(x.enabled!==false),_p:PRIO[st]||99};
     }).filter(function(r){return r.loja;});
     rows.sort(function(a,b){return a._p-b._p;});
     var seen={},out=[];
@@ -3075,12 +3073,10 @@ const ESCOPO_LOJAS = [{"bkn":"26164","nome":"AEROPORTO GOIANIA","regional":"CENT
         valor:r.valor,valor_ma:r.valor_ma,valor_mo:r.valor_mo,cliente:cliente(r.loja),
         created:r.created,modified:r.modified,date_aproval:r.date_aproval,data_exec:r.data_exec,data_laudo:r.data_laudo,
         dias_garantia:r.dias_garantia,data_fim_garantia:r.data_fim_garantia,
-        aprovado_parcial:r.aprovado_parcial,aprovado_total:r.aprovado_total,laudo:r.laudo,ordem:r.ordem,numero:r.numero,
-        _enabled:r._enabled});
+        aprovado_parcial:r.aprovado_parcial,aprovado_total:r.aprovado_total,laudo:r.laudo,ordem:r.ordem,numero:r.numero,_enabled:r._enabled});
     }
     return out;
   }
-  /* MERGE: histórico embutido (baked REGISTROS) UNIDO com o PCM ao vivo. Nunca remove. */
   function mesclar(hist, live){
     var byId={};
     hist.forEach(function(r){ var c={}; for(var k in r) c[k]=r[k]; c.arquivado=true; byId[c._uid]=c; });
@@ -3090,121 +3086,158 @@ const ESCOPO_LOJAS = [{"bkn":"26164","nome":"AEROPORTO GOIANIA","regional":"CENT
     return arr;
   }
   function traduz(map){var out={};for(var k in map){if(!map.hasOwnProperty(k))continue;var p=k.split('_');var nk=(O2N[p[0]]||p[0])+(p[1]?'_'+p[1]:'');out[nk]=map[k];}return out;}
-  function reRender(){['gerarData','repovoarSelects','repovoarSupTec','repovoarEquip','buildLegend','buildFluxo','render','updateKPIs','updateProgress','updateBtns'].forEach(function(fn){try{if(typeof window[fn]==='function')window[fn]();}catch(e){console.warn('reRender',fn,e);}});}
+  function reRender(){['gerarData','repovoarSelects','repovoarSupTec','repovoarEquip','buildLegend','buildFluxo','render','updateKPIs','updateProgress','updateBtns'].forEach(function(fn){try{if(typeof window[fn]==='function')window[fn]();}catch(e){}});}
   function aplicarTraducao(){try{if(typeof progState!=='undefined')progState=traduz(progState);}catch(e){}try{if(typeof execState!=='undefined')execState=traduz(execState);}catch(e){}try{if(typeof fatState!=='undefined')fatState=traduz(fatState);}catch(e){}}
   function wrapCarregar(){
     if(typeof carregarDoSheets==='function' && !carregarDoSheets.__wrapped){
       var _o=carregarDoSheets;
-      carregarDoSheets=async function(){ await _o.apply(this,arguments); aplicarTraducao(); reRender(); montarIndicadores(); };
+      carregarDoSheets=async function(){ await _o.apply(this,arguments); aplicarTraducao(); reRender(); if(_analiticaAberta) renderAnalytics(); };
       carregarDoSheets.__wrapped=true;
     }
   }
-  /* ---------- VER detalhes ---------- */
   function _brl(v){ try{ if(typeof _fmtBRL==='function') return _fmtBRL(v||0); }catch(e){} return 'R$ '+(Number(v)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function _fmtR(v){ return 'R$ '+Math.round(Number(v)||0).toLocaleString('pt-BR'); }
   function _dt(v){ if(!v)return ''; try{var d=new Date(v); if(isNaN(d.getTime()))return String(v); return d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return String(v);} }
   function _dtd(v){ if(!v)return ''; try{var d=new Date(v); if(isNaN(d.getTime()))return String(v); return d.toLocaleDateString('pt-BR');}catch(e){return String(v);} }
-  function _esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+  function _esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function supDe(uid){ try{ var e=(typeof getExtra==='function')?getExtra(uid):(window.cardExtra&&cardExtra[uid]); return (e&&e.sup)||''; }catch(x){ return ''; } }
   function detalheRico(id){
-    var r=REGISTROS.find(function(x){return x._uid===id||x._id===id;});
-    if(!r) return;
+    var r=REGISTROS.find(function(x){return x._uid===id||x._id===id;}); if(!r) return;
     var ex=(typeof getExtra==='function')?getExtra(id):((window.cardExtra&&cardExtra[id])||{});
     var isProg=!!(window.progState&&progState[id]), isExec=!!(window.execState&&execState[id]), isFat=!!(window.fatState&&fatState[id]);
     var t=document.getElementById('zd-title'); if(t) t.textContent=(r.cliente||'—')+(r.chamado?' – Chamado '+r.chamado:'')+(r.arquivado?'  ·  (histórico)':'');
     var money=document.getElementById('zd-money'); if(money) money.innerHTML=[['Materiais',r.valor_ma||0],['Mão de Obra',r.valor_mo||0],['Total',r.valor||0]].map(function(x){return '<div class="zd-money-box"><div class="zd-money-lbl">'+x[0]+'</div><div class="zd-money-val">'+_brl(x[1])+'</div></div>';}).join('');
-    var pairs=[
-      ['Cliente',r.cliente],['Regional',r.regional],['Unidade / Loja',r.unidade],['Empresa',r.empresa],
-      ['BKN',r.bkn],['Chamado',r.chamado],['Nº',r.numero],['Ordem',r.ordem],
-      ['Classe',r.classe],['Tipo / Equipamento',r.equip],['Mês de referência',r.mes],['Status atual',r.status],
-      ['Situação',r.arquivado?'Histórico (fora do board atual)':'Ativo no board'],
-      ['Subiu o card em',_dt(r.created)],['Aprovado em',_dt(r.date_aproval)],['Executado em',_dtd(r.data_exec)],['Laudo em',_dt(r.data_laudo)],['Última alteração',_dt(r.modified)],
-      ['Aprovação',r.aprovado_total?'Total':(r.aprovado_parcial?'Parcial':'')],
-      ['Garantia (dias)',r.dias_garantia],['Fim da garantia',_dtd(r.data_fim_garantia)],
-      ['Data programada',ex.data?_dtd(ex.data):''],['Supervisor',ex.sup],['Técnico',ex.tec],
-      ['Programada',isProg?'✅ Sim':'—'],['Executada',isExec?'✅ Sim':'—'],['Faturada',isFat?'✅ Sim':'—']
-    ];
+    var pairs=[['Cliente',r.cliente],['Regional',r.regional],['Unidade / Loja',r.unidade],['Empresa',r.empresa],['BKN',r.bkn],['Chamado',r.chamado],['Nº',r.numero],['Ordem',r.ordem],['Classe',r.classe],['Tipo / Equipamento',r.equip],['Mês de referência',r.mes],['Status atual',r.status],['Situação',r.arquivado?'Histórico (fora do board atual)':'Ativo no board'],['Subiu o card em',_dt(r.created)],['Aprovado em',_dt(r.date_aproval)],['Executado em',_dtd(r.data_exec)],['Laudo em',_dt(r.data_laudo)],['Última alteração',_dt(r.modified)],['Aprovação',r.aprovado_total?'Total':(r.aprovado_parcial?'Parcial':'')],['Garantia (dias)',r.dias_garantia],['Fim da garantia',_dtd(r.data_fim_garantia)],['Data programada',ex.data?_dtd(ex.data):''],['Supervisor',ex.sup],['Técnico',ex.tec],['Programada',isProg?'✅ Sim':'—'],['Executada',isExec?'✅ Sim':'—'],['Faturada',isFat?'✅ Sim':'—']];
     var grid=document.getElementById('zd-grid'); if(grid) grid.innerHTML=pairs.map(function(p){var v=p[1];var ok=(v||v===0)&&v!=='';return ok?'<div class="zdi"><div class="zdi-lbl">'+p[0]+'</div><div class="zdi-val">'+_esc(v)+'</div></div>':'';}).join('');
     var lauUrl=r.laudo?(String(r.laudo).indexOf('http')===0?r.laudo:('https:'+r.laudo)):'';
     var lau=lauUrl?('<div class="zdi" style="margin-bottom:8px"><div class="zdi-lbl">Laudo / Anexo</div><div class="zdi-val"><a href="'+_esc(lauUrl)+'" target="_blank" rel="noopener">📄 Abrir PDF</a></div></div>'):'';
     var blocks=[['Descrição do Serviço',r.desc_full||r.desc],['Obs. Orçamento',r.obs_orc],['Observações (campo)',ex.obs]];
     var full=document.getElementById('zd-full'); if(full) full.innerHTML=lau+blocks.map(function(b){return b[1]?'<div class="zdi" style="margin-bottom:8px"><div class="zdi-lbl">'+b[0]+'</div><div class="zdi-val" style="white-space:pre-wrap">'+_esc(b[1])+'</div></div>':'';}).join('');
-    var ov=document.getElementById('zamp-detail-overlay'); if(ov) ov.classList.add('open');
-    document.body.style.overflow='hidden';
+    var ov=document.getElementById('zamp-detail-overlay'); if(ov) ov.classList.add('open'); document.body.style.overflow='hidden';
   }
   function instalarDetalhe(){ try{ window.openDetailZamp=openDetailZamp=detalheRico; }catch(e){ window.openDetailZamp=detalheRico; } }
-  /* ---------- Painel de Indicadores ao vivo (histórico + ativos) ---------- */
-  function _fmtR(v){ return 'R$ '+Math.round(Number(v)||0).toLocaleString('pt-BR'); }
-  function grupo(D,key){ var m={}; D.forEach(function(r){ var k=(r[key]||'—'); if(!m[k])m[k]={n:0,v:0}; m[k].n++; m[k].v+=(Number(r.valor)||0); }); return Object.keys(m).map(function(k){return {k:k,n:m[k].n,v:m[k].v};}).sort(function(a,b){return b.v-a.v;}); }
+  function toast(msg){ var d=document.createElement('div'); d.textContent=msg; d.style.cssText='position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#1A1916;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.3)'; document.body.appendChild(d); setTimeout(function(){d.remove();},2800); }
+  function atualizarBadge(){
+    var b=document.getElementById('zamp-auth-badge'); if(!b){ b=document.createElement('div'); b.id='zamp-auth-badge'; b.style.cssText='position:fixed;right:14px;bottom:14px;z-index:99998;font-size:12px;padding:7px 12px;border-radius:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2);font-family:sans-serif'; document.body.appendChild(b); b.onclick=alternarLogin; }
+    if(EDIT){ b.textContent='🔓 Edição liberada — sair'; b.style.background='#065F46'; b.style.color='#fff'; b.style.border='none'; }
+    else { b.textContent='🔒 Somente leitura — Entrar para editar'; b.style.background='#fff'; b.style.color='#1A1916'; b.style.border='1px solid #E2E0D8'; }
+  }
+  function alternarLogin(){
+    if(EDIT){ EDIT=false; try{sessionStorage.removeItem('zamp_edit');}catch(e){} atualizarBadge(); toast('Modo somente leitura'); reRender(); return; }
+    var s=prompt('Senha para liberar edição (programar/executar/faturar):');
+    if(s===null) return;
+    if(s===SENHA){ EDIT=true; try{sessionStorage.setItem('zamp_edit','1');}catch(e){} atualizarBadge(); toast('Edição liberada ✓'); reRender(); }
+    else { toast('Senha incorreta'); }
+  }
+  function protegerEdicao(){
+    ['toggleProg','toggleExec','toggleFat','setData','setSup','setTec','setObs'].forEach(function(fn){
+      if(typeof window[fn]==='function' && !window[fn].__prot){
+        var orig=window[fn];
+        var w=function(){ if(!EDIT){ toast('🔒 Somente leitura. Clique no cadeado (canto inferior direito) e entre com a senha.'); try{ if(arguments[0]&&typeof updateCardState==='function') updateCardState(arguments[0]); }catch(e){} return; } return orig.apply(this,arguments); };
+        w.__prot=true; window[fn]=w;
+      }
+    });
+  }
+  var _analiticaAberta=false;
+  var AF={reg:'',cli:'',tipo:'',sup:'',st:'',mes:'',sit:'',q:''};
+  function criarAbaAnalitica(){
+    if(document.getElementById('secao-analitica')) return;
+    var nav=document.querySelector('.tab-nav'); if(!nav) return;
+    var btn=document.createElement('button'); btn.className='tab-btn'; btn.textContent='🛠️ Corretiva / Indicadores PCM BM';
+    btn.setAttribute('onclick',"mudarAba('analitica',this)"); nav.appendChild(btn);
+    var sec=document.createElement('div'); sec.className='tab-secao'; sec.id='secao-analitica';
+    sec.innerHTML='<div id="analitica-conteudo" style="padding:2px"></div>';
+    var host=document.querySelector('#secao-corretivas') ? document.querySelector('#secao-corretivas').parentNode : document.body;
+    host.appendChild(sec);
+  }
+  function opts(D,key,extractor){ var s={}; D.forEach(function(r){ var v=extractor?extractor(r):(r[key]||''); if(v) s[v]=1; }); return Object.keys(s).sort(); }
+  function grupo(D,keyfn){ var m={}; D.forEach(function(r){ var k=keyfn(r)||'—'; if(!m[k])m[k]={n:0,v:0}; m[k].n++; m[k].v+=(Number(r.valor)||0); }); return Object.keys(m).map(function(k){return {k:k,n:m[k].n,v:m[k].v};}).sort(function(a,b){return b.v-a.v;}); }
   function barras(titulo,arr,modo){
     var max=1; arr.forEach(function(x){ var q=(modo==='n'?x.n:x.v); if(q>max)max=q; });
-    var linhas=arr.slice(0,12).map(function(x){ var q=(modo==='n'?x.n:x.v); var lbl=(modo==='n'?x.n:_fmtR(x.v)); return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px"><div style="width:120px;flex-shrink:0;color:#6B6960;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+_esc(x.k)+'">'+_esc(x.k)+'</div><div style="flex:1;background:#EFEDE7;border-radius:4px;height:15px;overflow:hidden"><div style="height:100%;background:#1E3A5F;width:'+(q/max*100)+'%"></div></div><div style="width:110px;flex-shrink:0;text-align:right;font-family:monospace;font-size:11px">'+lbl+'</div></div>'; }).join('');
-    return '<div style="flex:1;min-width:240px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6B6960;margin-bottom:8px;font-weight:600">'+titulo+'</div>'+linhas+'</div>';
+    return '<div style="flex:1;min-width:240px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6B6960;margin-bottom:8px;font-weight:600">'+titulo+'</div>'+arr.slice(0,14).map(function(x){var q=(modo==='n'?x.n:x.v);var lbl=(modo==='n'?x.n:_fmtR(x.v));return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px"><div style="width:130px;flex-shrink:0;color:#6B6960;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+_esc(x.k)+'">'+_esc(x.k)+'</div><div style="flex:1;background:#EFEDE7;border-radius:4px;height:15px;overflow:hidden"><div style="height:100%;background:#1E3A5F;width:'+(q/max*100)+'%"></div></div><div style="width:110px;flex-shrink:0;text-align:right;font-family:monospace;font-size:11px">'+lbl+'</div></div>';}).join('')+'</div>';
   }
-  function montarIndicadores(){
-    try{
-      var sec=document.getElementById('secao-corretivas'); if(!sec) return;
-      var TODOS=(typeof REGISTROS!=='undefined'&&REGISTROS)?REGISTROS:[];
-      var ATIVOS=TODOS.filter(function(r){return !r.arquivado;});
-      var N=TODOS.length, Nat=ATIVOS.length, val=TODOS.reduce(function(s,r){return s+(Number(r.valor)||0);},0), valAt=ATIVOS.reduce(function(s,r){return s+(Number(r.valor)||0);},0);
-      var low=function(r){return (r.status||'').toLowerCase();};
-      var ag=TODOS.filter(function(r){return low(r).indexOf('aguardando')>=0;}).length;
-      var aprov=TODOS.filter(function(r){var s=low(r);return (s.indexOf('aprovado')>=0)||(s.indexOf('validado')>=0&&s.indexOf('inval')<0&&s.indexOf('negad')<0);}).length;
-      var neg=TODOS.filter(function(r){var s=low(r);return s.indexOf('negad')>=0||s.indexOf('invalidado')>=0;}).length;
-      var lojas=new Set(TODOS.map(function(r){return r.bkn;}).filter(Boolean)).size;
-      function kpi(l,v,s,cor){ return '<div style="background:#fff;border:1px solid #E2E0D8;border-radius:10px;padding:.7rem .9rem;min-width:120px;flex:1"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#A09E96;font-family:monospace">'+l+'</div><div style="font-size:20px;font-weight:600;color:'+(cor||'#1E3A5F')+'">'+v+'</div><div style="font-size:10px;color:#A09E96">'+(s||'')+'</div></div>'; }
-      var kpis='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">'
-        +kpi('Total (controle)',N,'desde o início do contrato')
-        +kpi('Ativos no board',Nat,'no PCM agora','#065F46')
-        +kpi('Valor total',_fmtR(val),'acumulado')
-        +kpi('Valor ativo',_fmtR(valAt),'board atual')
-        +kpi('Ag. Aprovação',ag,'')
-        +kpi('Aprovado / Validado',aprov,'')
-        +kpi('Negado / Invalidado',neg,'')
-        +kpi('Lojas (BKN)',lojas,'unidades')
-        +'</div>';
-      var breaks='<div style="display:flex;gap:24px;flex-wrap:wrap">'
-        +barras('Por status (qtd)',grupo(TODOS,'status'),'n')
-        +barras('Por regional (R$)',grupo(TODOS,'regional'),'v')
-        +barras('Por mês (R$)',grupo(TODOS,'mes'),'v')
-        +'</div>';
-      var html='<div style="background:#F5F4F0;border:1px solid #E2E0D8;border-radius:12px;padding:1rem 1.1rem;margin:0 0 14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap"><span style="font-size:14px;font-weight:600;color:#1E3A5F">📊 Indicadores — controle acumulado (ao vivo)</span><span style="width:8px;height:8px;border-radius:50%;background:#22C55E;display:inline-block"></span><span style="font-size:11px;color:#6B6960">histórico preservado · novos do PCM entram automaticamente</span></div>'+kpis+breaks+'</div>';
-      var host=document.getElementById('live-ind-panel');
-      if(!host){ host=document.createElement('div'); host.id='live-ind-panel'; var anchor=sec.querySelector('.kpis'); if(anchor&&anchor.parentNode){ anchor.parentNode.insertBefore(host, anchor.nextSibling); } else { sec.insertBefore(host, sec.firstChild); } }
-      host.innerHTML=html;
-    }catch(e){ console.warn('montarIndicadores', e); }
+  function renderAnalytics(){
+    var host=document.getElementById('analitica-conteudo'); if(!host) return;
+    var TODOS=(typeof REGISTROS!=='undefined'&&REGISTROS)?REGISTROS:[];
+    function tipoDe(r){ return r.classe||'—'; }
+    var F=TODOS.filter(function(r){
+      if(AF.reg && r.regional!==AF.reg) return false;
+      if(AF.cli && r.cliente!==AF.cli) return false;
+      if(AF.tipo && tipoDe(r)!==AF.tipo) return false;
+      if(AF.sup && supDe(r._uid)!==AF.sup) return false;
+      if(AF.st && r.status!==AF.st) return false;
+      if(AF.mes && r.mes!==AF.mes) return false;
+      if(AF.sit==='ativo' && r.arquivado) return false;
+      if(AF.sit==='hist' && !r.arquivado) return false;
+      if(AF.q){ var h=((r.chamado||'')+' '+(r.bkn||'')+' '+(r.unidade||'')+' '+(r.desc||'')).toLowerCase(); if(h.indexOf(AF.q)<0) return false; }
+      return true;
+    });
+    var low=function(r){return (r.status||'').toLowerCase();};
+    var N=F.length, val=F.reduce(function(s,r){return s+(Number(r.valor)||0);},0);
+    var aprov=F.filter(function(r){var s=low(r);return (s.indexOf('aprovado')>=0)||(s.indexOf('validado')>=0&&s.indexOf('inval')<0&&s.indexOf('negad')<0);}).length;
+    var agu=F.filter(function(r){return low(r).indexOf('aguardando')>=0;}).length;
+    var prog=F.filter(function(r){return window.progState&&progState[r._uid];}).length;
+    var exec=F.filter(function(r){return window.execState&&execState[r._uid];}).length;
+    var fat=F.filter(function(r){return window.fatState&&fatState[r._uid];}).length;
+    var lojas=new Set(F.map(function(r){return r.bkn;}).filter(Boolean)).size;
+    function kpi(l,v,c){ return '<div style="background:#fff;border:1px solid #E2E0D8;border-radius:10px;padding:.7rem .9rem;min-width:110px;flex:1"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#A09E96;font-family:monospace">'+l+'</div><div style="font-size:19px;font-weight:600;color:'+(c||'#1E3A5F')+'">'+v+'</div></div>'; }
+    function sel(id,label,vals,cur){ return '<select data-af="'+id+'" style="padding:6px 10px;border:1px solid #E2E0D8;border-radius:7px;font-size:13px;background:#fff"><option value="">'+label+'</option>'+vals.map(function(v){return '<option '+(v===cur?'selected':'')+' value="'+_esc(v)+'">'+_esc(v)+'</option>';}).join('')+'</select>'; }
+    var barFiltros='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">'
+      +'<input data-af="q" type="search" placeholder="🔍 Buscar chamado, BKN, loja, descrição…" value="'+_esc(AF.q)+'" style="flex:1;min-width:220px;padding:6px 10px;border:1px solid #E2E0D8;border-radius:7px;font-size:13px">'
+      +sel('reg','Região',opts(TODOS,'regional'),AF.reg)
+      +sel('cli','Cliente',opts(TODOS,'cliente'),AF.cli)
+      +sel('tipo','Tipo',opts(TODOS,'classe'),AF.tipo)
+      +sel('sup','Supervisor',opts(TODOS,null,function(r){return supDe(r._uid);}),AF.sup)
+      +sel('st','Status',opts(TODOS,'status'),AF.st)
+      +sel('mes','Mês',opts(TODOS,'mes'),AF.mes)
+      +sel('sit','Situação',['ativo','hist'],AF.sit)
+      +'<button data-af-clear="1" style="padding:6px 12px;border:1px solid #E2E0D8;border-radius:7px;background:#F0EFE9;cursor:pointer;font-size:13px">✕ Limpar</button>'
+      +'</div>';
+    var kpis='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">'+kpi('Total',N)+kpi('Valor',_fmtR(val))+kpi('Aprovado/Validado',aprov,'#065F46')+kpi('Ag. Aprovação',agu,'#92400E')+kpi('Programado',prog)+kpi('Realizado (exec)',exec)+kpi('Faturado',fat,'#065F46')+kpi('Lojas',lojas)+'</div>';
+    var breaks='<div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:14px">'
+      +barras('Por status (qtd)',grupo(F,function(r){return r.status;}),'n')
+      +barras('Por região (R$)',grupo(F,function(r){return r.regional;}),'v')
+      +barras('Por loja (R$)',grupo(F,function(r){return r.unidade;}),'v')
+      +barras('Por supervisor (qtd)',grupo(F,function(r){return supDe(r._uid)||'(sem supervisor)';}),'n')+'</div>';
+    var linhas=F.slice(0,400).map(function(r){var pf=(progState&&progState[r._uid]?'P':'')+(execState&&execState[r._uid]?'E':'')+(fatState&&fatState[r._uid]?'F':'');return '<tr style="border-bottom:1px solid #EEE"><td style="padding:6px 8px;font-family:monospace">'+_esc(r.chamado||'')+'</td><td style="padding:6px 8px;font-family:monospace">'+_esc(r.bkn||'')+'</td><td style="padding:6px 8px">'+_esc(r.unidade||'')+'</td><td style="padding:6px 8px">'+_esc(r.regional||'')+'</td><td style="padding:6px 8px">'+_esc(r.classe||'')+'</td><td style="padding:6px 8px">'+_esc(r.mes||'')+'</td><td style="padding:6px 8px">'+_esc(r.status||'')+'</td><td style="padding:6px 8px;text-align:center">'+pf+'</td><td style="padding:6px 8px;text-align:right;font-family:monospace">'+_brl(r.valor)+'</td><td style="padding:6px 8px"><button onclick="openDetailZamp(\''+r._uid+'\')" style="padding:3px 8px;border:1px solid #E2E0D8;border-radius:6px;background:#fff;cursor:pointer;font-size:11px">🔍 Ver</button></td></tr>';}).join('');
+    var tabela='<div style="background:#fff;border:1px solid #E2E0D8;border-radius:10px;overflow:auto;max-height:60vh"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="position:sticky;top:0;background:#F0EFE9">'+['Chamado','BKN','Loja','Reg.','Tipo','Mês','Status','P·E·F','Valor','—'].map(function(h){return '<th style="padding:8px;text-align:left;font-size:10px;text-transform:uppercase;color:#6B6960">'+h+'</th>';}).join('')+'</tr></thead><tbody>'+(linhas||'<tr><td colspan="10" style="padding:2rem;text-align:center;color:#A09E96">Nenhum registro com esses filtros.</td></tr>')+'</tbody></table></div>';
+    host.innerHTML='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap"><span style="font-size:15px;font-weight:600;color:#1E3A5F">🛠️ Corretiva / Indicadores PCM BM</span><span style="width:8px;height:8px;border-radius:50%;background:#22C55E;display:inline-block"></span><span style="font-size:11px;color:#6B6960">análise ao vivo (leitura) · '+N+' de '+TODOS.length+' registros</span></div>'+barFiltros+kpis+breaks+tabela;
+    host.querySelectorAll('select[data-af]').forEach(function(s){ s.addEventListener('change',function(){ AF[s.getAttribute('data-af')]=s.value; renderAnalytics(); }); });
+    var qi=host.querySelector('input[data-af="q"]'); if(qi){ qi.addEventListener('input',function(){ AF.q=qi.value.toLowerCase(); clearTimeout(window._afqt); window._afqt=setTimeout(renderAnalytics,220); }); }
+    var cl=host.querySelector('[data-af-clear]'); if(cl){ cl.addEventListener('click',function(){ AF={reg:'',cli:'',tipo:'',sup:'',st:'',mes:'',sit:'',q:''}; renderAnalytics(); }); }
   }
-  /* ---------- Unificar abas ---------- */
-  function unificarAbas(){
+  function ajustarAbas(){
     try{
       document.querySelectorAll('.tab-nav .tab-btn').forEach(function(b){
-        var tx=b.textContent||'';
-        if(/Indicadores/i.test(tx)){ b.style.display='none'; }
-        else if(/Corretivas/i.test(tx) && tx.indexOf('&')<0){ b.textContent='📋 Corretivas & Indicadores'; }
+        var oc=(b.getAttribute('onclick')||'');
+        if(/mudarAba\(\s*['"]indicadores['"]/.test(oc)){ b.style.display='none'; }
+        else if(/mudarAba\(\s*['"]corretivas['"]\s*,/.test(oc)){ b.textContent='📋 Programações Corretivas'; }
       });
       var si=document.getElementById('secao-indicadores'); if(si){ si.classList.remove('ativo'); si.style.display='none'; }
     }catch(e){}
-    if(!window.__mudarWrapped && typeof window.mudarAba==='function'){
+    criarAbaAnalitica();
+    if(!window.__mudarWrapped5 && typeof window.mudarAba==='function'){
       var _prev=window.mudarAba;
       window.mudarAba=function(nome,btn){
         var alvo=(nome==='indicadores')?'corretivas':nome;
+        _analiticaAberta=(alvo==='analitica');
         try{ _prev(alvo, btn); }catch(e){}
-        if(alvo==='corretivas'){ montarIndicadores(); }
+        if(alvo==='analitica'){ renderAnalytics(); }
       };
-      window.__mudarWrapped=true;
+      window.__mudarWrapped5=true;
     }
   }
   async function ativar(){
-    wrapCarregar();
-    instalarDetalhe();
+    wrapCarregar(); instalarDetalhe();
     try{
       var HIST=(typeof REGISTROS!=='undefined'&&REGISTROS)?REGISTROS.slice():[];
       var live=processar(await fetchAll());
       REGISTROS=mesclar(HIST, live);
-      console.log('[live] histórico:',HIST.length,' + PCM:',live.length,' => total:',REGISTROS.length,' ativos:',REGISTROS.filter(function(r){return !r.arquivado;}).length);
-    }catch(e){ console.warn('[live] merge falhou, mantendo histórico embutido:', e); }
-    try{ if(typeof carregarDoSheets==='function'){ await carregarDoSheets(); } else { aplicarTraducao(); reRender(); } }catch(e){ console.warn('[live] render',e); }
-    unificarAbas();
-    montarIndicadores();
-    setTimeout(montarIndicadores, 1500);
+      console.log('[live] hist',HIST.length,'+ pcm',live.length,'=>',REGISTROS.length,'ativos',REGISTROS.filter(function(r){return !r.arquivado;}).length);
+    }catch(e){ console.warn('[live] merge falhou:', e); }
+    try{ if(typeof carregarDoSheets==='function'){ await carregarDoSheets(); } else { aplicarTraducao(); reRender(); } }catch(e){}
+    ajustarAbas(); protegerEdicao(); atualizarBadge();
+    if(_analiticaAberta) renderAnalytics();
   }
   function start(){ setTimeout(ativar, 900); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', start); else start();
