@@ -50,20 +50,26 @@ jobs:
         env:
           ESCOPO_CSV_URL: "https://docs.google.com/spreadsheets/d/1swn3xUKzqslT-dngfw4o2oT2Q243xHuwgd0VC2T4Ajk/export?format=csv&gid=324914311"
         run: |
-          mkdir -p csv-exports
-          curl -sL "$ESCOPO_CSV_URL" -o "csv-exports/escopo_lojas.csv" || true
-          if head -1 "csv-exports/escopo_lojas.csv" | grep -qi "html"; then
+          # IMPORTANTE: gravar FORA de csv-exports/ para nao virar o "CSV mais recente"
+          # que o atualizar_diario.py escolhe (senao processa o escopo como se fosse o PCM).
+          curl -sL "$ESCOPO_CSV_URL" -o "/tmp/escopo_lojas.csv" || true
+          if head -1 "/tmp/escopo_lojas.csv" | grep -qi "html"; then
             echo "Escopo: planilha nao esta publica (veio HTML de login) — pulando."
           else
-            python scripts/escopo_from_csv.py "csv-exports/escopo_lojas.csv" \
+            python scripts/escopo_from_csv.py "/tmp/escopo_lojas.csv" \
               && python scripts/add_aba_escopo.py \
               && echo "Escopo: atualizado" \
               || echo "Escopo: pulado (estrutura mudou) — mantendo escopo atual"
           fi
 
       # 3) Pipeline principal: processa CSV -> registros -> costura no index.html
+      #    Passa EXPLICITAMENTE o CSV do PCM (data_export_*), nunca o do escopo.
       - name: Gerar index.html
-        run: python scripts/atualizar_diario.py
+        run: |
+          PCM_CSV="$(ls -t csv-exports/data_export_*.csv 2>/dev/null | head -1)"
+          if [ -z "$PCM_CSV" ]; then echo "ERRO: nenhum CSV do PCM em csv-exports/"; exit 1; fi
+          echo "Usando CSV do PCM: $PCM_CSV"
+          python scripts/atualizar_diario.py "$PCM_CSV"
 
       # 4) Trava de sanidade: index.html precisa terminar com </script> e ter um
       #    numero de registros plausivel (evita publicar arquivo truncado/vazio).
