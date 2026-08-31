@@ -1,0 +1,86 @@
+name: Atualizar Cronograma Zamp
+
+# Roda 100% nos servidores do GitHub — NAO depende do computador do Rodrigo,
+# do Chrome dele, nem do app do Claude aberto.
+# Fluxo: login headless no PCM BM (Playwright) -> baixa o MESMO CSV do site ->
+# roda o pipeline Python (processar_csv + montar_index) -> gera index.html ->
+# commita se mudou, usando o GITHUB_TOKEN nativo (sem PAT).
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # a cada 15 minutos (UTC). GitHub pode atrasar sob carga.
+  workflow_dispatch: {}        # botao "Run workflow" para rodar na hora
+
+permissions:
+  contents: write              # concede escrita ao GITHUB_TOKEN nativo (dispensa PAT)
+
+concurrency:
+  group: atualizar-cronograma
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar Playwright + Chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      # 1) Baixa o CSV do PCM BM fazendo login headless (secrets do repo)
+      - name: Baixar CSV do PCM BM
+        env:
+          PCM_EMAIL: ${{ secrets.PCM_EMAIL }}
+          PCM_PASSWORD: ${{ secrets.PCM_PASSWORD }}
+        run: python scripts/baixar_csv_pcmbm.py
+
+      # 2) Escopo de lojas via Google Sheets publicado em CSV (opcional/nao-bloqueante)
+      #    Requer a planilha compartilhada como "qualquer pessoa com o link pode ver".
+      - name: Atualizar escopo de lojas (opcional)
+        continue-on-error: true
+        env:
+          ESCOPO_CSV_URL: "https://docs.google.com/spreadsheets/d/1swn3xUKzqslT-dngfw4o2oT2Q243xHuwgd0VC2T4Ajk/export?format=csv&gid=324914311"
+        run: |
+          mkdir -p csv-exports
+          curl -sL "$ESCOPO_CSV_URL" -o "csv-exports/escopo_lojas.csv" || true
+          if head -1 "csv-exports/escopo_lojas.csv" | grep -qi "html"; then
+            echo "Escopo: planilha nao esta publica (veio HTML de login) — pulando."
+          else
+            python scripts/escopo_from_csv.py "csv-exports/escopo_lojas.csv" \
+              && python scripts/add_aba_escopo.py \
+              && echo "Escopo: atualizado" \
+              || echo "Escopo: pulado (estrutura mudou) — mantendo escopo atual"
+          fi
+
+      # 3) Pipeline principal: processa CSV -> registros -> costura no index.html
+      - name: Gerar index.html
+        run: python scripts/atualizar_diario.py
+
+      # 4) Trava de sanidade: index.html precisa terminar com </script> e ter um
+      #    numero de registros plausivel (evita publicar arquivo truncado/vazio).
+      - name: Verificacao de sanidade
+        run: python scripts/verificar_sanidade.py index.html
+
+      # 5) Commit apenas se algo mudou. Inclui o index.html E os arquivos de estado
+      #    (arquivados/anterior) e o base.html, para o modo cumulativo persistir.
+      - name: Commitar se mudou
+        run: |
+          git config user.name  "cronograma-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html base.html scripts/arquivados.json scripts/registros_anterior.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Sem mudanca — nada a commitar."
+          else
+            N=$(python scripts/contar_registros.py index.html)
+            git commit -m "Atualizacao automatica — ${N} registros ($(date -u +%d/%m/%Y' '%H:%M' UTC'))"
+            git push
+          fi

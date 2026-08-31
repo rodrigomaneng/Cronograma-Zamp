@@ -1,0 +1,21 @@
+# Segredos — NUNCA versionar
+github_token.txt
+scripts/github_token.txt
+*.token
+
+# Dados brutos e temporarios (o workflow baixa o CSV a cada run)
+csv-exports/
+*.bak
+*.bak_*
+base.html.bak*
+teste.tmp
+*.tmp
+cronograma-zamp-cowork.zip
+
+# Intermediarios do pipeline (regenerados a cada run)
+scripts/registros_novo.json
+
+# Python / SO
+__pycache__/
+*.pyc
+.DS_Store
