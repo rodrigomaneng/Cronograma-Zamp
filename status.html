@@ -284,7 +284,7 @@ function construirFiltros(){
   ['reg','uf','tipo','esc','coord'].forEach(k=>Object.keys(f[k]).forEach(x=>delete f[k][x]));
   makeMsel('mReg','Região',regs,f.reg,false);
   makeMsel('mUF','UF',ufs,f.uf,false);
-  makeMsel('mTipo','Tipo',['AR','FRIO'],f.tipo,!RESUMO_LOADED);
+  makeMsel('mTipo','Tipo',['AR','FRIO'],f.tipo,false);
   makeMsel('mEsc','Escopo',escs,f.esc,false);
   makeMsel('mCoord','Coordenador',coords,f.coord,false);
 }
@@ -300,8 +300,11 @@ function unidadesFiltradas(){
     if(nU&&!f.uf[u.uf])return false;
     if(nE&&!f.esc[u.escopo])return false;
     if(nC&&!f.coord[u.coordenador])return false;
-    if(tf && EQUIP_LOADED){ // só filtra por tipo se equip carregado
-      var has=itensDe(u).some(it=>tf[tipoNorm(it.tipo)]); if(!has)return false;
+    if(tf){ // filtra por tipo usando o ESCOPO da unidade (ex.: "FRIO", "FRIO/AR")
+      var e0=norm(u.escopo); var ok=false;
+      if(tf['AR'] && e0.indexOf('AR')>=0) ok=true;
+      if(tf['FRIO'] && e0.indexOf('FRIO')>=0) ok=true;
+      if(!ok) return false;
     }
     return true;
   });
@@ -404,8 +407,7 @@ function renderEquip(){
   tb.innerHTML=itens.map((it,idx)=>{
     function cell(campo,w){return '<td class="'+campo+'" style="min-width:'+w+'px"><input class="ed" data-idx="'+idx+'" data-campo="'+campo+'" data-id="'+esc(it.id)+'" data-row="'+esc(it.rowNum)+'" value="'+esc(it[campo])+'"></td>';}
     return '<tr>'+cell('tipo',60)+cell('voltagem',110)+cell('modelo',150)+cell('equipamento',170)+
-      '<td style="text-align:center">'+esc(it.qtd)+'</td>'+
-      '<td style="text-align:center">'+esc(it.operante)+'</td>'+
+      cell('qtd',55)+cell('operante',60)+
       cell('pendencia',200)+
       '<td style="font-size:10px;color:var(--text3)">'+esc(it.id)+'</td></tr>';
   }).join('');
