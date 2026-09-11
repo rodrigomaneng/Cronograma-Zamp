@@ -168,8 +168,10 @@ const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSf8sSY77KAu1ac2vzQ
 
 let UNIDADES = [];
 let UBYKEY = {};
-let EQUIP = {};          // preenchido em segundo plano (scope=full) e sob demanda (scope=equip)
-let EQUIP_LOADED = false; // true quando o full terminou
+let EQUIP = {};          // preenchido sob demanda (scope=equip) no drill-down
+let EQUIP_LOADED = false; // (não usamos mais scope=full)
+let RESUMO = {};          // { BR:{tot,porUF}, SP:{tot,porUF} } via scope=resumo
+let RESUMO_LOADED = false;
 let sort = {k:'unidade',dir:1};
 let lojaAtual = null;
 const f = {reg:{},uf:{},tipo:{},esc:{},coord:{}};
@@ -206,27 +208,53 @@ async function carregar(){
   }
 }
 
-// carrega TODOS os equipamentos (pesado) em segundo plano p/ análise por tipo
+// soma AR/FRIO no servidor (scope=resumo, por região, com cache). Rápido após 1ª carga.
 function carregarEquipFundo(){
-  const ctrl = new AbortController();
-  const to = setTimeout(()=>ctrl.abort(), 180000); // até 3 min
-  fetch(WEBAPP_URL+'?scope=full&_t='+Date.now(), {signal:ctrl.signal})
-    .then(r=>r.json())
-    .then(j=>{
-      clearTimeout(to);
-      if(!j||!j.ok||!j.equip){ falhaTipo(); return; }
-      EQUIP = j.equip; EQUIP_LOADED = true;
+  const B=WEBAPP_URL;
+  Promise.all([
+    fetch(B+'?scope=resumo&region=BR&_t='+Date.now()).then(r=>r.json()).catch(()=>null),
+    fetch(B+'?scope=resumo&region=SP&_t='+Date.now()).then(r=>r.json()).catch(()=>null)
+  ]).then(([b,s])=>{
+    if(b&&b.ok&&b.resumo)RESUMO.BR=b.resumo;
+    if(s&&s.ok&&s.resumo)RESUMO.SP=s.resumo;
+    if(RESUMO.BR||RESUMO.SP){
+      RESUMO_LOADED=true;
       document.getElementById('tipoBadge').textContent='ao vivo';
-      document.getElementById('mTipo').querySelector('button') && (document.getElementById('mTipo').querySelector('button').disabled=false);
-      aplicar();
-    })
-    .catch(()=>{ clearTimeout(to); falhaTipo(); });
+      var mt=document.getElementById('mTipo').querySelector('button'); if(mt)mt.disabled=false;
+      renderResumo();
+    } else falhaTipo();
+  }).catch(falhaTipo);
 }
 function falhaTipo(){
-  document.getElementById('tipoBadge').textContent='resumo por tipo indisponível (base grande)';
-  document.getElementById('kAr').textContent='—'; document.getElementById('kArSub').textContent='abra uma loja p/ ver equip.';
-  document.getElementById('kFrio').textContent='—'; document.getElementById('kFrioSub').textContent='abra uma loja p/ ver equip.';
-  document.querySelector('#tTipo tbody').innerHTML='<tr><td colspan="5" style="color:var(--text3)">Base de equipamentos muito grande para somar aqui. Os dados por loja aparecem ao abrir cada unidade.</td></tr>';
+  document.getElementById('tipoBadge').textContent='resumo por tipo indisponível';
+  document.getElementById('kAr').textContent='—'; document.getElementById('kArSub').textContent='tente Atualizar';
+  document.getElementById('kFrio').textContent='—'; document.getElementById('kFrioSub').textContent='tente Atualizar';
+  document.querySelector('#tTipo tbody').innerHTML='<tr><td colspan="5" style="color:var(--text3)">Indisponível no momento — clique em Atualizar.</td></tr>';
+}
+// agrega AR/FRIO respeitando filtros de Região e UF
+function agregaResumo(){
+  const nR=Object.values(f.reg).filter(Boolean).length, nU=Object.values(f.uf).filter(Boolean).length;
+  const regs=Object.keys(RESUMO).filter(rg=>!nR||f.reg[rg]);
+  let ar={tot:0,op:0}, frio={tot:0,op:0}, porUF={};
+  regs.forEach(rg=>{ const R=RESUMO[rg]; if(!R||!R.porUF)return;
+    Object.keys(R.porUF).forEach(uf=>{ if(nU&&!f.uf[uf])return; const d=R.porUF[uf];
+      ar.tot+=d.AR.tot;ar.op+=d.AR.op; frio.tot+=d.FRIO.tot;frio.op+=d.FRIO.op;
+      const pu=porUF[uf]=porUF[uf]||{AR:{tot:0,op:0},FRIO:{tot:0,op:0}};
+      pu.AR.tot+=d.AR.tot;pu.AR.op+=d.AR.op;pu.FRIO.tot+=d.FRIO.tot;pu.FRIO.op+=d.FRIO.op; }); });
+  return {ar,frio,porUF};
+}
+function renderResumo(){
+  if(!RESUMO_LOADED)return;
+  const A=agregaResumo(); const tf=tipoAtivo();
+  document.getElementById('kAr').textContent=A.ar.op+' / '+A.ar.tot;
+  document.getElementById('kArSub').textContent=A.ar.tot?(pct(A.ar.op,A.ar.tot)+'% oper. · '+(A.ar.tot-A.ar.op)+' parados'):'sem itens';
+  document.getElementById('kFrio').textContent=A.frio.op+' / '+A.frio.tot;
+  document.getElementById('kFrioSub').textContent=A.frio.tot?(pct(A.frio.op,A.frio.tot)+'% oper. · '+(A.frio.tot-A.frio.op)+' parados'):'sem itens';
+  const linhas=[['AR','Ar Condicionado',A.ar],['FRIO','Frio Alimentar',A.frio]].filter(x=>!tf||tf[x[0]]);
+  document.querySelector('#tTipo tbody').innerHTML=linhas.map(function(x){var tg=x[0],nome=x[1],d=x[2],p=pct(d.op,d.tot);
+    return '<tr><td><span class="tipo-tag '+tg+'">'+esc(nome)+'</span></td><td>'+d.tot+'</td>'+
+      '<td style="color:var(--green)">'+d.op+'</td><td style="color:var(--red);font-weight:700">'+(d.tot-d.op)+'</td>'+
+      '<td>'+p+'%<span class="bar"><i style="width:'+p+'%"></i></span></td></tr>';}).join('');
 }
 
 function itensDe(u){var e=EQUIP[keyOf(u)]; return (e&&e.itens)||[];}
@@ -256,7 +284,7 @@ function construirFiltros(){
   ['reg','uf','tipo','esc','coord'].forEach(k=>Object.keys(f[k]).forEach(x=>delete f[k][x]));
   makeMsel('mReg','Região',regs,f.reg,false);
   makeMsel('mUF','UF',ufs,f.uf,false);
-  makeMsel('mTipo','Tipo',['AR','FRIO'],f.tipo,!EQUIP_LOADED);
+  makeMsel('mTipo','Tipo',['AR','FRIO'],f.tipo,!RESUMO_LOADED);
   makeMsel('mEsc','Escopo',escs,f.esc,false);
   makeMsel('mCoord','Coordenador',coords,f.coord,false);
 }
@@ -344,6 +372,7 @@ function aplicar(){
   }).join('')||'<tr><td colspan="9" style="color:var(--text3)">sem unidades</td></tr>';
   window._rows=rows;
   [...tb.querySelectorAll('tr.clickrow')].forEach(tr=>tr.addEventListener('click',()=>abrir(window._rows[+tr.getAttribute('data-i')].u)));
+  renderResumo();
 }
 
 // ---------- drill-down ----------
