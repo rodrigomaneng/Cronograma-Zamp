@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAMP — Status e Performance dos Equipamentos</title>
+<style>
+:root{
+  --bg:#f5f6f8; --surface:#fff; --surface2:#f0f2f5; --border:#e2e5ea;
+  --text:#1a1f26; --text2:#4a525e; --text3:#8a92a0; --blue:#1a5fb4;
+  --green:#1a7a3f; --red:#c0392b; --amber:#b26a00; --sans:'Segoe UI',system-ui,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px}
+header{background:#0f2740;color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;font-weight:700}
+header .sub{font-size:12px;color:#a9bdd6}
+header .right{margin-left:auto;display:flex;gap:10px;align-items:center}
+header button{background:#1a5fb4;color:#fff;border:0;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+header button.ghost{background:transparent;border:1px solid #33506f}
+.fonte{font-size:11px;color:#a9bdd6}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px 60px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+.toolbar input[type=text]{flex:1;min-width:220px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--surface);color:var(--text);font-family:var(--sans)}
+.msel{position:relative}
+.msel>button{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.msel .pop{position:absolute;z-index:20;top:110%;left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;max-height:260px;overflow:auto;min-width:170px}
+.msel .pop label{display:block;padding:5px 8px;font-size:12px;color:var(--text);cursor:pointer;white-space:nowrap;border-radius:5px}
+.msel .pop label:hover{background:var(--surface2)}
+button.clear{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer}
+button.primary{padding:8px 14px;border:1px solid var(--blue);border-radius:8px;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.kpis{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.kpi .val{font-size:26px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:11px;color:var(--text3);margin-top:2px}
+.kpi.op .val{color:var(--green)} .kpi.par .val{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.card h2{font-size:13px;margin:0 0 10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text2)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--border)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--text3);cursor:pointer;position:sticky;top:0;background:var(--surface)}
+tbody tr:hover{background:var(--surface2)}
+.tbl-wrap{max-height:560px;overflow:auto;border:1px solid var(--border);border-radius:10px}
+.reg{display:inline-block;padding:1px 7px;border-radius:20px;font-size:10px;font-weight:700}
+.reg.BR{background:#e3f0ff;color:#1a5fb4}.reg.SP{background:#f3e9ff;color:#6b32c9}
+.pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.pill.ok{background:#e9f8ee;color:var(--green)}.pill.bad{background:#fdecea;color:var(--red)}
+.bar{display:inline-block;height:8px;width:70px;background:#e6e6e6;border-radius:4px;overflow:hidden;vertical-align:middle;margin-left:6px}
+.bar>i{display:block;height:100%;background:var(--green)}
+.clickrow{cursor:pointer}
+.back{padding:7px 13px;border:1px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;font-weight:600;font-size:12px}
+.det-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.det-title{font-size:16px;font-weight:800}
+.det-meta{font-size:12px;color:var(--text3)}
+input.ed{width:100%;border:1px solid transparent;border-radius:6px;padding:4px 6px;font-size:12px;background:transparent;color:var(--text);font-family:var(--sans)}
+input.ed:hover{border-color:var(--border)} input.ed:focus{border-color:var(--blue);background:#fff;outline:none}
+td.dirty input.ed{background:#fff7e0} td.saved input.ed{background:#e9f8ee}
+.hint{min-height:20px;font-size:12px;margin:2px 0 8px;color:var(--text2)}
+.hint.ok{color:var(--green)} .hint.warn{color:var(--amber)} .hint.err{color:var(--red)}
+.loading{padding:40px;text-align:center;color:var(--text3)}
+.tipo-tag{display:inline-block;padding:1px 7px;border-radius:20px;font-size:10px;font-weight:700}
+.tipo-tag.AR{background:#e3f0ff;color:#1a5fb4}.tipo-tag.FRIO{background:#e6f7f4;color:#0d7d6b}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>ZAMP · Status e Performance dos Equipamentos</h1>
+    <div class="sub">Maneng Refrigeração · dados ao vivo das planilhas STATUS DE UNIDADE (BRASIL + SPI/SP)</div>
+  </div>
+  <div class="right">
+    <span class="fonte" id="fonte">carregando…</span>
+    <button class="ghost" onclick="carregar()">↻ Atualizar</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="loading" class="loading">Carregando dados das duas planilhas…</div>
+
+  <div id="app" class="hidden">
+    <!-- MESTRE -->
+    <div id="view-mestre">
+      <div class="toolbar">
+        <input id="busca" type="text" placeholder="Buscar por BKN, unidade, coordenador, cidade…">
+        <div class="msel" id="mReg"></div>
+        <div class="msel" id="mUF"></div>
+        <div class="msel" id="mTipo"></div>
+        <div class="msel" id="mEsc"></div>
+        <div class="msel" id="mCoord"></div>
+        <button class="clear" onclick="limpar()">✕ Limpar</button>
+        <button class="primary" onclick="exportMestre()">⬇ Exportar CSV</button>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="lbl">Unidades</div><div class="val" id="kUn">--</div><div class="sub" id="kUnSub"></div></div>
+        <div class="kpi"><div class="lbl">Equipamentos</div><div class="val" id="kEq">--</div><div class="sub">total (filtrado)</div></div>
+        <div class="kpi op"><div class="lbl">Funcionando</div><div class="val" id="kOp">--</div><div class="sub" id="kOpSub"></div></div>
+        <div class="kpi par"><div class="lbl">Parados/Inop.</div><div class="val" id="kPar">--</div><div class="sub" id="kParSub"></div></div>
+        <div class="kpi"><div class="lbl">Ar Condicionado</div><div class="val" id="kAr">--</div><div class="sub" id="kArSub"></div></div>
+        <div class="kpi"><div class="lbl">Frio Alimentar</div><div class="val" id="kFrio">--</div><div class="sub" id="kFrioSub"></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Performance por Estado</h2>
+          <div class="tbl-wrap" style="max-height:340px">
+            <table id="tUF"><thead><tr>
+              <th data-k="uf">UF</th><th data-k="tot">Equip.</th>
+              <th data-k="op">Func.</th><th data-k="par">Parados</th><th data-k="pct">% Oper.</th>
+            </tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Performance por Tipo</h2>
+          <div class="tbl-wrap" style="max-height:340px">
+            <table id="tTipo"><thead><tr>
+              <th>Tipo</th><th>Equip.</th><th>Func.</th><th>Parados</th><th>% Oper.</th>
+            </tr></thead><tbody></tbody></table>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:8px">AR = ar condicionado · FRIO = frio alimentar (câmaras, freezers, expositores)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Unidades <span id="cnt" style="color:var(--text3);font-weight:400"></span></h2>
+        <div class="tbl-wrap">
+          <table id="tUn"><thead><tr>
+            <th data-k="bkn">BKN</th><th data-k="unidade">Unidade</th><th data-k="region">Reg</th>
+            <th data-k="uf">UF</th><th data-k="coordenador">Coordenador</th>
+            <th data-k="tot">Sist.</th><th data-k="op">Func.</th><th data-k="par">Parados</th>
+            <th data-k="pct">Eficiência</th><th data-k="nEq">Equip.</th>
+          </tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETALHE -->
+    <div id="view-det" class="hidden">
+      <div class="det-head">
+        <button class="back" onclick="voltar()">← Voltar</button>
+        <div class="det-title" id="detTitle">—</div>
+        <div class="det-meta" id="detMeta"></div>
+        <div style="flex:1"></div>
+        <button class="primary" onclick="exportEquip()">⬇ Exportar CSV</button>
+      </div>
+      <div id="hint" class="hint"></div>
+      <div class="card">
+        <h2>Equipamentos <span id="eqcnt" style="color:var(--text3);font-weight:400"></span> · clique num campo para editar (grava na planilha)</h2>
+        <div class="tbl-wrap">
+          <table id="tEq"><thead><tr>
+            <th>Tipo</th><th>Voltagem/Fase</th><th>Modelo</th><th>Equipamento</th>
+            <th>Qtd</th><th>Oper.</th><th>Pendência</th><th>ID</th>
+          </tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSf8sSY77KAu1ac2vzQHn9XbgRKBorOaRA__jPtKSxr2gsKxIOCvp5o0upvhIpNbaX/exec";
+
+let UNIDADES = [];       // [{region,bkn,unidade,uf,coordenador,supervisor,escopo,totalSistemas,emOperacao,inoperante,eficiencia,...}]
+let EQUIP = {};          // { "REG::LOJA": {region,loja,itens:[...]} }
+let sort = {k:'unidade',dir:1};
+let lojaAtual = null;
+const f = {reg:{},uf:{},tipo:{},esc:{},coord:{}};
+
+function norm(s){return (s||'').toString().toUpperCase().replace(/\s+/g,' ').trim();}
+function num(x){var n=parseInt((''+x).replace(/[^0-9-]/g,''),10);return isNaN(n)?0:n;}
+function esc(s){return (s==null?'':''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function keyOf(u){return u.region+'::'+norm(u.unidade);}
+function tipoNorm(t){t=norm(t); if(t.indexOf('AR')===0||t==='AR')return 'AR'; if(t.indexOf('FRIO')===0)return 'FRIO'; return t||'—';}
+
+// classifica um item: retorna {tipo:'AR'|'FRIO'|outro, tot, op, par}
+function statItem(it){var tot=num(it.qtd)||1; var op=num(it.operante); if(op>tot)op=tot; return {tipo:tipoNorm(it.tipo), tot:tot, op:op, par:Math.max(0,tot-op)};}
+
+// itens de uma loja (por chave region::unidade)
+function itensDe(u){var e=EQUIP[keyOf(u)]; return (e&&e.itens)||[];}
+
+async function carregar(){
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('fonte').textContent='carregando…';
+  try{
+    const r = await fetch(WEBAPP_URL+'?scope=full&_t='+Date.now());
+    const j = await r.json();
+    if(!j || !j.ok) throw new Error('resposta inválida');
+    UNIDADES = (j.unidades||[]).filter(u=>u.uf && u.uf!=='UF' && u.bkn!=='BKN');
+    EQUIP = j.equip||{};
+    // nEquip por unidade
+    UNIDADES.forEach(u=>{ u.nEq = itensDe(u).length; });
+    document.getElementById('fonte').textContent='● ao vivo · '+(j.geradoEm?new Date(j.geradoEm).toLocaleString('pt-BR'):'');
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    construirFiltros();
+    aplicar();
+  }catch(e){
+    document.getElementById('loading').innerHTML='Falha ao carregar: '+esc(e.message)+'<br><br><button class="primary" onclick="carregar()">Tentar de novo</button>';
+    document.getElementById('fonte').textContent='● erro';
+  }
+}
+
+function makeMsel(id,label,vals,state){
+  const w=document.getElementById(id); if(!w)return; w.innerHTML='';
+  const btn=document.createElement('button'); btn.type='button';
+  const pop=document.createElement('div'); pop.className='pop'; pop.style.display='none';
+  function render(){var n=Object.values(state).filter(Boolean).length; btn.textContent=label+(n?(' ('+n+')'):'')+' ▾';}
+  vals.forEach(v=>{
+    const lb=document.createElement('label');
+    lb.innerHTML='<input type="checkbox"> '+esc(v);
+    lb.querySelector('input').addEventListener('change',e=>{state[v]=e.target.checked;render();aplicar();});
+    pop.appendChild(lb);
+  });
+  btn.addEventListener('click',e=>{e.stopPropagation();pop.style.display=pop.style.display==='none'?'block':'none';});
+  document.addEventListener('click',()=>{pop.style.display='none';});
+  pop.addEventListener('click',e=>e.stopPropagation());
+  w.appendChild(btn); w.appendChild(pop); render();
+}
+
+function construirFiltros(){
+  const regs=[...new Set(UNIDADES.map(u=>u.region))].filter(Boolean).sort();
+  const ufs=[...new Set(UNIDADES.map(u=>u.uf))].filter(Boolean).sort();
+  const escs=[...new Set(UNIDADES.map(u=>u.escopo))].filter(Boolean).sort();
+  const coords=[...new Set(UNIDADES.map(u=>u.coordenador))].filter(Boolean).sort();
+  ['reg','uf','tipo','esc','coord'].forEach(k=>Object.keys(f[k]).forEach(x=>delete f[k][x]));
+  makeMsel('mReg','Região',regs,f.reg);
+  makeMsel('mUF','UF',ufs,f.uf);
+  makeMsel('mTipo','Tipo',['AR','FRIO'],f.tipo);
+  makeMsel('mEsc','Escopo',escs,f.esc);
+  makeMsel('mCoord','Coordenador',coords,f.coord);
+}
+
+function unidadesFiltradas(){
+  const q=norm(document.getElementById('busca').value);
+  const nR=Object.values(f.reg).filter(Boolean).length, nU=Object.values(f.uf).filter(Boolean).length,
+        nE=Object.values(f.esc).filter(Boolean).length, nC=Object.values(f.coord).filter(Boolean).length;
+  return UNIDADES.filter(u=>{
+    if(q){var hay=norm([u.bkn,u.unidade,u.coordenador,u.supervisor].join(' ')); if(hay.indexOf(q)<0)return false;}
+    if(nR&&!f.reg[u.region])return false;
+    if(nU&&!f.uf[u.uf])return false;
+    if(nE&&!f.esc[u.escopo])return false;
+    if(nC&&!f.coord[u.coordenador])return false;
+    return true;
+  });
+}
+function tipoAtivo(){return Object.values(f.tipo).filter(Boolean).length?f.tipo:null;}
+
+// agrega itens (respeitando filtro de tipo) de uma lista de unidades
+function agrega(unis){
+  const tf=tipoAtivo();
+  let tot=0,op=0,par=0, ar={tot:0,op:0}, frio={tot:0,op:0}, porUF={};
+  unis.forEach(u=>{
+    itensDe(u).forEach(it=>{
+      const s=statItem(it);
+      if(tf && !tf[s.tipo]) return;
+      tot+=s.tot; op+=s.op; par+=s.par;
+      if(s.tipo==='AR'){ar.tot+=s.tot;ar.op+=s.op;}
+      else if(s.tipo==='FRIO'){frio.tot+=s.tot;frio.op+=s.op;}
+      const uf=u.uf||'—'; porUF[uf]=porUF[uf]||{tot:0,op:0,par:0}; porUF[uf].tot+=s.tot; porUF[uf].op+=s.op; porUF[uf].par+=s.par;
+    });
+  });
+  return {tot,op,par,ar,frio,porUF};
+}
+
+function pct(op,tot){return tot?Math.round(op/tot*100):0;}
+
+function aplicar(){
+  const unis=unidadesFiltradas();
+  const A=agrega(unis);
+  // KPIs
+  document.getElementById('kUn').textContent=unis.length;
+  document.getElementById('kUnSub').textContent='de '+UNIDADES.length+' no total';
+  document.getElementById('kEq').textContent=A.tot;
+  document.getElementById('kOp').textContent=A.op;
+  document.getElementById('kOpSub').textContent=pct(A.op,A.tot)+'% operante';
+  document.getElementById('kPar').textContent=A.par;
+  document.getElementById('kParSub').textContent=A.tot?pct(A.par,A.tot)+'% da carteira':'';
+  document.getElementById('kAr').textContent=A.ar.op+'/'+A.ar.tot;
+  document.getElementById('kArSub').textContent=A.ar.tot?pct(A.ar.op,A.ar.tot)+'% operante':'sem itens';
+  document.getElementById('kFrio').textContent=A.frio.op+'/'+A.frio.tot;
+  document.getElementById('kFrioSub').textContent=A.frio.tot?pct(A.frio.op,A.frio.tot)+'% operante':'sem itens';
+
+  // tabela por UF
+  const ufRows=Object.keys(A.porUF).map(uf=>{var d=A.porUF[uf];return {uf:uf,tot:d.tot,op:d.op,par:d.par,pct:pct(d.op,d.tot)};}).sort((a,b)=>b.par-a.par||b.tot-a.tot);
+  document.querySelector('#tUF tbody').innerHTML=ufRows.map(r=>
+    '<tr><td><b>'+esc(r.uf)+'</b></td><td>'+r.tot+'</td><td style="color:var(--green)">'+r.op+'</td>'+
+    '<td style="color:var(--red);font-weight:700">'+r.par+'</td><td>'+r.pct+'%'+
+    '<span class="bar"><i style="width:'+r.pct+'%"></i></span></td></tr>').join('')||'<tr><td colspan="5" style="color:var(--text3)">sem dados</td></tr>';
+
+  // tabela por tipo
+  const tRows=[['AR','Ar Condicionado',A.ar],['FRIO','Frio Alimentar',A.frio]];
+  document.querySelector('#tTipo tbody').innerHTML=tRows.map(([tg,nome,d])=>{
+    var p=pct(d.op,d.tot);
+    return '<tr><td><span class="tipo-tag '+tg+'">'+esc(nome)+'</span></td><td>'+d.tot+'</td>'+
+      '<td style="color:var(--green)">'+d.op+'</td><td style="color:var(--red);font-weight:700">'+(d.tot-d.op)+'</td>'+
+      '<td>'+p+'%<span class="bar"><i style="width:'+p+'%"></i></span></td></tr>';
+  }).join('');
+
+  // tabela de unidades
+  const rows=unis.map(u=>{
+    const it=itensDe(u); let t=0,o=0; const tf=tipoAtivo();
+    it.forEach(x=>{const s=statItem(x); if(tf&&!tf[s.tipo])return; t+=s.tot;o+=s.op;});
+    return {u:u, tot:t, op:o, par:t-o, pct:pct(o,t), nEq:it.length};
+  });
+  const s=sort;
+  rows.sort((a,b)=>{
+    let x,y;
+    if(s.k==='tot'||s.k==='op'||s.k==='par'||s.k==='pct'||s.k==='nEq'){x=a[s.k];y=b[s.k];}
+    else {x=(''+a.u[s.k]).toLowerCase();y=(''+b.u[s.k]).toLowerCase();}
+    return (x<y?-1:x>y?1:0)*s.dir;
+  });
+  document.getElementById('cnt').textContent='('+rows.length+')';
+  const tb=document.querySelector('#tUn tbody');
+  tb.innerHTML=rows.map((r,i)=>{
+    const u=r.u;
+    return '<tr class="clickrow" data-i="'+i+'">'+
+      '<td style="font-variant-numeric:tabular-nums">'+esc(u.bkn||'—')+'</td>'+
+      '<td style="max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(u.unidade)+'">'+esc(u.unidade)+'</td>'+
+      '<td><span class="reg '+u.region+'">'+u.region+'</span></td>'+
+      '<td>'+esc(u.uf||'—')+'</td>'+
+      '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(u.coordenador)+'">'+esc(u.coordenador||'—')+'</td>'+
+      '<td>'+r.tot+'</td><td style="color:var(--green)">'+r.op+'</td>'+
+      '<td>'+(r.par>0?'<span class="pill bad">'+r.par+'</span>':'<span class="pill ok">0</span>')+'</td>'+
+      '<td>'+r.pct+'%<span class="bar"><i style="width:'+r.pct+'%"></i></span></td>'+
+      '<td>'+r.nEq+'</td></tr>';
+  }).join('')||'<tr><td colspan="10" style="color:var(--text3)">sem unidades</td></tr>';
+  window._rows=rows;
+  [...tb.querySelectorAll('tr.clickrow')].forEach(tr=>tr.addEventListener('click',()=>abrir(window._rows[+tr.getAttribute('data-i')].u)));
+}
+
+// ---------- drill-down ----------
+function abrir(u){
+  lojaAtual=u;
+  document.getElementById('view-mestre').classList.add('hidden');
+  document.getElementById('view-det').classList.remove('hidden');
+  document.getElementById('detTitle').textContent=u.unidade;
+  document.getElementById('detMeta').innerHTML='<span class="reg '+u.region+'">'+u.region+'</span> · BKN '+esc(u.bkn||'—')+' · '+esc(u.uf||'')+' · '+esc(u.coordenador||'')+' · Eficiência '+esc(u.eficiencia||'—');
+  hint('','');
+  renderEquip();
+}
+function voltar(){document.getElementById('view-det').classList.add('hidden');document.getElementById('view-mestre').classList.remove('hidden');lojaAtual=null;}
+
+function renderEquip(){
+  const e=EQUIP[keyOf(lojaAtual)]; const itens=(e&&e.itens)||[];
+  document.getElementById('eqcnt').textContent='('+itens.length+')';
+  const tb=document.querySelector('#tEq tbody');
+  if(!itens.length){tb.innerHTML='<tr><td colspan="8" style="color:var(--text3);text-align:center;padding:18px">Sem equipamentos cadastrados nesta unidade.</td></tr>';return;}
+  tb.innerHTML=itens.map((it,idx)=>{
+    function cell(campo,w){return '<td class="'+campo+'" style="min-width:'+w+'px"><input class="ed" data-idx="'+idx+'" data-campo="'+campo+'" data-id="'+esc(it.id)+'" data-row="'+esc(it.rowNum)+'" value="'+esc(it[campo])+'"></td>';}
+    return '<tr>'+cell('tipo',60)+cell('voltagem',110)+cell('modelo',150)+cell('equipamento',170)+
+      '<td style="text-align:center">'+esc(it.qtd)+'</td>'+
+      '<td style="text-align:center">'+esc(it.operante)+'</td>'+
+      cell('pendencia',200)+
+      '<td style="font-size:10px;color:var(--text3)">'+esc(it.id)+'</td></tr>';
+  }).join('');
+  [...tb.querySelectorAll('input.ed')].forEach(inp=>inp.addEventListener('change',()=>onEdit(inp)));
+}
+
+function onEdit(inp){
+  const campo=inp.getAttribute('data-campo'), id=inp.getAttribute('data-id'), row=inp.getAttribute('data-row'), valor=inp.value;
+  const e=EQUIP[keyOf(lojaAtual)];
+  inp.parentNode.classList.add('dirty'); inp.parentNode.classList.remove('saved');
+  hint('warn','Gravando na planilha…');
+  const body={action:'update', region:e.region, loja:e.loja, id:id, rowNum:row, campo:campo, valor:valor};
+  fetch(WEBAPP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)})
+    .then(()=>{ inp.parentNode.classList.remove('dirty'); inp.parentNode.classList.add('saved');
+      // atualiza cache local
+      if(e&&e.itens&&e.itens[inp.getAttribute('data-idx')]) e.itens[inp.getAttribute('data-idx')][campo]=valor;
+      hint('ok','Enviado para a planilha · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));})
+    .catch(err=>hint('err','Falha ao gravar: '+err.message));
+}
+function hint(cls,msg){const el=document.getElementById('hint');el.className='hint '+cls;el.textContent=msg;}
+
+// ---------- export ----------
+function baixar(nome,linhas){
+  const csv=linhas.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nome; a.click();
+}
+function exportMestre(){
+  const rows=window._rows||[];
+  const head=['BKN','Unidade','Região','UF','Coordenador','Supervisor','Escopo','Equip. Total','Funcionando','Parados','% Operante','Nº Equip'];
+  const linhas=[head].concat(rows.map(r=>[r.u.bkn,r.u.unidade,r.u.region,r.u.uf,r.u.coordenador,r.u.supervisor,r.u.escopo,r.tot,r.op,r.par,r.pct+'%',r.nEq]));
+  baixar('zamp_status_unidades.csv',linhas);
+}
+function exportEquip(){
+  if(!lojaAtual)return; const e=EQUIP[keyOf(lojaAtual)]; const itens=(e&&e.itens)||[];
+  const head=['Tipo','Voltagem','Modelo','Equipamento','Qtd','Operante','Pendência','ID'];
+  const linhas=[head].concat(itens.map(it=>[it.tipo,it.voltagem,it.modelo,it.equipamento,it.qtd,it.operante,it.pendencia,it.id]));
+  baixar('equip_'+(lojaAtual.unidade||'unidade').replace(/[^A-Za-z0-9]+/g,'_')+'.csv',linhas);
+}
+
+function limpar(){document.getElementById('busca').value='';construirFiltros();aplicar();}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('busca').addEventListener('input',aplicar);
+  document.querySelectorAll('#tUn thead th, #tUF thead th').forEach(th=>{
+    th.addEventListener('click',()=>{const k=th.getAttribute('data-k'); if(!k)return; if(sort.k===k)sort.dir*=-1; else{sort.k=k;sort.dir=1;} aplicar();});
+  });
+  carregar();
+});
+</script>
+</body>
+</html>
